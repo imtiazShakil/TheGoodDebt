@@ -1,14 +1,36 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { getContacts } from "./api";
+import { addContact, getContacts } from "./api";
 import { ContactDetails } from "./entity.interface";
 import ContactForm from "./ContactForm";
 
-function StudentComponent() {
+function ContactListComponent() {
   const [contacts, setContacts] = useState<ContactDetails[]>([]);
   const ref = useRef<HTMLDialogElement>(null);
+
   const handleShow = useCallback(() => {
     ref.current?.showModal();
   }, [ref]);
+
+  const handleFormSubmit = (data: ContactDetails) => {
+    // Send data to ContactListComponent or handle it as needed
+    addContact(data)
+      .then((contact) => {
+        if (contact === null) {
+          console.error("Error adding contact");
+          return;
+        }
+        // Step 4: Update the state with the new contact
+        setContacts([...contacts, contact]);
+      })
+      .catch((error) => {
+        console.error("Error adding contact", error);
+      })
+      .finally(() => {
+        ref.current?.close();
+      });
+
+    // how to reset the contact form?
+  };
 
   useEffect(() => {
     // Call the function and update the state
@@ -39,6 +61,7 @@ function StudentComponent() {
               <th>ID</th>
               <th>Name</th>
               <th>Nid</th>
+              <th>FatherName</th>
               <th>Phone</th>
               <th>Address</th>
             </tr>
@@ -52,6 +75,7 @@ function StudentComponent() {
                 <td>{contact.id}</td>
                 <td>{contact.name}</td>
                 <td>{contact.nidInfo}</td>
+                <td>{contact.fatherName}</td>
                 <td>{contact.phone}</td>
                 <td>{contact.address}</td>
               </tr>
@@ -69,11 +93,11 @@ function StudentComponent() {
             </button>
           </form>
           <h2 className="text-2xl font-bold mb-4">Contact Form</h2>
-          <ContactForm></ContactForm>
+          <ContactForm onSubmit={handleFormSubmit}></ContactForm>
         </div>
       </dialog>
     </>
   );
 }
 
-export default StudentComponent;
+export default ContactListComponent;

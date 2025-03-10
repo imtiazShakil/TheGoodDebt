@@ -1,7 +1,10 @@
-export interface ContactDetails {
+export interface BaseEntity {
   id: number;
+}
+export interface ContactDetails extends BaseEntity {
   name: string;
+  fatherName: string;
   nidInfo: string;
-  phone: number;
+  phone: string;
   address: string;
 }

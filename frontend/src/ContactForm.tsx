@@ -1,6 +1,11 @@
 import React, { useState } from "react";
+import { ContactDetails } from "./entity.interface";
 
-const ContactForm = () => {
+interface ContactFormProps {
+  onSubmit: (data: ContactDetails) => void;
+}
+
+const ContactForm = ({ onSubmit }: ContactFormProps) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
@@ -8,7 +13,21 @@ const ContactForm = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Handle form submission logic here
-    console.log({ name, email, message });
+    const contact: ContactDetails = {} as ContactDetails;
+    contact.name = name;
+    contact.nidInfo = email;
+    contact.address = message;
+    contact.phone = "1234567890";
+    contact.fatherName = "John Doe Sr.";
+
+    onSubmit(contact);
+    resetForm();
+  };
+
+  const resetForm = () => {
+    setName("");
+    setEmail("");
+    setMessage("");
   };
 
   return (

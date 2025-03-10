@@ -4,6 +4,10 @@ import { ContactDetails } from "./entity/contact-details";
 export async function initializeDatabase() {
   const contactRepository = AppDataSource.getRepository(ContactDetails);
 
+  // if contacts exists, do not seed
+  const contactCount = await contactRepository.count();
+  if (contactCount > 0) return;
+
   const lender1 = new ContactDetails();
   lender1.name = "John Doe";
   lender1.fatherName = "John Doe Sr.";
