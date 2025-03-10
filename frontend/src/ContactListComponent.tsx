@@ -12,10 +12,14 @@ function StudentComponent() {
 
   useEffect(() => {
     // Call the function and update the state
-    getContacts().then((data) => {
-      // Step 3: Update the state with the fetched data
-      setContacts(data);
-    });
+    getContacts()
+      .then((contactList) => {
+        // Step 3: Update the state with the fetched data
+        setContacts(contactList);
+      })
+      .catch((error) => {
+        console.error("Error fetching contacts", error);
+      });
   }, []); // Empty dependency array ensures this runs only once on mount
 
   return (

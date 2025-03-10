@@ -12,6 +12,14 @@ export default tseslint.config(
     extends: [
       js.configs.recommended,
       ...tseslint.configs.recommendedTypeChecked,
+      {
+        languageOptions: {
+          parserOptions: {
+            projectService: true,
+            tsconfigRootDir: import.meta.dirname,
+          },
+        },
+      },
       ...tseslint.configs.stylisticTypeChecked,
       eslintConfigPrettier,
     ],
