@@ -7,18 +7,22 @@ interface ContactFormProps {
 
 const ContactForm = ({ onSubmit }: ContactFormProps) => {
   const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [message, setMessage] = useState("");
+  const [nidInfo, setNidInfo] = useState("");
+  const [address, setAddress] = useState("");
+  const [phone, setPhone] = useState("");
+  const [fatherName, setFatherName] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Handle form submission logic here
-    const contact: ContactDetails = {} as ContactDetails;
-    contact.name = name;
-    contact.nidInfo = email;
-    contact.address = message;
-    contact.phone = "1234567890";
-    contact.fatherName = "John Doe Sr.";
+    // Handle form submission logic here
+    const contact: ContactDetails = {
+      name,
+      nidInfo,
+      address,
+      phone,
+      fatherName,
+    } as ContactDetails;
 
     onSubmit(contact);
     resetForm();
@@ -26,8 +30,10 @@ const ContactForm = ({ onSubmit }: ContactFormProps) => {
 
   const resetForm = () => {
     setName("");
-    setEmail("");
-    setMessage("");
+    setNidInfo("");
+    setAddress("");
+    setPhone("");
+    setFatherName("");
   };
 
   return (
@@ -51,15 +57,15 @@ const ContactForm = ({ onSubmit }: ContactFormProps) => {
       <div className="mb-4">
         <label
           className="block text-gray-700 text-sm font-bold mb-2"
-          htmlFor="email"
+          htmlFor="nidInfo"
         >
-          Email
+          NID Info
         </label>
         <input
-          type="email"
-          id="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          type="text"
+          id="nidInfo"
+          value={nidInfo}
+          onChange={(e) => setNidInfo(e.target.value)}
           className="input input-bordered w-full"
           required
         />
@@ -67,15 +73,48 @@ const ContactForm = ({ onSubmit }: ContactFormProps) => {
       <div className="mb-4">
         <label
           className="block text-gray-700 text-sm font-bold mb-2"
-          htmlFor="message"
+          htmlFor="address"
         >
-          Message
+          Address
         </label>
-        <textarea
-          id="message"
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          className="textarea textarea-bordered w-full"
+        <input
+          type="text"
+          id="address"
+          value={address}
+          onChange={(e) => setAddress(e.target.value)}
+          className="input input-bordered w-full"
+          required
+        />
+      </div>
+      <div className="mb-4">
+        <label
+          className="block text-gray-700 text-sm font-bold mb-2"
+          htmlFor="phone"
+        >
+          Phone
+        </label>
+        <input
+          type="text"
+          id="phone"
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
+          className="input input-bordered w-full"
+          required
+        />
+      </div>
+      <div className="mb-4">
+        <label
+          className="block text-gray-700 text-sm font-bold mb-2"
+          htmlFor="fatherName"
+        >
+          Father&apos;s Name
+        </label>
+        <input
+          type="text"
+          id="fatherName"
+          value={fatherName}
+          onChange={(e) => setFatherName(e.target.value)}
+          className="input input-bordered w-full"
           required
         />
       </div>
