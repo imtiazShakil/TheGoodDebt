@@ -13,3 +13,11 @@ export function addContact(
 
   return window.electronAPI.postRequest("POST contacts", contact);
 }
+
+export function editContact(
+  contact: ContactDetails,
+): Promise<ContactDetails | null> {
+  if (!window.electronAPI) return Promise.resolve(null);
+
+  return window.electronAPI.putRequest("PUT contacts", contact);
+}

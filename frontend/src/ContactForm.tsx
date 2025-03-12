@@ -1,22 +1,38 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ContactDetails } from "./entity.interface";
 
 interface ContactFormProps {
+  contact?: ContactDetails | null;
   onSubmit: (data: ContactDetails) => void;
+  onCancel: () => void;
 }
 
-const ContactForm = ({ onSubmit }: ContactFormProps) => {
-  const [name, setName] = useState("");
-  const [nidInfo, setNidInfo] = useState("");
-  const [address, setAddress] = useState("");
-  const [phone, setPhone] = useState("");
-  const [fatherName, setFatherName] = useState("");
+const ContactForm = ({ contact, onSubmit, onCancel }: ContactFormProps) => {
+  const [id, setId] = useState(contact?.id ?? "");
+  const [name, setName] = useState(contact?.name ?? "");
+  const [nidInfo, setNidInfo] = useState(contact?.nidInfo ?? "");
+  const [address, setAddress] = useState(contact?.address ?? "");
+  const [phone, setPhone] = useState(contact?.phone ?? "");
+  const [fatherName, setFatherName] = useState(contact?.fatherName ?? "");
+
+  useEffect(() => {
+    console.log("contactform useeffect");
+    if (contact) {
+      setId(contact.id);
+      setName(contact.name);
+      setNidInfo(contact.nidInfo);
+      setAddress(contact.address);
+      setPhone(contact.phone);
+      setFatherName(contact.fatherName);
+    } else resetForm();
+  }, [contact]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Handle form submission logic here
     // Handle form submission logic here
     const contact: ContactDetails = {
+      id,
       name,
       nidInfo,
       address,
@@ -29,6 +45,7 @@ const ContactForm = ({ onSubmit }: ContactFormProps) => {
   };
 
   const resetForm = () => {
+    setId("");
     setName("");
     setNidInfo("");
     setAddress("");
@@ -119,8 +136,16 @@ const ContactForm = ({ onSubmit }: ContactFormProps) => {
         />
       </div>
       <div className="flex justify-end">
-        <button type="submit" className="btn btn-primary">
-          Send
+        <button
+          type="button"
+          className="btn btn-neutral btn-outline mr-2"
+          onClick={onCancel}
+        >
+          Cancel
+        </button>
+
+        <button type="submit" className="btn btn-primary btn-outline">
+          {contact ? "Update" : "Add"}
         </button>
       </div>
     </form>

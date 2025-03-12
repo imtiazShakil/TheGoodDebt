@@ -38,6 +38,12 @@ app.whenReady().then(() => {
     return contact;
   });
 
+  ipcMain.handle("PUT contacts", async (event, data) => {
+    const contactRepository = AppDataSource.getRepository(ContactDetails);
+    const contact = await contactRepository.save(data);
+    return contact;
+  });
+
   createWindow();
   // to initialize the initial connection with the database, register all entities
   // and "synchronize" database schema, call "initialize()" method of a newly created database
