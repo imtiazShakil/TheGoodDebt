@@ -11,15 +11,15 @@ function App() {
 
   return (
     <>
-      <div className="flex flex-col h-screen">
+      <div className="flex h-screen flex-col">
         <BrowserRouter>
           <Header></Header>
-          <main className="mx-2 flex flex-1 flex-col min-h-0">
+          <main className="mx-2 flex min-h-0 flex-1 flex-col">
             <Routes>
               <Route path="/" element={<ContactListComponent />} />
               <Route path="/customer" element={<Customer />} />
             </Routes>
-            <div className="mt-auto bg-accent text-accent-content/70 text-center">
+            <div className="bg-accent text-accent-content/70 mt-auto text-center">
               The Good Debt &copy; 2025
             </div>
           </main>
