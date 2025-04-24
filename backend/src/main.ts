@@ -33,6 +33,7 @@ app.whenReady().then(() => {
 
   ipcMain.handle("POST contacts", async (event, data) => {
     const contactRepository = AppDataSource.getRepository(ContactDetails);
+    data.id = undefined; // set the id to undefined to create a new contact
     // save and get the saved data
     const contact = await contactRepository.save(data);
     return contact;

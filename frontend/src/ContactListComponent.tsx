@@ -86,7 +86,7 @@ function ContactListComponent() {
   return (
     <>
       <div className="flex justify-between">
-        <h2 className="text-3xl font-bold mb-3 underline shadow-xl shadow-cyan-500/50 ring-4">
+        <h2 className="shadow-secondary text-3xl font-bold mb-3 underline shadow-xl ring-4">
           Contacts!{" "}
         </h2>
         <button className="btn btn-soft btn-primary" onClick={handleAddContact}>
@@ -94,7 +94,7 @@ function ContactListComponent() {
           <UserPlus size={24} />
         </button>
       </div>
-      <div className="max-h-[calc(60vh)] overflow-y-auto mt-2 ring-1 ">
+      <div className="my-2 overflow-auto ring-1 ">
         <table className="table table-pin-rows">
           <thead>
             <tr>
