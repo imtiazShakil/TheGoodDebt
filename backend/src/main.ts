@@ -2,9 +2,9 @@ import { app, BrowserWindow, ipcMain } from "electron";
 import path from "path";
 
 // initialize the appdatasource
-import { AppDataSource } from "./repository/datasource";
 import { initializeDatabase } from "./repository/seed";
 import { ContactDetails } from "./repository/entity/contact-details";
+import { closeORM, initORM, orm } from "./repository/db";
 
 let mainWindow: BrowserWindow;
 
@@ -25,38 +25,46 @@ async function createWindow() {
   });
 }
 
-app.whenReady().then(() => {
+app.whenReady().then(async () => {
+  await initORM();
+  await initializeDatabase();
+
   ipcMain.handle("GET contacts", async (event) => {
-    const contactRepository = AppDataSource.getRepository(ContactDetails);
-    return await contactRepository.find();
+    const em = orm.em.fork();
+    return await em.findAll(ContactDetails);
   });
 
   ipcMain.handle("POST contacts", async (event, data) => {
-    const contactRepository = AppDataSource.getRepository(ContactDetails);
     data.id = undefined; // set the id to undefined to create a new contact
     // save and get the saved data
-    const contact = await contactRepository.save(data);
+    const em = orm.em.fork();
+    let contact = em.create(ContactDetails, data);
+
+    await em.persistAndFlush(contact);
+
     return contact;
   });
 
   ipcMain.handle("PUT contacts", async (event, data) => {
-    const contactRepository = AppDataSource.getRepository(ContactDetails);
-    const contact = await contactRepository.save(data);
+    const em = orm.em.fork();
+    const contact = await em.findOneOrFail(ContactDetails, { id: data.id });
+
+    if (contact) {
+      contact.name = data.name;
+      contact.fatherName = data.fatherName;
+      contact.nidInfo = data.nidInfo;
+      contact.address = data.address;
+      contact.phone = data.phone;
+    }
+    em.persistAndFlush(contact);
     return contact;
   });
 
   createWindow();
-  // to initialize the initial connection with the database, register all entities
-  // and "synchronize" database schema, call "initialize()" method of a newly created database
-  // once in your application bootstrap
-  AppDataSource.initialize()
-    .then(async () => {
-      initializeDatabase();
-    })
-    .catch((error) => console.log(error));
 });
 
 app.on("window-all-closed", () => {
+  closeORM();
   if (process.platform !== "darwin") {
     app.quit();
   }

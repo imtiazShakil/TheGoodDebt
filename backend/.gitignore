@@ -138,3 +138,6 @@ dist
 
 # project specific
 *.sqlite
+
+# The reflection with ts-morph is performance heavy, so the metadata are cached into temp folder and invalidated automatically when you change your entity definition
+temp/

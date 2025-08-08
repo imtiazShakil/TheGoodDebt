@@ -1,11 +1,11 @@
-import { AppDataSource } from "./datasource";
+import { orm } from "./db";
 import { ContactDetails } from "./entity/contact-details";
 
 export async function initializeDatabase() {
-  const contactRepository = AppDataSource.getRepository(ContactDetails);
+  const em = orm.em.fork();
 
   // if contacts exists, do not seed
-  const contactCount = await contactRepository.count();
+  const contactCount = await em.count(ContactDetails);
   if (contactCount > 0) return;
 
   const lender1 = new ContactDetails();
@@ -22,7 +22,7 @@ export async function initializeDatabase() {
   borrower1.phone = "987654321";
   borrower1.address = "987 Elm St.";
 
-  await contactRepository.save([lender1, borrower1]);
+  await em.persistAndFlush([lender1, borrower1]);
 
   console.log("Contacts have been saved");
 }

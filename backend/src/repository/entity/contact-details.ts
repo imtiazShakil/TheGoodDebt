@@ -1,25 +1,22 @@
-import { Entity, PrimaryGeneratedColumn, Column, Index } from "typeorm";
+import { Entity, PrimaryKey, Property } from "@mikro-orm/core";
 
 @Entity()
 export class ContactDetails {
-  @PrimaryGeneratedColumn()
+  @PrimaryKey()
   id!: number;
 
-  @Column()
-  @Index({ unique: true })
+  @Property({ unique: true })
   name!: string;
 
-  @Column()
+  @Property()
   fatherName!: string;
 
-  @Column()
-  @Index({ unique: true })
+  @Property({ unique: true })
   nidInfo!: string;
 
-  @Column()
-  @Index({ unique: true })
+  @Property({ unique: true })
   phone!: string;
 
-  @Column()
+  @Property()
   address!: string;
 }
