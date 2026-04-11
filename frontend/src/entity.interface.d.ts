@@ -8,3 +8,8 @@ export interface ContactDetails extends BaseEntity {
   phone: string;
   address: string;
 }
+
+export interface Vault extends BaseEntity {
+  name: string;
+  description?: string;
+}

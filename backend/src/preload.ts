@@ -6,5 +6,7 @@ contextBridge.exposeInMainWorld("electronAPI", {
     ipcRenderer.invoke(requestName, data),
   putRequest: (requestName: string, data: any) =>
     ipcRenderer.invoke(requestName, data),
+  deleteRequest: (requestName: string, data: any) =>
+    ipcRenderer.invoke(requestName, data),
   // we can also expose variables, not just functions
 });

@@ -3,6 +3,7 @@ import { NavLink } from "react-router";
 function Header() {
   const links = [
     { name: "Contacts", href: "/" },
+    { name: "Vaults", href: "/vaults" },
     { name: "Customer", href: "/customer" },
   ];
   return (
