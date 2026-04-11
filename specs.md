@@ -6,15 +6,11 @@ Built your Society with Halal Finance. The idea of this application is to provid
 
 #### FinanceCategory
 
-This is the main model of the application. It will be used to categorize the transactions. The categories are Kard E Hasana, Zakat, Sadaka and Waqf
+This is the main model of transaction in the application. It will be used to categorize the transactions. The categories are Kard E Hasana, Zakat, Sadaka and Waqf.
 
-Table: FinanceCategory  
-Columns:
+No Table is needed for this model as the categories are fixed and will not change. We can use an Enum to represent the categories.
 
-- Id
-- Name
-- Description
-
+Enum: finance_category_type
 Values:
 
 - Qard al-Hasan
@@ -24,7 +20,7 @@ Values:
 
 #### Transaction
 
-This model will be used to record the transactions. The transactions can be of five types: Lend, Borrow , Expense, LendRepay and BorrowRepay. The transactions will be categorized based on the FinanceCategory.
+This model will be used to record the transactions. Any cash going in or out of the vault will be recorded as a transaction. The transaction will have a description, amount, type, and category. The transaction type will be used to determine if the transaction is a lending, borrowing, or an expense. The finance_category_type will be used to determine which category the transaction belongs to. We will also record the contact and the contract (if any) associated with the transaction to provide better insights and reporting. The balance represents the final balance which must match with total_balance of the vaults after the transaction is recorded. This will help us to ensure that the transactions are recorded correctly and the balance is updated accordingly.
 
 Table: Transaction
 Columns:
@@ -38,7 +34,7 @@ Columns:
 - expense_type
 - vault_id
 - contact_id
-- finance_category_id
+- finance_category_type
 - borrowing_contract_id
 - lending_contract_id
 - balance
@@ -120,11 +116,12 @@ Columns:
 - amount
 - duration_days
 - return_date
-- finance_category_id
+- finance_category_type
 - reason_for_lending
 - contract_status
 
 Values for contract_status:
+
 - Active
 - Completed
 - Defaulted
@@ -143,7 +140,7 @@ Columns:
 - amount
 - duration_days
 - return_date
-- finance_category_id
+- finance_category_type
 - purpose_of_loan
 - guarantor_id1
 - guarantor_id2
@@ -152,11 +149,13 @@ Columns:
 - adjustment_with_transaction_id
 
 Values for contract_status:
+
 - Active
 - Completed
 - Defaulted
 
 Values for loan_recall_status:
+
 - 1st Reminder
 - 2nd Reminder
 - 3rd Reminder
