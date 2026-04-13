@@ -5,7 +5,6 @@ function Header() {
     { name: "Contacts", href: "/" },
     { name: "Vaults", href: "/vaults" },
     { name: "Lending Contracts", href: "/lending-contracts" },
-    { name: "Customer", href: "/customer" },
   ];
   return (
     <div className="navbar bg-primary text-primary-content shadow-md shadow-accent-content rounded-xl mb-6 mt-2 mx-2 w-auto">

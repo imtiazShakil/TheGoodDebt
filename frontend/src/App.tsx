@@ -1,6 +1,5 @@
 import { BrowserRouter, Route, Routes } from "react-router";
 import ContactListComponent from "./ContactListComponent";
-import Customer from "./Customer";
 import Header from "./Header";
 import LendingContractListComponent from "./LendingContractListComponent";
 import VaultListComponent from "./VaultListComponent";
@@ -19,10 +18,9 @@ function App() {
                 path="/lending-contracts"
                 element={<LendingContractListComponent />}
               />
-              <Route path="/customer" element={<Customer />} />
             </Routes>
             <div className="bg-accent text-accent-content/70 mt-auto text-center">
-              The Good Debt &copy; 2025
+              The Good Debt &copy; 2026
             </div>
           </main>
         </BrowserRouter>
