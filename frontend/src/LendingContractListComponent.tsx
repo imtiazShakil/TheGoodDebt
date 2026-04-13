@@ -23,12 +23,6 @@ function LendingContractListComponent() {
 
   useEffect(() => {
     getLendingContracts()
-      .then((contracts) => {
-        console.log(contracts);
-      })
-      .catch((err) => console.error("Error fetching lending contracts", err));
-
-    getLendingContracts()
       .then(setContracts)
       .catch((err) => console.error("Error fetching lending contracts", err));
   }, []);
