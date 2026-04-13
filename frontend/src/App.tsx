@@ -2,6 +2,7 @@ import { BrowserRouter, Route, Routes } from "react-router";
 import ContactListComponent from "./ContactListComponent";
 import Customer from "./Customer";
 import Header from "./Header";
+import LendingContractListComponent from "./LendingContractListComponent";
 import VaultListComponent from "./VaultListComponent";
 
 function App() {
@@ -14,6 +15,10 @@ function App() {
             <Routes>
               <Route path="/" element={<ContactListComponent />} />
               <Route path="/vaults" element={<VaultListComponent />} />
+              <Route
+                path="/lending-contracts"
+                element={<LendingContractListComponent />}
+              />
               <Route path="/customer" element={<Customer />} />
             </Routes>
             <div className="bg-accent text-accent-content/70 mt-auto text-center">

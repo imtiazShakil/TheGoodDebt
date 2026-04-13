@@ -4,6 +4,7 @@ function Header() {
   const links = [
     { name: "Contacts", href: "/" },
     { name: "Vaults", href: "/vaults" },
+    { name: "Lending Contracts", href: "/lending-contracts" },
     { name: "Customer", href: "/customer" },
   ];
   return (

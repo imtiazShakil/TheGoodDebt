@@ -1,5 +1,6 @@
 import { orm } from "./db";
 import { ContactDetails } from "./entity/contact-details";
+import { Vault } from "./entity/vault";
 
 export async function initializeDatabase() {
   const em = orm.em.fork();
@@ -23,6 +24,12 @@ export async function initializeDatabase() {
   borrower1.address = "987 Elm St.";
 
   await em.persistAndFlush([lender1, borrower1]);
-
   console.log("Contacts have been saved");
+
+  const vault1 = new Vault();
+  vault1.name = "Vault 1";
+  vault1.description = "This is the first vault";
+  
+  await em.persistAndFlush(vault1);
+  console.log("Vaults have been saved");
 }
