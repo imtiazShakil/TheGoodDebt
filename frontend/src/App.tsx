@@ -1,4 +1,5 @@
 import { BrowserRouter, Route, Routes } from "react-router";
+import BorrowingContractListComponent from "./BorrowingContractListComponent";
 import ContactListComponent from "./ContactListComponent";
 import Header from "./Header";
 import LendingContractListComponent from "./LendingContractListComponent";
@@ -17,6 +18,10 @@ function App() {
               <Route
                 path="/lending-contracts"
                 element={<LendingContractListComponent />}
+              />
+              <Route
+                path="/borrowing-contracts"
+                element={<BorrowingContractListComponent />}
               />
             </Routes>
             <div className="bg-accent text-accent-content/70 mt-auto text-center">

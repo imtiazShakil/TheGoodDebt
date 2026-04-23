@@ -28,3 +28,23 @@ export interface LendingContract extends BaseEntity {
 
 export type FinanceCategoryType = LendingContract["financeCategoryType"];
 export type ContractStatus = LendingContract["contractStatus"];
+
+export interface BorrowingContract extends BaseEntity {
+  contact: ContactDetails;
+  amount: number;
+  durationDays: number;
+  returnDate: string;
+  financeCategoryType: "Qard al-Hasan" | "Zakat" | "Sadaqa" | "Waqf";
+  purposeOfLoan?: string;
+  guarantor1?: ContactDetails;
+  guarantor2?: ContactDetails;
+  loanRecallStatus?:
+    | "1st Reminder"
+    | "2nd Reminder"
+    | "3rd Reminder"
+    | "Guarantors reminder";
+  contractStatus: "Active" | "Completed" | "Defaulted";
+  adjustmentWithTransactionId?: number;
+}
+
+export type LoanRecallStatus = BorrowingContract["loanRecallStatus"];

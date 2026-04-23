@@ -1,4 +1,9 @@
-import { ContactDetails, LendingContract, Vault } from "./entity.interface";
+import {
+  BorrowingContract,
+  ContactDetails,
+  LendingContract,
+  Vault,
+} from "./entity.interface";
 
 export function getContacts(): Promise<ContactDetails[]> {
   if (!window.electronAPI) return Promise.resolve([]);
@@ -80,4 +85,34 @@ export function deleteLendingContract(
   if (!window.electronAPI) return Promise.resolve(null);
 
   return window.electronAPI.deleteRequest("DELETE lending-contracts", { id });
+}
+
+export function getBorrowingContracts(): Promise<BorrowingContract[]> {
+  if (!window.electronAPI) return Promise.resolve([]);
+
+  return window.electronAPI.getRequest("GET borrowing-contracts");
+}
+
+export function addBorrowingContract(
+  contract: BorrowingContract,
+): Promise<BorrowingContract | null> {
+  if (!window.electronAPI) return Promise.resolve(null);
+
+  return window.electronAPI.postRequest("POST borrowing-contracts", contract);
+}
+
+export function editBorrowingContract(
+  contract: BorrowingContract,
+): Promise<BorrowingContract | null> {
+  if (!window.electronAPI) return Promise.resolve(null);
+
+  return window.electronAPI.putRequest("PUT borrowing-contracts", contract);
+}
+
+export function deleteBorrowingContract(
+  id: number,
+): Promise<{ id: number } | null> {
+  if (!window.electronAPI) return Promise.resolve(null);
+
+  return window.electronAPI.deleteRequest("DELETE borrowing-contracts", { id });
 }
