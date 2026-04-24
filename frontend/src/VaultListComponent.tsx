@@ -135,9 +135,17 @@ function VaultListComponent() {
                     {vault.name}
                   </button>
                 </td>
-                <td>{vault.description}</td>
+                <td
+                  className="cursor-pointer"
+                  onClick={() => handleShowHistory(vault)}
+                >
+                  {vault.description}
+                </td>
+
                 <td className="text-right">
-                  {(vault.latestBalance?.qardAlHasanBalance ?? 0).toLocaleString()}
+                  {(
+                    vault.latestBalance?.qardAlHasanBalance ?? 0
+                  ).toLocaleString()}
                 </td>
                 <td className="text-right">
                   {(vault.latestBalance?.zakatBalance ?? 0).toLocaleString()}
@@ -148,7 +156,10 @@ function VaultListComponent() {
                 <td className="text-right">
                   {(vault.latestBalance?.waqfBalance ?? 0).toLocaleString()}
                 </td>
-                <td className="text-right font-semibold">
+                <td
+                  onClick={() => handleShowHistory(vault)}
+                  className="cursor-pointer text-right font-semibold"
+                >
                   {(vault.latestBalance?.totalBalance ?? 0).toLocaleString()}
                 </td>
                 <td className="flex gap-1">
