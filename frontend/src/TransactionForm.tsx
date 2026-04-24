@@ -54,6 +54,9 @@ function needsBorrowingContract(t: TransactionType) {
 function isExpense(t: TransactionType) {
   return t === "Expense";
 }
+function isRepay(t: TransactionType) {
+  return t === "LendRepay" || t === "BorrowRepay";
+}
 
 function ExpenseContactSearchField({
   selectedContact,
@@ -157,9 +160,8 @@ const TransactionForm = ({ onSubmit, onCancel }: TransactionFormProps) => {
   const [description, setDescription] = useState("");
   const [financeCategoryType, setFinanceCategoryType] =
     useState<FinanceCategoryType>("Qard al-Hasan");
-  const [expenseType, setExpenseType] = useState<NonNullable<ExpenseType>>(
-    "Bank Charge",
-  );
+  const [expenseType, setExpenseType] =
+    useState<NonNullable<ExpenseType>>("Bank Charge");
 
   const [vaults, setVaults] = useState<Vault[]>([]);
   const [vaultId, setVaultId] = useState<number | "">("");
@@ -190,6 +192,29 @@ const TransactionForm = ({ onSubmit, onCancel }: TransactionFormProps) => {
     setBorrowingContractId("");
     setExpenseContact(null);
   }, [transactionType]);
+
+  useEffect(() => {
+    if (transactionType === "LendRepay" && lendingContractId !== "") {
+      const lc = lendingContracts.find((c) => c.id === lendingContractId);
+      if (lc) setFinanceCategoryType(lc.financeCategoryType);
+    } else if (
+      transactionType === "BorrowRepay" &&
+      borrowingContractId !== ""
+    ) {
+      const bc = borrowingContracts.find((c) => c.id === borrowingContractId);
+      if (bc) setFinanceCategoryType(bc.financeCategoryType);
+    }
+  }, [
+    transactionType,
+    lendingContractId,
+    borrowingContractId,
+    lendingContracts,
+    borrowingContracts,
+  ]);
+
+  const repayContractSelected =
+    (transactionType === "LendRepay" && lendingContractId !== "") ||
+    (transactionType === "BorrowRepay" && borrowingContractId !== "");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -289,21 +314,33 @@ const TransactionForm = ({ onSubmit, onCancel }: TransactionFormProps) => {
           <label className="w-1/3 text-sm font-semibold" htmlFor="financeCat">
             Category *
           </label>
-          <select
-            id="financeCat"
-            value={financeCategoryType}
-            onChange={(e) =>
-              setFinanceCategoryType(e.target.value as FinanceCategoryType)
-            }
-            className="select select-bordered w-full"
-            required
-          >
-            {FINANCE_CATEGORIES.map((c) => (
-              <option key={c} value={c}>
-                {c}
-              </option>
-            ))}
-          </select>
+          {isRepay(transactionType) ? (
+            <input
+              id="financeCat"
+              type="text"
+              value={repayContractSelected ? financeCategoryType : ""}
+              readOnly
+              placeholder="Select a contract first"
+              className="input input-bordered w-full cursor-not-allowed opacity-60"
+              tabIndex={-1}
+            />
+          ) : (
+            <select
+              id="financeCat"
+              value={financeCategoryType}
+              onChange={(e) =>
+                setFinanceCategoryType(e.target.value as FinanceCategoryType)
+              }
+              className="select select-bordered w-full"
+              required
+            >
+              {FINANCE_CATEGORIES.map((c) => (
+                <option key={c} value={c}>
+                  {c}
+                </option>
+              ))}
+            </select>
+          )}
         </div>
 
         <div className="flex items-center">
@@ -344,7 +381,8 @@ const TransactionForm = ({ onSubmit, onCancel }: TransactionFormProps) => {
               <option value="">— Select lending contract —</option>
               {lendingContracts.map((c) => (
                 <option key={c.id} value={c.id}>
-                  #{c.id} — {c.contact.name} ({c.amount.toLocaleString()})
+                  #{c.id} — {c.contact.name} — {c.financeCategoryType} (
+                  {c.amount.toLocaleString()})
                 </option>
               ))}
             </select>
@@ -373,7 +411,8 @@ const TransactionForm = ({ onSubmit, onCancel }: TransactionFormProps) => {
               <option value="">— Select borrowing contract —</option>
               {borrowingContracts.map((c) => (
                 <option key={c.id} value={c.id}>
-                  #{c.id} — {c.contact.name} ({c.amount.toLocaleString()})
+                  #{c.id} — {c.contact.name} — {c.financeCategoryType} (
+                  {c.amount.toLocaleString()})
                 </option>
               ))}
             </select>
