@@ -3,6 +3,7 @@ import BorrowingContractListComponent from "./BorrowingContractListComponent";
 import ContactListComponent from "./ContactListComponent";
 import Header from "./Header";
 import LendingContractListComponent from "./LendingContractListComponent";
+import TransactionListComponent from "./TransactionListComponent";
 import VaultListComponent from "./VaultListComponent";
 
 function App() {
@@ -22,6 +23,10 @@ function App() {
               <Route
                 path="/borrowing-contracts"
                 element={<BorrowingContractListComponent />}
+              />
+              <Route
+                path="/transactions"
+                element={<TransactionListComponent />}
               />
             </Routes>
             <div className="bg-accent text-accent-content/70 mt-auto text-center">

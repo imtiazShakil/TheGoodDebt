@@ -7,6 +7,7 @@ import { registerHandlers as registerContactHandlers } from "./ipc/contacts";
 import { registerHandlers as registerVaultHandlers } from "./ipc/vaults";
 import { registerHandlers as registerLendingHandlers } from "./ipc/lending-contracts";
 import { registerHandlers as registerBorrowingHandlers } from "./ipc/borrowing-contracts";
+import { registerHandlers as registerTransactionHandlers } from "./ipc/transactions";
 
 let mainWindow: BrowserWindow;
 
@@ -34,6 +35,7 @@ app.whenReady().then(async () => {
   registerVaultHandlers(ipcMain);
   registerLendingHandlers(ipcMain);
   registerBorrowingHandlers(ipcMain);
+  registerTransactionHandlers(ipcMain);
 
   createWindow();
 });

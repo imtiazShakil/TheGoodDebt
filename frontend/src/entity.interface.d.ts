@@ -17,6 +17,7 @@ export interface VaultBalanceHistory extends BaseEntity {
   sadaqaBalance: number;
   waqfBalance: number;
   totalBalance: number;
+  transaction?: Transaction;
 }
 
 export interface Vault extends BaseEntity {
@@ -57,3 +58,25 @@ export interface BorrowingContract extends BaseEntity {
 }
 
 export type LoanRecallStatus = BorrowingContract["loanRecallStatus"];
+
+export interface Transaction extends BaseEntity {
+  description: string;
+  amount: number;
+  transactionType: "Lend" | "Borrow" | "Expense" | "LendRepay" | "BorrowRepay";
+  expenseType?:
+    | "Bank Charge"
+    | "Conveyance"
+    | "Phone Expenses"
+    | "Entertainment"
+    | "Miscellaneous"
+    | "Legal Expenses";
+  vault: Vault;
+  contact?: ContactDetails;
+  financeCategoryType: FinanceCategoryType;
+  lendingContract?: LendingContract;
+  borrowingContract?: BorrowingContract;
+  balance: number;
+}
+
+export type TransactionType = Transaction["transactionType"];
+export type ExpenseType = Transaction["expenseType"];

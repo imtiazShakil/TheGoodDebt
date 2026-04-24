@@ -1,5 +1,6 @@
 import { Entity, ManyToOne, PrimaryKey, Property } from "@mikro-orm/core";
 import { Vault } from "./vault";
+import { Transaction } from "./transaction";
 
 @Entity()
 export class VaultBalanceHistory {
@@ -8,6 +9,9 @@ export class VaultBalanceHistory {
 
   @ManyToOne(() => Vault)
   vault!: Vault;
+
+  @ManyToOne(() => Transaction, { nullable: true })
+  transaction?: Transaction;
 
   @Property()
   qardAlHasanBalance: number = 0;

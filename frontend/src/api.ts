@@ -2,6 +2,7 @@ import {
   BorrowingContract,
   ContactDetails,
   LendingContract,
+  Transaction,
   Vault,
   VaultBalanceHistory,
 } from "./entity.interface";
@@ -126,4 +127,35 @@ export function deleteBorrowingContract(
   if (!window.electronAPI) return Promise.resolve(null);
 
   return window.electronAPI.deleteRequest("DELETE borrowing-contracts", { id });
+}
+
+export function getTransactions(): Promise<Transaction[]> {
+  if (!window.electronAPI) return Promise.resolve([]);
+
+  return window.electronAPI.getRequest("GET transactions");
+}
+
+export function addTransaction(
+  transaction: Transaction,
+): Promise<Transaction | null> {
+  if (!window.electronAPI) return Promise.resolve(null);
+
+  return window.electronAPI.postRequest("POST transactions", transaction);
+}
+
+export function editTransactionDescription(
+  id: number,
+  description: string,
+): Promise<Transaction | null> {
+  if (!window.electronAPI) return Promise.resolve(null);
+
+  return window.electronAPI.putRequest("PUT transactions", { id, description });
+}
+
+export function deleteTransaction(
+  id: number,
+): Promise<{ id: number } | null> {
+  if (!window.electronAPI) return Promise.resolve(null);
+
+  return window.electronAPI.deleteRequest("DELETE transactions", { id });
 }
