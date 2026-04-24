@@ -1,6 +1,7 @@
 import { orm } from "./db";
 import { ContactDetails } from "./entity/contact-details";
 import { Vault } from "./entity/vault";
+import { VaultBalanceHistory } from "./entity/vault-balance-history";
 
 export async function initializeDatabase() {
   const em = orm.em.fork();
@@ -29,7 +30,17 @@ export async function initializeDatabase() {
   const vault1 = new Vault();
   vault1.name = "Vault 1";
   vault1.description = "This is the first vault";
-  
+
   await em.persistAndFlush(vault1);
   console.log("Vaults have been saved");
+
+  const vault1BalanceHistory1 = new VaultBalanceHistory();
+  vault1BalanceHistory1.vault = vault1;
+  vault1BalanceHistory1.qardAlHasanBalance = 1000;
+  vault1BalanceHistory1.zakatBalance = 500;
+  vault1BalanceHistory1.sadaqaBalance = 200;
+  vault1BalanceHistory1.waqfBalance = 300;
+  vault1BalanceHistory1.totalBalance = 2000;
+  await em.persistAndFlush(vault1BalanceHistory1);
+  console.log("Vault balance history has been saved");
 }

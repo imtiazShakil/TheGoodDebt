@@ -11,9 +11,18 @@ export interface ContactDetails extends BaseEntity {
   address: string;
 }
 
+export interface VaultBalanceHistory extends BaseEntity {
+  qardAlHasanBalance: number;
+  zakatBalance: number;
+  sadaqaBalance: number;
+  waqfBalance: number;
+  totalBalance: number;
+}
+
 export interface Vault extends BaseEntity {
   name: string;
   description?: string;
+  latestBalance?: VaultBalanceHistory;
 }
 
 export interface LendingContract extends BaseEntity {

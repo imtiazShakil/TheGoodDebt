@@ -1,6 +1,12 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { addVault, deleteVault, editVault, getVaults } from "./api";
-import { Vault } from "./entity.interface";
+import {
+  addVault,
+  deleteVault,
+  editVault,
+  getVaultBalanceHistory,
+  getVaults,
+} from "./api";
+import { Vault, VaultBalanceHistory } from "./entity.interface";
 import VaultForm from "./VaultForm";
 import { PencilSimple, Trash, Vault as VaultIcon } from "@phosphor-icons/react";
 
@@ -8,6 +14,22 @@ function VaultListComponent() {
   const [vaults, setVaults] = useState<Vault[]>([]);
   const [selectedVault, setSelectedVault] = useState<Vault | null>(null);
   const vaultModalRef = useRef<HTMLDialogElement>(null);
+  const [historyVault, setHistoryVault] = useState<Vault | null>(null);
+  const [historyRecords, setHistoryRecords] = useState<VaultBalanceHistory[]>(
+    [],
+  );
+  const historyModalRef = useRef<HTMLDialogElement>(null);
+
+  const handleShowHistory = useCallback((vault: Vault) => {
+    setHistoryVault(vault);
+    setHistoryRecords([]);
+    historyModalRef.current?.showModal();
+    getVaultBalanceHistory(vault.id)
+      .then(setHistoryRecords)
+      .catch((err) =>
+        console.error("Error fetching vault balance history", err),
+      );
+  }, []);
 
   const handleAddVault = useCallback(() => {
     setSelectedVault(() => {
@@ -90,6 +112,11 @@ function VaultListComponent() {
               <th>ID</th>
               <th>Name</th>
               <th>Description</th>
+              <th className="text-right">Qard al-Hasan</th>
+              <th className="text-right">Zakat</th>
+              <th className="text-right">Sadaqa</th>
+              <th className="text-right">Waqf</th>
+              <th className="text-right">Total</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -100,8 +127,30 @@ function VaultListComponent() {
                 className="hover:bg-primary hover:text-primary-content transition-colors"
               >
                 <td>{vault.id}</td>
-                <td>{vault.name}</td>
+                <td>
+                  <button
+                    className="link link-hover font-medium"
+                    onClick={() => handleShowHistory(vault)}
+                  >
+                    {vault.name}
+                  </button>
+                </td>
                 <td>{vault.description}</td>
+                <td className="text-right">
+                  {(vault.latestBalance?.qardAlHasanBalance ?? 0).toLocaleString()}
+                </td>
+                <td className="text-right">
+                  {(vault.latestBalance?.zakatBalance ?? 0).toLocaleString()}
+                </td>
+                <td className="text-right">
+                  {(vault.latestBalance?.sadaqaBalance ?? 0).toLocaleString()}
+                </td>
+                <td className="text-right">
+                  {(vault.latestBalance?.waqfBalance ?? 0).toLocaleString()}
+                </td>
+                <td className="text-right font-semibold">
+                  {(vault.latestBalance?.totalBalance ?? 0).toLocaleString()}
+                </td>
                 <td className="flex gap-1">
                   <button
                     className="btn btn-ghost btn-circle"
@@ -138,6 +187,75 @@ function VaultListComponent() {
             onSubmit={handleFormSubmit}
             onCancel={() => vaultModalRef.current?.close()}
           />
+        </div>
+      </dialog>
+
+      <dialog ref={historyModalRef} className="modal">
+        <div className="modal-box max-w-4xl">
+          <form method="dialog">
+            <button
+              className="btn btn-sm btn-circle btn-ghost absolute top-2 right-2"
+              onClick={() => {
+                setHistoryVault(null);
+                setHistoryRecords([]);
+              }}
+            >
+              ✕
+            </button>
+          </form>
+          <h2 className="mb-4 text-2xl font-bold">
+            Balance History{historyVault ? ` — ${historyVault.name}` : ""}
+          </h2>
+          <div className="overflow-auto ring-1">
+            <table className="table-pin-rows table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Recorded At</th>
+                  <th className="text-right">Qard al-Hasan</th>
+                  <th className="text-right">Zakat</th>
+                  <th className="text-right">Sadaqa</th>
+                  <th className="text-right">Waqf</th>
+                  <th className="text-right">Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                {historyRecords.length === 0 ? (
+                  <tr>
+                    <td colSpan={7} className="py-4 text-center opacity-60">
+                      No balance history yet.
+                    </td>
+                  </tr>
+                ) : (
+                  historyRecords.map((record) => (
+                    <tr key={record.id}>
+                      <td>{record.id}</td>
+                      <td>
+                        {record.createdAt
+                          ? new Date(record.createdAt).toLocaleString()
+                          : "—"}
+                      </td>
+                      <td className="text-right">
+                        {record.qardAlHasanBalance.toLocaleString()}
+                      </td>
+                      <td className="text-right">
+                        {record.zakatBalance.toLocaleString()}
+                      </td>
+                      <td className="text-right">
+                        {record.sadaqaBalance.toLocaleString()}
+                      </td>
+                      <td className="text-right">
+                        {record.waqfBalance.toLocaleString()}
+                      </td>
+                      <td className="text-right font-semibold">
+                        {record.totalBalance.toLocaleString()}
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
       </dialog>
     </>

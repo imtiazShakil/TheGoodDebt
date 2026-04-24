@@ -3,6 +3,7 @@ import {
   ContactDetails,
   LendingContract,
   Vault,
+  VaultBalanceHistory,
 } from "./entity.interface";
 
 export function getContacts(): Promise<ContactDetails[]> {
@@ -49,6 +50,16 @@ export function deleteVault(id: number): Promise<{ id: number } | null> {
   if (!window.electronAPI) return Promise.resolve(null);
 
   return window.electronAPI.deleteRequest("DELETE vaults", { id });
+}
+
+export function getVaultBalanceHistory(
+  vaultId: number,
+): Promise<VaultBalanceHistory[]> {
+  if (!window.electronAPI) return Promise.resolve([]);
+
+  return window.electronAPI.postRequest("GET vault-balance-history", {
+    vaultId,
+  });
 }
 
 export function searchContacts(query: string): Promise<ContactDetails[]> {
