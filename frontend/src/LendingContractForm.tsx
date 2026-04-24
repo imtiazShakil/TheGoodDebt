@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { getVaults, searchContacts } from "./api";
 import {
   ContactDetails,
   ContractStatus,
@@ -6,7 +7,6 @@ import {
   LendingContract,
   Vault,
 } from "./entity.interface";
-import { getVaults, searchContacts } from "./api";
 
 interface LendingContractFormProps {
   contract?: LendingContract | null;
@@ -205,32 +205,30 @@ const LendingContractForm = ({
           </div>
         </div>
 
-        {/* Vault (create only) */}
-        {isCreate && (
-          <div className="flex items-center">
-            <label className="w-1/3 text-sm font-semibold" htmlFor="vault">
-              Vault *
-            </label>
-            <select
-              id="vault"
-              value={vaultId}
-              onChange={(e) =>
-                setVaultId(
-                  e.target.value === "" ? "" : parseInt(e.target.value, 10),
-                )
-              }
-              className="select select-bordered w-full"
-              required
-            >
-              <option value="">— Select vault —</option>
-              {vaults.map((v) => (
-                <option key={v.id} value={v.id}>
-                  #{v.id} — {v.name}
-                </option>
-              ))}
-            </select>
-          </div>
-        )}
+        {/* Finance category */}
+        <div className="flex items-center">
+          <label
+            className="w-1/3 text-sm font-semibold"
+            htmlFor="financeCategory"
+          >
+            Category
+          </label>
+          <select
+            id="financeCategory"
+            value={financeCategoryType}
+            onChange={(e) =>
+              setFinanceCategoryType(e.target.value as FinanceCategoryType)
+            }
+            className="select select-bordered w-full"
+            required
+          >
+            {FINANCE_CATEGORIES.map((cat) => (
+              <option key={cat} value={cat}>
+                {cat}
+              </option>
+            ))}
+          </select>
+        </div>
 
         {/* Amount */}
         <div className="flex items-center">
@@ -280,30 +278,32 @@ const LendingContractForm = ({
           />
         </div>
 
-        {/* Finance category */}
-        <div className="flex items-center">
-          <label
-            className="w-1/3 text-sm font-semibold"
-            htmlFor="financeCategory"
-          >
-            Category
-          </label>
-          <select
-            id="financeCategory"
-            value={financeCategoryType}
-            onChange={(e) =>
-              setFinanceCategoryType(e.target.value as FinanceCategoryType)
-            }
-            className="select select-bordered w-full"
-            required
-          >
-            {FINANCE_CATEGORIES.map((cat) => (
-              <option key={cat} value={cat}>
-                {cat}
-              </option>
-            ))}
-          </select>
-        </div>
+        {/* Vault (create only) */}
+        {isCreate && (
+          <div className="flex items-center">
+            <label className="w-1/3 text-sm font-semibold" htmlFor="vault">
+              Vault *
+            </label>
+            <select
+              id="vault"
+              value={vaultId}
+              onChange={(e) =>
+                setVaultId(
+                  e.target.value === "" ? "" : parseInt(e.target.value, 10),
+                )
+              }
+              className="select select-bordered w-full"
+              required
+            >
+              <option value="">— Select vault —</option>
+              {vaults.map((v) => (
+                <option key={v.id} value={v.id}>
+                  #{v.id} — {v.name}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
 
         {/* Reason */}
         <div className="flex items-start">
