@@ -288,77 +288,6 @@ const TransactionForm = ({ onSubmit, onCancel }: TransactionFormProps) => {
           </select>
         </div>
 
-        <div className="flex items-center">
-          <label className="w-1/3 text-sm font-semibold" htmlFor="vault">
-            Vault *
-          </label>
-          <select
-            id="vault"
-            value={vaultId}
-            onChange={(e) =>
-              setVaultId(e.target.value === "" ? "" : parseInt(e.target.value))
-            }
-            className="select select-bordered w-full"
-            required
-          >
-            <option value="">— Select vault —</option>
-            {vaults.map((v) => (
-              <option key={v.id} value={v.id}>
-                #{v.id} — {v.name}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div className="flex items-center">
-          <label className="w-1/3 text-sm font-semibold" htmlFor="financeCat">
-            Category *
-          </label>
-          {isRepay(transactionType) ? (
-            <input
-              id="financeCat"
-              type="text"
-              value={repayContractSelected ? financeCategoryType : ""}
-              readOnly
-              placeholder="Select a contract first"
-              className="input input-bordered w-full cursor-not-allowed opacity-60"
-              tabIndex={-1}
-            />
-          ) : (
-            <select
-              id="financeCat"
-              value={financeCategoryType}
-              onChange={(e) =>
-                setFinanceCategoryType(e.target.value as FinanceCategoryType)
-              }
-              className="select select-bordered w-full"
-              required
-            >
-              {FINANCE_CATEGORIES.map((c) => (
-                <option key={c} value={c}>
-                  {c}
-                </option>
-              ))}
-            </select>
-          )}
-        </div>
-
-        <div className="flex items-center">
-          <label className="w-1/3 text-sm font-semibold" htmlFor="amount">
-            Amount *
-          </label>
-          <input
-            id="amount"
-            type="number"
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
-            className="input input-bordered w-full"
-            min="0"
-            step="0.01"
-            required
-          />
-        </div>
-
         {needsLendingContract(transactionType) && (
           <div className="flex items-center">
             <label
@@ -418,6 +347,77 @@ const TransactionForm = ({ onSubmit, onCancel }: TransactionFormProps) => {
             </select>
           </div>
         )}
+
+        <div className="flex items-center">
+          <label className="w-1/3 text-sm font-semibold" htmlFor="financeCat">
+            Category *
+          </label>
+          {isRepay(transactionType) ? (
+            <input
+              id="financeCat"
+              type="text"
+              value={repayContractSelected ? financeCategoryType : ""}
+              readOnly
+              placeholder="Select a contract first"
+              className="input input-bordered w-full cursor-not-allowed opacity-60"
+              tabIndex={-1}
+            />
+          ) : (
+            <select
+              id="financeCat"
+              value={financeCategoryType}
+              onChange={(e) =>
+                setFinanceCategoryType(e.target.value as FinanceCategoryType)
+              }
+              className="select select-bordered w-full"
+              required
+            >
+              {FINANCE_CATEGORIES.map((c) => (
+                <option key={c} value={c}>
+                  {c}
+                </option>
+              ))}
+            </select>
+          )}
+        </div>
+
+        <div className="flex items-center">
+          <label className="w-1/3 text-sm font-semibold" htmlFor="vault">
+            Vault *
+          </label>
+          <select
+            id="vault"
+            value={vaultId}
+            onChange={(e) =>
+              setVaultId(e.target.value === "" ? "" : parseInt(e.target.value))
+            }
+            className="select select-bordered w-full"
+            required
+          >
+            <option value="">— Select vault —</option>
+            {vaults.map((v) => (
+              <option key={v.id} value={v.id}>
+                #{v.id} — {v.name}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="flex items-center">
+          <label className="w-1/3 text-sm font-semibold" htmlFor="amount">
+            Amount *
+          </label>
+          <input
+            id="amount"
+            type="number"
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
+            className="input input-bordered w-full"
+            min="0"
+            step="0.01"
+            required
+          />
+        </div>
 
         {isExpense(transactionType) && (
           <>
