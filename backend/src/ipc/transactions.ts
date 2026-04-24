@@ -1,4 +1,5 @@
 import { IpcMain } from "electron";
+import { EntityManager } from "@mikro-orm/core";
 import { orm } from "../repository/db";
 import { ContactDetails } from "../repository/entity/contact-details";
 import { Vault } from "../repository/entity/vault";
@@ -37,6 +38,86 @@ const CATEGORY_FIELD: Record<
   [FinanceCategoryType.Sadaqa]: "sadaqaBalance",
   [FinanceCategoryType.Waqf]: "waqfBalance",
 };
+
+export interface LedgerEntryInput {
+  vaultId: number;
+  amount: number;
+  transactionType: TransactionType;
+  financeCategoryType: FinanceCategoryType;
+  description: string;
+  expenseType?: ExpenseType;
+  contactId?: number;
+  lendingContractId?: number;
+  borrowingContractId?: number;
+}
+
+export async function createLedgerEntry(
+  em: EntityManager,
+  data: LedgerEntryInput,
+): Promise<Transaction> {
+  const lastTransactions = await em.find(
+    Transaction,
+    {},
+    { limit: 1, orderBy: { id: "DESC" } },
+  );
+  const prevSystemBalance = lastTransactions[0]?.balance ?? 0;
+  const delta = INCREASE_TYPES.includes(data.transactionType)
+    ? +data.amount
+    : -data.amount;
+  const newSystemBalance = prevSystemBalance + delta;
+
+  const latestVbh = await em.findOne(
+    VaultBalanceHistory,
+    { vault: data.vaultId },
+    { orderBy: { createdAt: "DESC" } },
+  );
+
+  const buckets = {
+    qardAlHasanBalance: latestVbh?.qardAlHasanBalance ?? 0,
+    zakatBalance: latestVbh?.zakatBalance ?? 0,
+    sadaqaBalance: latestVbh?.sadaqaBalance ?? 0,
+    waqfBalance: latestVbh?.waqfBalance ?? 0,
+  };
+  const field = CATEGORY_FIELD[data.financeCategoryType];
+  buckets[field] = buckets[field] + delta;
+  const totalBalance =
+    buckets.qardAlHasanBalance +
+    buckets.zakatBalance +
+    buckets.sadaqaBalance +
+    buckets.waqfBalance;
+
+  const transaction = em.create(Transaction, {
+    description: data.description,
+    amount: data.amount,
+    transactionType: data.transactionType,
+    expenseType: data.expenseType ?? undefined,
+    vault: em.getReference(Vault, data.vaultId),
+    contact: data.contactId
+      ? em.getReference(ContactDetails, data.contactId)
+      : undefined,
+    financeCategoryType: data.financeCategoryType,
+    lendingContract: data.lendingContractId
+      ? em.getReference(LendingContract, data.lendingContractId)
+      : undefined,
+    borrowingContract: data.borrowingContractId
+      ? em.getReference(BorrowingContract, data.borrowingContractId)
+      : undefined,
+    balance: newSystemBalance,
+  } as unknown as Transaction);
+  em.persist(transaction);
+
+  const vbh = em.create(VaultBalanceHistory, {
+    vault: em.getReference(Vault, data.vaultId),
+    transaction,
+    ...buckets,
+    totalBalance,
+  } as unknown as VaultBalanceHistory);
+  em.persist(vbh);
+
+  await em.flush();
+  await em.populate(transaction, POPULATE as unknown as never);
+  return transaction;
+}
 
 function validatePayload(data: {
   transactionType: TransactionType;
@@ -82,85 +163,32 @@ export function registerHandlers(ipcMain: IpcMain) {
     validatePayload(data);
 
     return await orm.em.fork().transactional(async (em) => {
-      const lastTransactions = await em.find(
-        Transaction,
-        {},
-        { limit: 1, orderBy: { id: "DESC" } },
-      );
-      const last = lastTransactions[0];
-      const prevSystemBalance = last?.balance ?? 0;
-      const delta = INCREASE_TYPES.includes(data.transactionType)
-        ? +data.amount
-        : -data.amount;
-      const newSystemBalance = prevSystemBalance + delta;
-
-      const latestVbh = await em.findOne(
-        VaultBalanceHistory,
-        { vault: data.vault.id },
-        { orderBy: { createdAt: "DESC" } },
-      );
-
-      const buckets = {
-        qardAlHasanBalance: latestVbh?.qardAlHasanBalance ?? 0,
-        zakatBalance: latestVbh?.zakatBalance ?? 0,
-        sadaqaBalance: latestVbh?.sadaqaBalance ?? 0,
-        waqfBalance: latestVbh?.waqfBalance ?? 0,
-      };
-      const field =
-        CATEGORY_FIELD[data.financeCategoryType as FinanceCategoryType];
-      buckets[field] = buckets[field] + delta;
-      const totalBalance =
-        buckets.qardAlHasanBalance +
-        buckets.zakatBalance +
-        buckets.sadaqaBalance +
-        buckets.waqfBalance;
-
-      let contactRef: ContactDetails | undefined;
-      let lendingRef: LendingContract | undefined;
-      let borrowingRef: BorrowingContract | undefined;
-
+      let contactId: number | undefined;
       if (data.lendingContract?.id) {
         const lc = await em.findOneOrFail(LendingContract, {
           id: data.lendingContract.id,
         });
-        lendingRef = em.getReference(LendingContract, lc.id);
-        contactRef = em.getReference(ContactDetails, lc.contact.id);
+        contactId = lc.contact.id;
       } else if (data.borrowingContract?.id) {
         const bc = await em.findOneOrFail(BorrowingContract, {
           id: data.borrowingContract.id,
         });
-        borrowingRef = em.getReference(BorrowingContract, bc.id);
-        contactRef = em.getReference(ContactDetails, bc.contact.id);
+        contactId = bc.contact.id;
       } else if (data.contact?.id) {
-        contactRef = em.getReference(ContactDetails, data.contact.id);
+        contactId = data.contact.id;
       }
 
-      const transaction = em.create(Transaction, {
-        description: data.description,
+      return await createLedgerEntry(em, {
+        vaultId: data.vault.id,
         amount: data.amount,
         transactionType: data.transactionType,
-        expenseType: data.expenseType ?? undefined,
-        vault: em.getReference(Vault, data.vault.id),
-        contact: contactRef,
         financeCategoryType: data.financeCategoryType,
-        lendingContract: lendingRef,
-        borrowingContract: borrowingRef,
-        balance: newSystemBalance,
-      } as unknown as Transaction);
-
-      em.persist(transaction);
-
-      const vbh = em.create(VaultBalanceHistory, {
-        vault: em.getReference(Vault, data.vault.id),
-        transaction,
-        ...buckets,
-        totalBalance,
-      } as unknown as VaultBalanceHistory);
-      em.persist(vbh);
-
-      await em.flush();
-      await em.populate(transaction, POPULATE as unknown as never);
-      return transaction;
+        description: data.description,
+        expenseType: data.expenseType ?? undefined,
+        contactId,
+        lendingContractId: data.lendingContract?.id,
+        borrowingContractId: data.borrowingContract?.id,
+      });
     });
   });
 
@@ -178,7 +206,10 @@ export function registerHandlers(ipcMain: IpcMain) {
       const last = await em.findOne(
         Transaction,
         {},
-        { orderBy: { id: "DESC" } },
+        {
+          orderBy: { id: "DESC" },
+          populate: ["lendingContract", "borrowingContract"],
+        },
       );
       if (!last || last.id !== data.id) {
         throw new Error("Only the most recent transaction can be deleted");
@@ -188,6 +219,8 @@ export function registerHandlers(ipcMain: IpcMain) {
         transaction: data.id,
       });
       if (vbh) em.remove(vbh);
+      if (last.lendingContract) em.remove(last.lendingContract);
+      if (last.borrowingContract) em.remove(last.borrowingContract);
       em.remove(last);
       await em.flush();
       return { id: data.id };

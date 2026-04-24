@@ -4,12 +4,13 @@ import {
   ContractStatus,
   FinanceCategoryType,
   LendingContract,
+  Vault,
 } from "./entity.interface";
-import { searchContacts } from "./api";
+import { getVaults, searchContacts } from "./api";
 
 interface LendingContractFormProps {
   contract?: LendingContract | null;
-  onSubmit: (data: LendingContract) => void;
+  onSubmit: (data: LendingContract, vaultId?: number) => void;
   onCancel: () => void;
 }
 
@@ -52,9 +53,18 @@ const LendingContractForm = ({
   const [reasonForLending, setReasonForLending] = useState("");
   const [contractStatus, setContractStatus] =
     useState<ContractStatus>("Active");
+  const [vaults, setVaults] = useState<Vault[]>([]);
+  const [vaultId, setVaultId] = useState<number | "">("");
 
   const searchTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const isCreate = !contract;
+
+  useEffect(() => {
+    if (isCreate) {
+      getVaults().then(setVaults).catch(console.error);
+    }
+  }, [isCreate]);
 
   useEffect(() => {
     if (contract) {
@@ -113,6 +123,7 @@ const LendingContractForm = ({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedContactId) return;
+    if (isCreate && vaultId === "") return;
 
     const data: LendingContract = {
       id: contract?.id ?? (0 as number),
@@ -124,7 +135,7 @@ const LendingContractForm = ({
       reasonForLending,
       contractStatus,
     };
-    onSubmit(data);
+    onSubmit(data, isCreate ? (vaultId as number) : undefined);
     resetForm();
   };
 
@@ -139,6 +150,7 @@ const LendingContractForm = ({
     setFinanceCategoryType("Qard al-Hasan");
     setReasonForLending("");
     setContractStatus("Active");
+    setVaultId("");
   };
 
   return (
@@ -192,6 +204,33 @@ const LendingContractForm = ({
               )}
           </div>
         </div>
+
+        {/* Vault (create only) */}
+        {isCreate && (
+          <div className="flex items-center">
+            <label className="w-1/3 text-sm font-semibold" htmlFor="vault">
+              Vault *
+            </label>
+            <select
+              id="vault"
+              value={vaultId}
+              onChange={(e) =>
+                setVaultId(
+                  e.target.value === "" ? "" : parseInt(e.target.value, 10),
+                )
+              }
+              className="select select-bordered w-full"
+              required
+            >
+              <option value="">— Select vault —</option>
+              {vaults.map((v) => (
+                <option key={v.id} value={v.id}>
+                  #{v.id} — {v.name}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
 
         {/* Amount */}
         <div className="flex items-center">

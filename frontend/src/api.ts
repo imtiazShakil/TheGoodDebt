@@ -77,10 +77,14 @@ export function getLendingContracts(): Promise<LendingContract[]> {
 
 export function addLendingContract(
   contract: LendingContract,
+  vaultId: number,
 ): Promise<LendingContract | null> {
   if (!window.electronAPI) return Promise.resolve(null);
 
-  return window.electronAPI.postRequest("POST lending-contracts", contract);
+  return window.electronAPI.postRequest("POST lending-contracts", {
+    ...contract,
+    vaultId,
+  });
 }
 
 export function editLendingContract(
@@ -107,10 +111,14 @@ export function getBorrowingContracts(): Promise<BorrowingContract[]> {
 
 export function addBorrowingContract(
   contract: BorrowingContract,
+  vaultId: number,
 ): Promise<BorrowingContract | null> {
   if (!window.electronAPI) return Promise.resolve(null);
 
-  return window.electronAPI.postRequest("POST borrowing-contracts", contract);
+  return window.electronAPI.postRequest("POST borrowing-contracts", {
+    ...contract,
+    vaultId,
+  });
 }
 
 export function editBorrowingContract(

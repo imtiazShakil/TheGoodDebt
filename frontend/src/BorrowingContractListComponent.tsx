@@ -62,12 +62,13 @@ function BorrowingContractListComponent() {
         if (!result) return;
         setContracts((prev) => prev.filter((c) => c.id !== contract.id));
       })
-      .catch((err) =>
-        console.error("Error deleting borrowing contract", err),
-      );
+      .catch((err) => {
+        console.error("Error deleting borrowing contract", err);
+        alert(`Failed to delete: ${err?.message ?? err}`);
+      });
   }, []);
 
-  const handleFormSubmit = (data: BorrowingContract) => {
+  const handleFormSubmit = (data: BorrowingContract, vaultId?: number) => {
     if (data.id) {
       editBorrowingContract(data)
         .then((contract) => {
@@ -81,14 +82,16 @@ function BorrowingContractListComponent() {
         )
         .finally(() => modalRef.current?.close());
     } else {
-      addBorrowingContract(data)
+      if (vaultId === undefined) return;
+      addBorrowingContract(data, vaultId)
         .then((contract) => {
           if (!contract) return;
           setContracts((prev) => [...prev, contract]);
         })
-        .catch((err) =>
-          console.error("Error adding borrowing contract", err),
-        )
+        .catch((err) => {
+          console.error("Error adding borrowing contract", err);
+          alert(`Failed to add: ${err?.message ?? err}`);
+        })
         .finally(() => modalRef.current?.close());
     }
   };

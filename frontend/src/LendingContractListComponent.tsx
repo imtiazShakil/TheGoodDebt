@@ -46,10 +46,13 @@ function LendingContractListComponent() {
         if (!result) return;
         setContracts((prev) => prev.filter((c) => c.id !== contract.id));
       })
-      .catch((err) => console.error("Error deleting lending contract", err));
+      .catch((err) => {
+        console.error("Error deleting lending contract", err);
+        alert(`Failed to delete: ${err?.message ?? err}`);
+      });
   }, []);
 
-  const handleFormSubmit = (data: LendingContract) => {
+  const handleFormSubmit = (data: LendingContract, vaultId?: number) => {
     if (data.id) {
       editLendingContract(data)
         .then((contract) => {
@@ -61,12 +64,16 @@ function LendingContractListComponent() {
         .catch((err) => console.error("Error editing lending contract", err))
         .finally(() => modalRef.current?.close());
     } else {
-      addLendingContract(data)
+      if (vaultId === undefined) return;
+      addLendingContract(data, vaultId)
         .then((contract) => {
           if (!contract) return;
           setContracts((prev) => [...prev, contract]);
         })
-        .catch((err) => console.error("Error adding lending contract", err))
+        .catch((err) => {
+          console.error("Error adding lending contract", err);
+          alert(`Failed to add: ${err?.message ?? err}`);
+        })
         .finally(() => modalRef.current?.close());
     }
   };
