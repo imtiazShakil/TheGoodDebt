@@ -130,14 +130,18 @@ function validatePayload(data: {
   const hasBorrowing = !!data.borrowingContract?.id;
   const hasExpenseType = !!data.expenseType;
 
-  if (type === TransactionType.Lend || type === TransactionType.LendRepay) {
+  if (
+    type === TransactionType.Lend ||
+    type === TransactionType.Borrow
+  ) {
+    throw new Error(
+      `${type} transactions are created automatically via contracts`,
+    );
+  } else if (type === TransactionType.LendRepay) {
     if (!hasLending) throw new Error(`${type} requires a lendingContract`);
     if (hasBorrowing || hasExpenseType)
       throw new Error(`${type} cannot have borrowingContract or expenseType`);
-  } else if (
-    type === TransactionType.Borrow ||
-    type === TransactionType.BorrowRepay
-  ) {
+  } else if (type === TransactionType.BorrowRepay) {
     if (!hasBorrowing) throw new Error(`${type} requires a borrowingContract`);
     if (hasLending || hasExpenseType)
       throw new Error(`${type} cannot have lendingContract or expenseType`);

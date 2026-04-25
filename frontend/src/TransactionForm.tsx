@@ -22,8 +22,6 @@ interface TransactionFormProps {
 }
 
 const TRANSACTION_TYPES: TransactionType[] = [
-  "Lend",
-  "Borrow",
   "LendRepay",
   "BorrowRepay",
   "Expense",
@@ -46,10 +44,10 @@ const FINANCE_CATEGORIES: FinanceCategoryType[] = [
 ];
 
 function needsLendingContract(t: TransactionType) {
-  return t === "Lend" || t === "LendRepay";
+  return t === "LendRepay";
 }
 function needsBorrowingContract(t: TransactionType) {
-  return t === "Borrow" || t === "BorrowRepay";
+  return t === "BorrowRepay";
 }
 function isExpense(t: TransactionType) {
   return t === "Expense";
@@ -155,7 +153,7 @@ function ExpenseContactSearchField({
 
 const TransactionForm = ({ onSubmit, onCancel }: TransactionFormProps) => {
   const [transactionType, setTransactionType] =
-    useState<TransactionType>("Lend");
+    useState<TransactionType>("LendRepay");
   const [amount, setAmount] = useState("");
   const [description, setDescription] = useState("");
   const [financeCategoryType, setFinanceCategoryType] =
@@ -253,7 +251,7 @@ const TransactionForm = ({ onSubmit, onCancel }: TransactionFormProps) => {
   };
 
   const resetForm = () => {
-    setTransactionType("Lend");
+    setTransactionType("LendRepay");
     setAmount("");
     setDescription("");
     setFinanceCategoryType("Qard al-Hasan");
