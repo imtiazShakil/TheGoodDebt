@@ -160,3 +160,43 @@ Values for loan_recall_status:
 - 2nd Reminder
 - 3rd Reminder
 - Guarators reminder
+
+---
+
+## Business Rules & Architecture
+
+### Auto-transaction on contract creation
+
+When a `LendingContract` or `BorrowingContract` is saved for the first time, the backend atomically creates the corresponding `Lend` / `Borrow` transaction in the same database transaction. This means:
+
+- The frontend contract forms show a **Vault** selector on create (required); vault is not stored on the contract — it is used only to target the ledger entry
+- Transaction `description` = contract's `reasonForLending` / `purposeOfLoan` (empty string fallback)
+- Transaction `financeCategoryType` = contract's `financeCategoryType`
+- The auto-transaction links back to its parent contract via `lendingContractId` / `borrowingContractId`
+
+### System-only transaction types
+
+`Lend` and `Borrow` are **not available** in the manual Transaction form. They are created exclusively by the contract IPC handlers. The `POST transactions` backend handler rejects them explicitly:
+
+> "`Lend` transactions are created automatically via contracts"
+
+### Append-only ledger
+
+The ledger is effectively append-only. The only mutation allowed on a Transaction is editing its `description`. Deletion is restricted:
+
+- Only the **most recent** transaction (highest `id`) can be deleted
+- Deleting a transaction also deletes its linked `VaultBalanceHistory` snapshot
+- If the transaction is linked to a contract (lending or borrowing), **that contract is also deleted** in the same operation
+- This symmetric cascade applies from both surfaces: deleting from the Transactions page removes the contract; deleting a contract (if its auto-transaction is the latest) removes the transaction
+
+A contract whose auto-transaction is not the latest cannot be deleted at all — the user must delete newer transactions first.
+
+### Finance category for repay transactions
+
+When `transactionType` is `LendRepay` or `BorrowRepay`, the `financeCategoryType` is **derived from the selected contract** and is read-only. The user cannot override it. This enforces that a repayment always belongs to the same category as its originating contract.
+
+The category field in the Transaction form renders as a disabled text input (showing the contract's category) when a repay type is selected, and as a normal `<select>` for `Expense` transactions.
+
+### VaultBalanceHistory
+
+Every transaction produces exactly one `VaultBalanceHistory` row for the transaction's target vault. The row stores the running per-category balances (`qardAlHasanBalance`, `zakatBalance`, `sadaqaBalance`, `waqfBalance`) and their sum (`totalBalance`) at that point in time. This enables historical balance snapshots without recalculating from scratch.
