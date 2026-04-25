@@ -2,6 +2,7 @@ import { IpcMain } from "electron";
 import { orm } from "../repository/db";
 import { ContactDetails } from "../repository/entity/contact-details";
 import { BorrowingContract } from "../repository/entity/borrowing-contract";
+import { ContractStatus } from "../repository/entity/lending-contract";
 import {
   Transaction,
   TransactionType,
@@ -32,6 +33,7 @@ export function registerHandlers(ipcMain: IpcMain) {
         guarantor2: data.guarantor2?.id
           ? em.getReference(ContactDetails, data.guarantor2.id)
           : null,
+        contractStatus: ContractStatus.Active,
       });
       em.persist(contract);
       await em.flush();
@@ -54,22 +56,9 @@ export function registerHandlers(ipcMain: IpcMain) {
   ipcMain.handle("PUT borrowing-contracts", async (_event, data) => {
     const em = orm.em.fork();
     const contract = await em.findOneOrFail(BorrowingContract, { id: data.id });
-    contract.contact = em.getReference(ContactDetails, data.contact.id);
-    contract.amount = data.amount;
     contract.durationDays = data.durationDays;
     contract.returnDate = data.returnDate;
-    contract.financeCategoryType = data.financeCategoryType;
     contract.purposeOfLoan = data.purposeOfLoan;
-    contract.guarantor1 = data.guarantor1?.id
-      ? em.getReference(ContactDetails, data.guarantor1.id)
-      : undefined;
-    contract.guarantor2 = data.guarantor2?.id
-      ? em.getReference(ContactDetails, data.guarantor2.id)
-      : undefined;
-    contract.loanRecallStatus = data.loanRecallStatus || undefined;
-    contract.contractStatus = data.contractStatus;
-    contract.adjustmentWithTransactionId =
-      data.adjustmentWithTransactionId || undefined;
     await em.persistAndFlush(contract);
     await em.populate(contract, ["contact", "guarantor1", "guarantor2"]);
     return contract;

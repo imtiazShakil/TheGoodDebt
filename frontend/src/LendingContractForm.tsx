@@ -21,12 +21,6 @@ const FINANCE_CATEGORIES: FinanceCategoryType[] = [
   "Waqf",
 ];
 
-const CONTRACT_STATUSES: ContractStatus[] = [
-  "Active",
-  "Completed",
-  "Defaulted",
-];
-
 function calcReturnDate(days: number): string {
   if (!days || days <= 0) return "";
   const d = new Date();
@@ -156,96 +150,86 @@ const LendingContractForm = ({
   return (
     <form onSubmit={handleSubmit}>
       <div className="space-y-4">
-        {/* Contact search */}
-        <div className="flex items-start">
-          <label className="w-1/3 pt-2 text-sm font-semibold" htmlFor="contact">
-            Contact
-          </label>
-          <div className="relative w-full" ref={dropdownRef}>
-            <input
-              type="text"
-              id="contact"
-              value={contactQuery}
-              onChange={handleContactQueryChange}
-              onFocus={() => contactResults.length > 0 && setShowDropdown(true)}
-              onBlur={handleContactBlur}
-              className="input input-bordered w-full"
-              placeholder="Search by name…"
-              autoComplete="off"
-              required
-            />
-            {!selectedContactId && contactQuery.length > 0 && (
-              <span className="text-error mt-1 block text-xs">
-                Please select a contact from the list
-              </span>
-            )}
-            {showDropdown && contactResults.length > 0 && (
-              <ul className="border-base-300 bg-base-100 absolute z-10 mt-1 max-h-48 w-full overflow-auto rounded-md border shadow-lg">
-                {contactResults.map((c) => (
-                  <li
-                    key={c.id}
-                    className="hover:bg-primary hover:text-primary-content cursor-pointer px-4 py-2 text-sm"
-                    onMouseDown={() => handleSelectContact(c)}
-                  >
-                    <span className="font-medium">{c.name}</span>
-                    <span className="text-xs opacity-60"> — {c.phone}</span>
-                  </li>
+        {isCreate && (
+          <>
+            <div className="flex items-start">
+              <label className="w-1/3 pt-2 text-sm font-semibold" htmlFor="contact">
+                Contact *
+              </label>
+              <div className="relative w-full" ref={dropdownRef}>
+                <input
+                  type="text"
+                  id="contact"
+                  value={contactQuery}
+                  onChange={handleContactQueryChange}
+                  onFocus={() => contactResults.length > 0 && setShowDropdown(true)}
+                  onBlur={handleContactBlur}
+                  className="input input-bordered w-full"
+                  placeholder="Search by name…"
+                  autoComplete="off"
+                  required
+                />
+                {!selectedContactId && contactQuery.length > 0 && (
+                  <span className="text-error mt-1 block text-xs">
+                    Please select a contact from the list
+                  </span>
+                )}
+                {showDropdown && contactResults.length > 0 && (
+                  <ul className="border-base-300 bg-base-100 absolute z-10 mt-1 max-h-48 w-full overflow-auto rounded-md border shadow-lg">
+                    {contactResults.map((c) => (
+                      <li
+                        key={c.id}
+                        className="hover:bg-primary hover:text-primary-content cursor-pointer px-4 py-2 text-sm"
+                        onMouseDown={() => handleSelectContact(c)}
+                      >
+                        <span className="font-medium">{c.name}</span>
+                        <span className="text-xs opacity-60"> — {c.phone}</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+                {showDropdown && contactResults.length === 0 && contactQuery.length > 0 && (
+                  <ul className="border-base-300 bg-base-100 absolute z-10 mt-1 w-full rounded-md border shadow-lg">
+                    <li className="px-4 py-2 text-sm opacity-60">No contacts found</li>
+                  </ul>
+                )}
+              </div>
+            </div>
+
+            <div className="flex items-center">
+              <label className="w-1/3 text-sm font-semibold" htmlFor="financeCategory">
+                Category *
+              </label>
+              <select
+                id="financeCategory"
+                value={financeCategoryType}
+                onChange={(e) => setFinanceCategoryType(e.target.value as FinanceCategoryType)}
+                className="select select-bordered w-full"
+                required
+              >
+                {FINANCE_CATEGORIES.map((cat) => (
+                  <option key={cat} value={cat}>{cat}</option>
                 ))}
-              </ul>
-            )}
-            {showDropdown &&
-              contactResults.length === 0 &&
-              contactQuery.length > 0 && (
-                <ul className="border-base-300 bg-base-100 absolute z-10 mt-1 w-full rounded-md border shadow-lg">
-                  <li className="px-4 py-2 text-sm opacity-60">
-                    No contacts found
-                  </li>
-                </ul>
-              )}
-          </div>
-        </div>
+              </select>
+            </div>
 
-        {/* Finance category */}
-        <div className="flex items-center">
-          <label
-            className="w-1/3 text-sm font-semibold"
-            htmlFor="financeCategory"
-          >
-            Category
-          </label>
-          <select
-            id="financeCategory"
-            value={financeCategoryType}
-            onChange={(e) =>
-              setFinanceCategoryType(e.target.value as FinanceCategoryType)
-            }
-            className="select select-bordered w-full"
-            required
-          >
-            {FINANCE_CATEGORIES.map((cat) => (
-              <option key={cat} value={cat}>
-                {cat}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {/* Amount */}
-        <div className="flex items-center">
-          <label className="w-1/3 text-sm font-semibold" htmlFor="amount">
-            Amount
-          </label>
-          <input
-            type="number"
-            id="amount"
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
-            className="input input-bordered w-full"
-            min="0"
-            step="0.01"
-            required
-          />
-        </div>
+            <div className="flex items-center">
+              <label className="w-1/3 text-sm font-semibold" htmlFor="amount">
+                Amount *
+              </label>
+              <input
+                type="number"
+                id="amount"
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+                className="input input-bordered w-full"
+                min="0"
+                step="0.01"
+                required
+              />
+            </div>
+          </>
+        )}
 
         {/* Duration days */}
         <div className="flex items-center">
@@ -317,31 +301,6 @@ const LendingContractForm = ({
             className="textarea textarea-bordered w-full"
             rows={3}
           />
-        </div>
-
-        {/* Contract status */}
-        <div className="flex items-center">
-          <label
-            className="w-1/3 text-sm font-semibold"
-            htmlFor="contractStatus"
-          >
-            Status
-          </label>
-          <select
-            id="contractStatus"
-            value={contractStatus}
-            onChange={(e) =>
-              setContractStatus(e.target.value as ContractStatus)
-            }
-            className="select select-bordered w-full"
-            required
-          >
-            {CONTRACT_STATUSES.map((s) => (
-              <option key={s} value={s}>
-                {s}
-              </option>
-            ))}
-          </select>
         </div>
 
         <div className="flex justify-end gap-2">

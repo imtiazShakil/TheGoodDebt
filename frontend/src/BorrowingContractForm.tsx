@@ -22,12 +22,6 @@ const FINANCE_CATEGORIES: FinanceCategoryType[] = [
   "Waqf",
 ];
 
-const CONTRACT_STATUSES: ContractStatus[] = [
-  "Active",
-  "Completed",
-  "Defaulted",
-];
-
 const LOAN_RECALL_STATUSES: NonNullable<LoanRecallStatus>[] = [
   "1st Reminder",
   "2nd Reminder",
@@ -272,53 +266,57 @@ const BorrowingContractForm = ({
   return (
     <form onSubmit={handleSubmit}>
       <div className="space-y-4">
-        <ContactSearchField
-          id="contact"
-          label="Contact *"
-          required
-          selectedContact={selectedContact}
-          onSelect={setSelectedContact}
-        />
+        {isCreate && (
+          <>
+            <ContactSearchField
+              id="contact"
+              label="Contact *"
+              required
+              selectedContact={selectedContact}
+              onSelect={setSelectedContact}
+            />
 
-        <div className="flex items-center">
-          <label
-            className="w-1/3 text-sm font-semibold"
-            htmlFor="financeCategory"
-          >
-            Category *
-          </label>
-          <select
-            id="financeCategory"
-            value={financeCategoryType}
-            onChange={(e) =>
-              setFinanceCategoryType(e.target.value as FinanceCategoryType)
-            }
-            className="select select-bordered w-full"
-            required
-          >
-            {FINANCE_CATEGORIES.map((cat) => (
-              <option key={cat} value={cat}>
-                {cat}
-              </option>
-            ))}
-          </select>
-        </div>
+            <div className="flex items-center">
+              <label
+                className="w-1/3 text-sm font-semibold"
+                htmlFor="financeCategory"
+              >
+                Category *
+              </label>
+              <select
+                id="financeCategory"
+                value={financeCategoryType}
+                onChange={(e) =>
+                  setFinanceCategoryType(e.target.value as FinanceCategoryType)
+                }
+                className="select select-bordered w-full"
+                required
+              >
+                {FINANCE_CATEGORIES.map((cat) => (
+                  <option key={cat} value={cat}>
+                    {cat}
+                  </option>
+                ))}
+              </select>
+            </div>
 
-        <div className="flex items-center">
-          <label className="w-1/3 text-sm font-semibold" htmlFor="amount">
-            Amount *
-          </label>
-          <input
-            type="number"
-            id="amount"
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
-            className="input input-bordered w-full"
-            min="0"
-            step="0.01"
-            required
-          />
-        </div>
+            <div className="flex items-center">
+              <label className="w-1/3 text-sm font-semibold" htmlFor="amount">
+                Amount *
+              </label>
+              <input
+                type="number"
+                id="amount"
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+                className="input input-bordered w-full"
+                min="0"
+                step="0.01"
+                required
+              />
+            </div>
+          </>
+        )}
 
         <div className="flex items-center">
           <label className="w-1/3 text-sm font-semibold" htmlFor="durationDays">
@@ -391,87 +389,67 @@ const BorrowingContractForm = ({
           />
         </div>
 
-        <ContactSearchField
-          id="guarantor1"
-          label="Guarantor 1"
-          selectedContact={selectedGuarantor1}
-          onSelect={setSelectedGuarantor1}
-        />
+        {isCreate && (
+          <>
+            <ContactSearchField
+              id="guarantor1"
+              label="Guarantor 1"
+              selectedContact={selectedGuarantor1}
+              onSelect={setSelectedGuarantor1}
+            />
 
-        <ContactSearchField
-          id="guarantor2"
-          label="Guarantor 2"
-          selectedContact={selectedGuarantor2}
-          onSelect={setSelectedGuarantor2}
-        />
+            <ContactSearchField
+              id="guarantor2"
+              label="Guarantor 2"
+              selectedContact={selectedGuarantor2}
+              onSelect={setSelectedGuarantor2}
+            />
 
-        <div className="flex items-center">
-          <label
-            className="w-1/3 text-sm font-semibold"
-            htmlFor="loanRecallStatus"
-          >
-            Recall Status
-          </label>
-          <select
-            id="loanRecallStatus"
-            value={loanRecallStatus}
-            onChange={(e) =>
-              setLoanRecallStatus(
-                e.target.value as NonNullable<LoanRecallStatus> | "",
-              )
-            }
-            className="select select-bordered w-full"
-          >
-            <option value="">— None —</option>
-            {LOAN_RECALL_STATUSES.map((s) => (
-              <option key={s} value={s}>
-                {s}
-              </option>
-            ))}
-          </select>
-        </div>
+            <div className="flex items-center">
+              <label
+                className="w-1/3 text-sm font-semibold"
+                htmlFor="loanRecallStatus"
+              >
+                Recall Status
+              </label>
+              <select
+                id="loanRecallStatus"
+                value={loanRecallStatus}
+                onChange={(e) =>
+                  setLoanRecallStatus(
+                    e.target.value as NonNullable<LoanRecallStatus> | "",
+                  )
+                }
+                className="select select-bordered w-full"
+              >
+                <option value="">— None —</option>
+                {LOAN_RECALL_STATUSES.map((s) => (
+                  <option key={s} value={s}>
+                    {s}
+                  </option>
+                ))}
+              </select>
+            </div>
 
-        <div className="flex items-center">
-          <label
-            className="w-1/3 text-sm font-semibold"
-            htmlFor="contractStatus"
-          >
-            Status *
-          </label>
-          <select
-            id="contractStatus"
-            value={contractStatus}
-            onChange={(e) =>
-              setContractStatus(e.target.value as ContractStatus)
-            }
-            className="select select-bordered w-full"
-            required
-          >
-            {CONTRACT_STATUSES.map((s) => (
-              <option key={s} value={s}>
-                {s}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div className="flex items-center">
-          <label
-            className="w-1/3 text-sm font-semibold"
-            htmlFor="adjustmentTxId"
-          >
-            Adj. Transaction ID
-          </label>
-          <input
-            type="number"
-            id="adjustmentTxId"
-            value={adjustmentWithTransactionId}
-            onChange={(e) => setAdjustmentWithTransactionId(e.target.value)}
-            className="input input-bordered w-full"
-            min="1"
-            placeholder="Optional"
-          />
-        </div>
+            <div className="flex items-center">
+              <label
+                className="w-1/3 text-sm font-semibold"
+                htmlFor="adjustmentTxId"
+              >
+                Adj. Transaction ID
+              </label>
+              <input
+                type="number"
+                id="adjustmentTxId"
+                value={adjustmentWithTransactionId}
+                onChange={(e) => setAdjustmentWithTransactionId(e.target.value)}
+                className="input input-bordered w-full"
+                min="1"
+                placeholder="Optional"
+              />
+            </div>
+          </>
+        )}
 
         <div className="flex justify-end gap-2">
           <button

@@ -1,7 +1,10 @@
 import { IpcMain } from "electron";
 import { orm } from "../repository/db";
 import { ContactDetails } from "../repository/entity/contact-details";
-import { LendingContract } from "../repository/entity/lending-contract";
+import {
+  ContractStatus,
+  LendingContract,
+} from "../repository/entity/lending-contract";
 import {
   Transaction,
   TransactionType,
@@ -24,6 +27,7 @@ export function registerHandlers(ipcMain: IpcMain) {
       const contract = em.create(LendingContract, {
         ...rest,
         contact: em.getReference(ContactDetails, data.contact.id),
+        contractStatus: ContractStatus.Active,
       });
       em.persist(contract);
       await em.flush();
@@ -46,13 +50,9 @@ export function registerHandlers(ipcMain: IpcMain) {
   ipcMain.handle("PUT lending-contracts", async (_event, data) => {
     const em = orm.em.fork();
     const contract = await em.findOneOrFail(LendingContract, { id: data.id });
-    contract.contact = em.getReference(ContactDetails, data.contact.id);
-    contract.amount = data.amount;
     contract.durationDays = data.durationDays;
     contract.returnDate = data.returnDate;
-    contract.financeCategoryType = data.financeCategoryType;
     contract.reasonForLending = data.reasonForLending;
-    contract.contractStatus = data.contractStatus;
     await em.persistAndFlush(contract);
     await em.populate(contract, ["contact"]);
     return contract;
