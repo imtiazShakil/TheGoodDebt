@@ -203,7 +203,7 @@ const BorrowingContractForm = ({
       setSelectedGuarantor2(contract.guarantor2 ?? null);
       setAmount(String(contract.amount));
       setDurationDays(String(contract.durationDays));
-      setReturnDate(contract.returnDate.split("T")[0]);
+      setReturnDate(contract.returnDate);
       setFinanceCategoryType(contract.financeCategoryType);
       setPurposeOfLoan(contract.purposeOfLoan ?? "");
       setLoanRecallStatus(contract.loanRecallStatus ?? "");
