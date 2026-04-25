@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { getVaults, searchContacts } from "./api";
 import {
   BorrowingContract,
@@ -51,6 +52,7 @@ function ContactSearchField({
   selectedContact,
   onSelect,
 }: ContactSearchFieldProps) {
+  const { t } = useTranslation();
   const [query, setQuery] = useState(selectedContact?.name ?? "");
   const [results, setResults] = useState<ContactDetails[]>([]);
   const [showDropdown, setShowDropdown] = useState(false);
@@ -116,7 +118,7 @@ function ContactSearchField({
             onFocus={() => results.length > 0 && setShowDropdown(true)}
             onBlur={handleBlur}
             className="input input-bordered w-full"
-            placeholder="Search by name…"
+            placeholder={t("common.searchByName")}
             autoComplete="off"
             required={required}
           />
@@ -127,13 +129,13 @@ function ContactSearchField({
               onClick={handleClear}
               tabIndex={-1}
             >
-              ✕
+              {t("common.close")}
             </button>
           )}
         </div>
         {required && !selectedContact && query.length > 0 && (
           <span className="text-error mt-1 block text-xs">
-            Please select a contact from the list
+            {t("common.selectContact")}
           </span>
         )}
         {showDropdown && results.length > 0 && (
@@ -152,7 +154,9 @@ function ContactSearchField({
         )}
         {showDropdown && results.length === 0 && query.length > 0 && (
           <ul className="border-base-300 bg-base-100 absolute z-10 mt-1 w-full rounded-md border shadow-lg">
-            <li className="px-4 py-2 text-sm opacity-60">No contacts found</li>
+            <li className="px-4 py-2 text-sm opacity-60">
+              {t("common.noContactsFound")}
+            </li>
           </ul>
         )}
       </div>
@@ -165,6 +169,7 @@ const BorrowingContractForm = ({
   onSubmit,
   onCancel,
 }: BorrowingContractFormProps) => {
+  const { t } = useTranslation();
   const [selectedContact, setSelectedContact] = useState<ContactDetails | null>(
     null,
   );
@@ -270,7 +275,7 @@ const BorrowingContractForm = ({
           <>
             <ContactSearchField
               id="contact"
-              label="Contact *"
+              label={`${t("common.contact")} *`}
               required
               selectedContact={selectedContact}
               onSelect={setSelectedContact}
@@ -281,7 +286,7 @@ const BorrowingContractForm = ({
                 className="w-1/3 text-sm font-semibold"
                 htmlFor="financeCategory"
               >
-                Category *
+                {t("common.category")} *
               </label>
               <select
                 id="financeCategory"
@@ -294,7 +299,7 @@ const BorrowingContractForm = ({
               >
                 {FINANCE_CATEGORIES.map((cat) => (
                   <option key={cat} value={cat}>
-                    {cat}
+                    {t(`financeCategory.${cat}`)}
                   </option>
                 ))}
               </select>
@@ -302,7 +307,7 @@ const BorrowingContractForm = ({
 
             <div className="flex items-center">
               <label className="w-1/3 text-sm font-semibold" htmlFor="amount">
-                Amount *
+                {t("common.amount")} *
               </label>
               <input
                 type="number"
@@ -320,7 +325,7 @@ const BorrowingContractForm = ({
 
         <div className="flex items-center">
           <label className="w-1/3 text-sm font-semibold" htmlFor="durationDays">
-            Duration (days) *
+            {t("common.durationDays")} *
           </label>
           <input
             type="number"
@@ -335,7 +340,7 @@ const BorrowingContractForm = ({
 
         <div className="flex items-center">
           <label className="w-1/3 text-sm font-semibold" htmlFor="returnDate">
-            Return Date
+            {t("common.returnDate")}
           </label>
           <input
             type="date"
@@ -350,7 +355,7 @@ const BorrowingContractForm = ({
         {isCreate && (
           <div className="flex items-center">
             <label className="w-1/3 text-sm font-semibold" htmlFor="vault">
-              Vault *
+              {t("common.vault")} *
             </label>
             <select
               id="vault"
@@ -363,7 +368,7 @@ const BorrowingContractForm = ({
               className="select select-bordered w-full"
               required
             >
-              <option value="">— Select vault —</option>
+              <option value="">{t("common.selectVault")}</option>
               {vaults.map((v) => (
                 <option key={v.id} value={v.id}>
                   #{v.id} — {v.name}
@@ -378,7 +383,7 @@ const BorrowingContractForm = ({
             className="w-1/3 pt-2 text-sm font-semibold"
             htmlFor="purposeOfLoan"
           >
-            Purpose of Loan
+            {t("borrowingContracts.purposeOfLoan")}
           </label>
           <textarea
             id="purposeOfLoan"
@@ -393,14 +398,14 @@ const BorrowingContractForm = ({
           <>
             <ContactSearchField
               id="guarantor1"
-              label="Guarantor 1"
+              label={t("borrowingContracts.guarantor1")}
               selectedContact={selectedGuarantor1}
               onSelect={setSelectedGuarantor1}
             />
 
             <ContactSearchField
               id="guarantor2"
-              label="Guarantor 2"
+              label={t("borrowingContracts.guarantor2")}
               selectedContact={selectedGuarantor2}
               onSelect={setSelectedGuarantor2}
             />
@@ -410,7 +415,7 @@ const BorrowingContractForm = ({
                 className="w-1/3 text-sm font-semibold"
                 htmlFor="loanRecallStatus"
               >
-                Recall Status
+                {t("borrowingContracts.recallStatus")}
               </label>
               <select
                 id="loanRecallStatus"
@@ -422,10 +427,10 @@ const BorrowingContractForm = ({
                 }
                 className="select select-bordered w-full"
               >
-                <option value="">— None —</option>
+                <option value="">{t("loanRecallStatus.none")}</option>
                 {LOAN_RECALL_STATUSES.map((s) => (
                   <option key={s} value={s}>
-                    {s}
+                    {t(`loanRecallStatus.${s}`)}
                   </option>
                 ))}
               </select>
@@ -436,7 +441,7 @@ const BorrowingContractForm = ({
                 className="w-1/3 text-sm font-semibold"
                 htmlFor="adjustmentTxId"
               >
-                Adj. Transaction ID
+                {t("borrowingContracts.adjTransactionId")}
               </label>
               <input
                 type="number"
@@ -445,7 +450,7 @@ const BorrowingContractForm = ({
                 onChange={(e) => setAdjustmentWithTransactionId(e.target.value)}
                 className="input input-bordered w-full"
                 min="1"
-                placeholder="Optional"
+                placeholder={t("common.optional")}
               />
             </div>
           </>
@@ -457,10 +462,10 @@ const BorrowingContractForm = ({
             className="btn btn-neutral btn-outline"
             onClick={onCancel}
           >
-            Cancel
+            {t("common.cancel")}
           </button>
           <button type="submit" className="btn btn-primary btn-outline">
-            {contract ? "Update" : "Add"}
+            {contract ? t("common.update") : t("common.add")}
           </button>
         </div>
       </div>

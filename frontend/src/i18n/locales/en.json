@@ -1,0 +1,136 @@
+{
+  "nav": {
+    "contacts": "Contacts",
+    "vaults": "Vaults",
+    "lendingContracts": "Lending Contracts",
+    "borrowingContracts": "Borrowing Contracts",
+    "transactions": "Transactions"
+  },
+  "header": {
+    "theme": "Theme"
+  },
+  "common": {
+    "add": "Add",
+    "update": "Update",
+    "cancel": "Cancel",
+    "save": "Save",
+    "actions": "Actions",
+    "id": "ID",
+    "name": "Name",
+    "description": "Description",
+    "amount": "Amount",
+    "contact": "Contact",
+    "category": "Category",
+    "status": "Status",
+    "date": "Date",
+    "phone": "Phone",
+    "address": "Address",
+    "vault": "Vault",
+    "duration": "Duration",
+    "durationDays": "Duration (days)",
+    "returnDate": "Return Date",
+    "repaid": "Repaid",
+    "balance": "Balance",
+    "searchByName": "Search by name…",
+    "selectContact": "Please select a contact from the list",
+    "noContactsFound": "No contacts found",
+    "selectVault": "— Select vault —",
+    "close": "✕",
+    "optional": "Optional"
+  },
+  "contacts": {
+    "title": "Contacts",
+    "addContact": "Add Contact",
+    "nid": "NID",
+    "fatherName": "Father Name",
+    "formTitle": "Contact Form",
+    "nidInfo": "NID Info",
+    "fathersName": "Father's Name"
+  },
+  "vaults": {
+    "title": "Vaults",
+    "addVault": "Add Vault",
+    "total": "Total",
+    "formTitle": "Vault Form",
+    "balanceHistory": "Balance History",
+    "recordedAt": "Recorded At",
+    "noBalanceHistory": "No balance history yet.",
+    "deleteConfirm": "Delete vault \"{{name}}\"?"
+  },
+  "lendingContracts": {
+    "title": "Lending Contracts",
+    "addContract": "Add Contract",
+    "reason": "Reason",
+    "formTitle": "Lending Contract",
+    "deleteConfirm": "Delete lending contract #{{id}}?",
+    "failedToAdd": "Failed to add:",
+    "failedToDelete": "Failed to delete:"
+  },
+  "borrowingContracts": {
+    "title": "Borrowing Contracts",
+    "addContract": "Add Contract",
+    "guarantors": "Guarantors",
+    "recall": "Recall",
+    "purposeOfLoan": "Purpose of Loan",
+    "guarantor1": "Guarantor 1",
+    "guarantor2": "Guarantor 2",
+    "recallStatus": "Recall Status",
+    "adjTransactionId": "Adj. Transaction ID",
+    "formTitle": "Borrowing Contract",
+    "deleteConfirm": "Delete borrowing contract #{{id}}?",
+    "failedToAdd": "Failed to add:",
+    "failedToDelete": "Failed to delete:"
+  },
+  "transactions": {
+    "title": "Transactions",
+    "addTransaction": "Add Transaction",
+    "type": "Type",
+    "contract": "Contract",
+    "newTransaction": "New Transaction",
+    "editDescription": "Edit Description — #{{id}}",
+    "editDescriptionTitle": "Edit description",
+    "deleteTitle": "Delete (latest only)",
+    "deleteConfirm": "Delete transaction #{{id}}? This is irreversible.",
+    "failedToAdd": "Failed to add transaction:",
+    "failedToDelete": "Failed to delete:",
+    "lendingContract": "Lending Contract",
+    "borrowingContract": "Borrowing Contract",
+    "selectLendingContract": "— Select lending contract —",
+    "selectBorrowingContract": "— Select borrowing contract —",
+    "selectContractFirst": "Select a contract first",
+    "expenseType": "Expense Type"
+  },
+  "financeCategory": {
+    "Qard al-Hasan": "Qard al-Hasan",
+    "Zakat": "Zakat",
+    "Sadaqa": "Sadaqa",
+    "Waqf": "Waqf"
+  },
+  "transactionType": {
+    "Lend": "Lend",
+    "Borrow": "Borrow",
+    "LendRepay": "LendRepay",
+    "BorrowRepay": "BorrowRepay",
+    "Expense": "Expense"
+  },
+  "expenseType": {
+    "Bank Charge": "Bank Charge",
+    "Conveyance": "Conveyance",
+    "Phone Expenses": "Phone Expenses",
+    "Entertainment": "Entertainment",
+    "Miscellaneous": "Miscellaneous",
+    "Legal Expenses": "Legal Expenses"
+  },
+  "contractStatus": {
+    "Active": "Active",
+    "Completed": "Completed",
+    "Defaulted": "Defaulted"
+  },
+  "loanRecallStatus": {
+    "none": "— None —",
+    "1st Reminder": "1st Reminder",
+    "2nd Reminder": "2nd Reminder",
+    "3rd Reminder": "3rd Reminder",
+    "Guarantors reminder": "Guarantors reminder"
+  }
+}

@@ -1,0 +1,136 @@
+{
+  "nav": {
+    "contacts": "যোগাযোগ",
+    "vaults": "ভল্ট",
+    "lendingContracts": "ধার দেওয়ার চুক্তি",
+    "borrowingContracts": "ধার নেওয়ার চুক্তি",
+    "transactions": "লেনদেন"
+  },
+  "header": {
+    "theme": "থিম"
+  },
+  "common": {
+    "add": "যোগ করুন",
+    "update": "আপডেট",
+    "cancel": "বাতিল",
+    "save": "সংরক্ষণ",
+    "actions": "কার্যক্রম",
+    "id": "আইডি",
+    "name": "নাম",
+    "description": "বিবরণ",
+    "amount": "পরিমাণ",
+    "contact": "যোগাযোগ",
+    "category": "বিভাগ",
+    "status": "অবস্থা",
+    "date": "তারিখ",
+    "phone": "ফোন",
+    "address": "ঠিকানা",
+    "vault": "ভল্ট",
+    "duration": "মেয়াদ",
+    "durationDays": "মেয়াদ (দিন)",
+    "returnDate": "ফেরতের তারিখ",
+    "repaid": "পরিশোধিত",
+    "balance": "ব্যালেন্স",
+    "searchByName": "নাম দিয়ে অনুসন্ধান করুন…",
+    "selectContact": "তালিকা থেকে একটি যোগাযোগ নির্বাচন করুন",
+    "noContactsFound": "কোনো যোগাযোগ পাওয়া যায়নি",
+    "selectVault": "— ভল্ট নির্বাচন করুন —",
+    "close": "✕",
+    "optional": "ঐচ্ছিক"
+  },
+  "contacts": {
+    "title": "যোগাযোগ",
+    "addContact": "যোগাযোগ যোগ করুন",
+    "nid": "জাতীয় পরিচয়পত্র",
+    "fatherName": "পিতার নাম",
+    "formTitle": "যোগাযোগ ফর্ম",
+    "nidInfo": "জাতীয় পরিচয়পত্র তথ্য",
+    "fathersName": "পিতার নাম"
+  },
+  "vaults": {
+    "title": "ভল্ট",
+    "addVault": "ভল্ট যোগ করুন",
+    "total": "মোট",
+    "formTitle": "ভল্ট ফর্ম",
+    "balanceHistory": "ব্যালেন্স ইতিহাস",
+    "recordedAt": "রেকর্ড করা হয়েছে",
+    "noBalanceHistory": "এখনো কোনো ব্যালেন্স ইতিহাস নেই।",
+    "deleteConfirm": "ভল্ট \"{{name}}\" মুছবেন?"
+  },
+  "lendingContracts": {
+    "title": "ধার দেওয়ার চুক্তি",
+    "addContract": "চুক্তি যোগ করুন",
+    "reason": "কারণ",
+    "formTitle": "ধার দেওয়ার চুক্তি",
+    "deleteConfirm": "ধার দেওয়ার চুক্তি #{{id}} মুছবেন?",
+    "failedToAdd": "যোগ করতে ব্যর্থ:",
+    "failedToDelete": "মুছতে ব্যর্থ:"
+  },
+  "borrowingContracts": {
+    "title": "ধার নেওয়ার চুক্তি",
+    "addContract": "চুক্তি যোগ করুন",
+    "guarantors": "জামিনদার",
+    "recall": "স্মরণপত্র",
+    "purposeOfLoan": "ঋণের উদ্দেশ্য",
+    "guarantor1": "জামিনদার ১",
+    "guarantor2": "জামিনদার ২",
+    "recallStatus": "স্মরণপত্রের অবস্থা",
+    "adjTransactionId": "সমন্বয় লেনদেন আইডি",
+    "formTitle": "ধার নেওয়ার চুক্তি",
+    "deleteConfirm": "ধার নেওয়ার চুক্তি #{{id}} মুছবেন?",
+    "failedToAdd": "যোগ করতে ব্যর্থ:",
+    "failedToDelete": "মুছতে ব্যর্থ:"
+  },
+  "transactions": {
+    "title": "লেনদেন",
+    "addTransaction": "লেনদেন যোগ করুন",
+    "type": "ধরন",
+    "contract": "চুক্তি",
+    "newTransaction": "নতুন লেনদেন",
+    "editDescription": "বিবরণ সম্পাদনা — #{{id}}",
+    "editDescriptionTitle": "বিবরণ সম্পাদনা করুন",
+    "deleteTitle": "মুছুন (শুধুমাত্র সর্বশেষ)",
+    "deleteConfirm": "লেনদেন #{{id}} মুছবেন? এটি অপরিবর্তনীয়।",
+    "failedToAdd": "লেনদেন যোগ করতে ব্যর্থ:",
+    "failedToDelete": "মুছতে ব্যর্থ:",
+    "lendingContract": "ধার দেওয়ার চুক্তি",
+    "borrowingContract": "ধার নেওয়ার চুক্তি",
+    "selectLendingContract": "— ধার দেওয়ার চুক্তি নির্বাচন করুন —",
+    "selectBorrowingContract": "— ধার নেওয়ার চুক্তি নির্বাচন করুন —",
+    "selectContractFirst": "প্রথমে একটি চুক্তি নির্বাচন করুন",
+    "expenseType": "ব্যয়ের ধরন"
+  },
+  "financeCategory": {
+    "Qard al-Hasan": "কর্জে হাসানা",
+    "Zakat": "যাকাত",
+    "Sadaqa": "সদকা",
+    "Waqf": "ওয়াকফ"
+  },
+  "transactionType": {
+    "Lend": "ধার দেওয়া",
+    "Borrow": "ধার নেওয়া",
+    "LendRepay": "ধার ফেরত",
+    "BorrowRepay": "ঋণ পরিশোধ",
+    "Expense": "ব্যয়"
+  },
+  "expenseType": {
+    "Bank Charge": "ব্যাংক চার্জ",
+    "Conveyance": "পরিবহন",
+    "Phone Expenses": "ফোন ব্যয়",
+    "Entertainment": "বিনোদন",
+    "Miscellaneous": "বিবিধ",
+    "Legal Expenses": "আইনি ব্যয়"
+  },
+  "contractStatus": {
+    "Active": "সক্রিয়",
+    "Completed": "সম্পন্ন",
+    "Defaulted": "খেলাপি"
+  },
+  "loanRecallStatus": {
+    "none": "— কোনোটি নয় —",
+    "1st Reminder": "১ম স্মরণপত্র",
+    "2nd Reminder": "২য় স্মরণপত্র",
+    "3rd Reminder": "৩য় স্মরণপত্র",
+    "Guarantors reminder": "জামিনদারদের স্মরণপত্র"
+  }
+}

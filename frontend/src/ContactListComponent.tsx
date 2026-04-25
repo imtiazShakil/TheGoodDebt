@@ -1,10 +1,12 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { addContact, editContact, getContacts } from "./api";
 import { ContactDetails } from "./entity.interface";
 import ContactForm from "./ContactForm";
 import { PencilSimple, UserPlus } from "@phosphor-icons/react";
 
 function ContactListComponent() {
+  const { t } = useTranslation();
   const [contacts, setContacts] = useState<ContactDetails[]>([]);
   const [selectedContact, setSelectedContact] = useState<ContactDetails | null>(
     null,
@@ -20,7 +22,7 @@ function ContactListComponent() {
 
   const handleEditContact = useCallback(
     (contact: ContactDetails) => {
-      setSelectedContact(contact); // Set the selected contact for editing
+      setSelectedContact(contact);
       contactModalRef.current?.showModal();
     },
     [contactModalRef],
@@ -36,7 +38,6 @@ function ContactListComponent() {
             console.error("Error editing contact");
             return;
           }
-          // Step 4: Update the state with the new contact
           setContacts((prevContacts) =>
             prevContacts.map((c) => (c.id === contact.id ? contact : c)),
           );
@@ -47,17 +48,13 @@ function ContactListComponent() {
         .finally(() => {
           contactModalRef.current?.close();
         });
-
-      // Edit contact
     } else {
-      // Add contact
       addContact(data)
         .then((contact) => {
           if (contact === null) {
             console.error("Error adding contact");
             return;
           }
-          // Step 4: Update the state with the new contact
           setContacts([...contacts, contact]);
         })
         .catch((error) => {
@@ -67,30 +64,26 @@ function ContactListComponent() {
           contactModalRef.current?.close();
         });
     }
-
-    // how to reset the contact form?
   };
 
   useEffect(() => {
-    // Call the function and update the state
     getContacts()
       .then((contactList) => {
-        // Step 3: Update the state with the fetched data
         setContacts(contactList);
       })
       .catch((error) => {
         console.error("Error fetching contacts", error);
       });
-  }, []); // Empty dependency array ensures this runs only once on mount
+  }, []);
 
   return (
     <>
       <div className="flex justify-between">
         <h2 className="shadow-secondary mb-3 text-3xl font-bold underline shadow-xl ring-4">
-          Contacts!{" "}
+          {t("contacts.title")}
         </h2>
         <button className="btn btn-soft btn-primary" onClick={handleAddContact}>
-          Add Contact
+          {t("contacts.addContact")}
           <UserPlus size={24} />
         </button>
       </div>
@@ -98,13 +91,13 @@ function ContactListComponent() {
         <table className="table-pin-rows table">
           <thead>
             <tr>
-              <th>ID</th>
-              <th>Name</th>
-              <th>Nid</th>
-              <th>FatherName</th>
-              <th>Phone</th>
-              <th>Address</th>
-              <th>Actions</th>
+              <th>{t("common.id")}</th>
+              <th>{t("common.name")}</th>
+              <th>{t("contacts.nid")}</th>
+              <th>{t("contacts.fatherName")}</th>
+              <th>{t("common.phone")}</th>
+              <th>{t("common.address")}</th>
+              <th>{t("common.actions")}</th>
             </tr>
           </thead>
           <tbody>
@@ -136,20 +129,19 @@ function ContactListComponent() {
       <dialog ref={contactModalRef} className="modal">
         <div className="modal-box">
           <form method="dialog">
-            {/* if there is a button in form, it will close the modal */}
             <button
               className="btn btn-sm btn-circle btn-ghost absolute top-2 right-2"
               onClick={() => setSelectedContact(null)}
             >
-              ✕
+              {t("common.close")}
             </button>
           </form>
-          <h2 className="mb-4 text-2xl font-bold">Contact Form</h2>
+          <h2 className="mb-4 text-2xl font-bold">{t("contacts.formTitle")}</h2>
           <ContactForm
             contact={selectedContact}
             onSubmit={handleFormSubmit}
             onCancel={() => contactModalRef.current?.close()}
-          ></ContactForm>
+          />
         </div>
       </dialog>
     </>

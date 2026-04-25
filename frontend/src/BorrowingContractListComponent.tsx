@@ -1,5 +1,6 @@
 import { HandDeposit, PencilSimple, Trash } from "@phosphor-icons/react";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   addBorrowingContract,
   deleteBorrowingContract,
@@ -30,6 +31,7 @@ function guarantorNames(contract: BorrowingContract): string {
 }
 
 function BorrowingContractListComponent() {
+  const { t } = useTranslation();
   const [contracts, setContracts] = useState<BorrowingContract[]>([]);
   const [selectedContract, setSelectedContract] =
     useState<BorrowingContract | null>(null);
@@ -53,18 +55,24 @@ function BorrowingContractListComponent() {
     modalRef.current?.showModal();
   }, []);
 
-  const handleDelete = useCallback((contract: BorrowingContract) => {
-    if (!confirm(`Delete borrowing contract #${contract.id}?`)) return;
-    deleteBorrowingContract(contract.id)
-      .then((result) => {
-        if (!result) return;
-        setContracts((prev) => prev.filter((c) => c.id !== contract.id));
-      })
-      .catch((err) => {
-        console.error("Error deleting borrowing contract", err);
-        alert(`Failed to delete: ${err?.message ?? err}`);
-      });
-  }, []);
+  const handleDelete = useCallback(
+    (contract: BorrowingContract) => {
+      if (!confirm(t("borrowingContracts.deleteConfirm", { id: contract.id })))
+        return;
+      deleteBorrowingContract(contract.id)
+        .then((result) => {
+          if (!result) return;
+          setContracts((prev) => prev.filter((c) => c.id !== contract.id));
+        })
+        .catch((err) => {
+          console.error("Error deleting borrowing contract", err);
+          alert(
+            `${t("borrowingContracts.failedToDelete")} ${err?.message ?? err}`,
+          );
+        });
+    },
+    [t],
+  );
 
   const handleFormSubmit = (data: BorrowingContract, vaultId?: number) => {
     if (data.id) {
@@ -86,7 +94,9 @@ function BorrowingContractListComponent() {
         })
         .catch((err) => {
           console.error("Error adding borrowing contract", err);
-          alert(`Failed to add: ${err?.message ?? err}`);
+          alert(
+            `${t("borrowingContracts.failedToAdd")} ${err?.message ?? err}`,
+          );
         })
         .finally(() => modalRef.current?.close());
     }
@@ -96,10 +106,10 @@ function BorrowingContractListComponent() {
     <>
       <div className="flex justify-between">
         <h2 className="shadow-secondary mb-3 text-3xl font-bold underline shadow-xl ring-4">
-          Borrowing Contracts
+          {t("borrowingContracts.title")}
         </h2>
         <button className="btn btn-soft btn-primary" onClick={handleAdd}>
-          Add Contract
+          {t("borrowingContracts.addContract")}
           <HandDeposit size={24} />
         </button>
       </div>
@@ -108,17 +118,17 @@ function BorrowingContractListComponent() {
         <table className="table-pin-rows table">
           <thead>
             <tr>
-              <th>ID</th>
-              <th>Contact</th>
-              <th>Amount</th>
-              <th>Duration</th>
-              <th>Return Date</th>
-              <th>Category</th>
-              <th>Guarantors</th>
-              <th>Recall</th>
-              <th>Status</th>
-              <th>Repaid</th>
-              <th>Actions</th>
+              <th>{t("common.id")}</th>
+              <th>{t("common.contact")}</th>
+              <th>{t("common.amount")}</th>
+              <th>{t("common.duration")}</th>
+              <th>{t("common.returnDate")}</th>
+              <th>{t("common.category")}</th>
+              <th>{t("borrowingContracts.guarantors")}</th>
+              <th>{t("borrowingContracts.recall")}</th>
+              <th>{t("common.status")}</th>
+              <th>{t("common.repaid")}</th>
+              <th>{t("common.actions")}</th>
             </tr>
           </thead>
           <tbody>
@@ -132,14 +142,14 @@ function BorrowingContractListComponent() {
                 <td>{contract.amount.toLocaleString()}</td>
                 <td>{contract.durationDays}d</td>
                 <td>{new Date(contract.returnDate).toLocaleDateString()}</td>
-                <td>{contract.financeCategoryType}</td>
+                <td>{t(`financeCategory.${contract.financeCategoryType}`)}</td>
                 <td>{guarantorNames(contract)}</td>
                 <td>
                   {contract.loanRecallStatus ? (
                     <span
                       className={`badge badge-sm ${RECALL_BADGE[contract.loanRecallStatus] ?? ""}`}
                     >
-                      {contract.loanRecallStatus}
+                      {t(`loanRecallStatus.${contract.loanRecallStatus}`)}
                     </span>
                   ) : (
                     "—"
@@ -149,7 +159,7 @@ function BorrowingContractListComponent() {
                   <span
                     className={`badge badge-sm ${STATUS_BADGE[contract.contractStatus] ?? ""}`}
                   >
-                    {contract.contractStatus}
+                    {t(`contractStatus.${contract.contractStatus}`)}
                   </span>
                 </td>
                 <td>{(contract.totalRepaid ?? 0).toLocaleString()}</td>
@@ -180,10 +190,12 @@ function BorrowingContractListComponent() {
               className="btn btn-sm btn-circle btn-ghost absolute top-2 right-2"
               onClick={() => setSelectedContract(null)}
             >
-              ✕
+              {t("common.close")}
             </button>
           </form>
-          <h2 className="mb-4 text-2xl font-bold">Borrowing Contract</h2>
+          <h2 className="mb-4 text-2xl font-bold">
+            {t("borrowingContracts.formTitle")}
+          </h2>
           <BorrowingContractForm
             contract={selectedContract}
             onSubmit={handleFormSubmit}

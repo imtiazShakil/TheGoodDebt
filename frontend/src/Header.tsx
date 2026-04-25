@@ -1,13 +1,17 @@
 import { NavLink } from "react-router";
+import { useTranslation } from "react-i18next";
 
 function Header() {
+  const { t, i18n } = useTranslation();
+
   const links = [
-    { name: "Contacts", href: "/" },
-    { name: "Vaults", href: "/vaults" },
-    { name: "Lending Contracts", href: "/lending-contracts" },
-    { name: "Borrowing Contracts", href: "/borrowing-contracts" },
-    { name: "Transactions", href: "/transactions" },
+    { name: t("nav.contacts"), href: "/" },
+    { name: t("nav.vaults"), href: "/vaults" },
+    { name: t("nav.lendingContracts"), href: "/lending-contracts" },
+    { name: t("nav.borrowingContracts"), href: "/borrowing-contracts" },
+    { name: t("nav.transactions"), href: "/transactions" },
   ];
+
   return (
     <div className="navbar bg-primary text-primary-content shadow-md shadow-accent-content rounded-xl mb-6 mt-2 mx-2 w-auto">
       <div className="navbar-start">
@@ -64,10 +68,25 @@ function Header() {
           ))}
         </ul>
       </div>
+
       <div className="navbar-end">
+        <div className="flex items-center gap-1 mr-2">
+          <button
+            className={`btn btn-sm ${i18n.language === "bn" ? "btn-active" : "btn-ghost"}`}
+            onClick={() => { void i18n.changeLanguage("bn"); }}
+          >
+            বাংলা
+          </button>
+          <button
+            className={`btn btn-sm ${i18n.language === "en" ? "btn-active" : "btn-ghost"}`}
+            onClick={() => { void i18n.changeLanguage("en"); }}
+          >
+            EN
+          </button>
+        </div>
         <div className="dropdown">
           <div tabIndex={0} role="button" className="btn m-1">
-            Theme
+            {t("header.theme")}
             <svg
               width="12px"
               height="12px"

@@ -1,5 +1,6 @@
 import { HandCoins, PencilSimple, Trash } from "@phosphor-icons/react";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   addLendingContract,
   deleteLendingContract,
@@ -16,6 +17,7 @@ const STATUS_BADGE: Record<string, string> = {
 };
 
 function LendingContractListComponent() {
+  const { t } = useTranslation();
   const [contracts, setContracts] = useState<LendingContract[]>([]);
   const [selectedContract, setSelectedContract] =
     useState<LendingContract | null>(null);
@@ -39,18 +41,22 @@ function LendingContractListComponent() {
     modalRef.current?.showModal();
   }, []);
 
-  const handleDelete = useCallback((contract: LendingContract) => {
-    if (!confirm(`Delete lending contract #${contract.id}?`)) return;
-    deleteLendingContract(contract.id)
-      .then((result) => {
-        if (!result) return;
-        setContracts((prev) => prev.filter((c) => c.id !== contract.id));
-      })
-      .catch((err) => {
-        console.error("Error deleting lending contract", err);
-        alert(`Failed to delete: ${err?.message ?? err}`);
-      });
-  }, []);
+  const handleDelete = useCallback(
+    (contract: LendingContract) => {
+      if (!confirm(t("lendingContracts.deleteConfirm", { id: contract.id })))
+        return;
+      deleteLendingContract(contract.id)
+        .then((result) => {
+          if (!result) return;
+          setContracts((prev) => prev.filter((c) => c.id !== contract.id));
+        })
+        .catch((err) => {
+          console.error("Error deleting lending contract", err);
+          alert(`${t("lendingContracts.failedToDelete")} ${err?.message ?? err}`);
+        });
+    },
+    [t],
+  );
 
   const handleFormSubmit = (data: LendingContract, vaultId?: number) => {
     if (data.id) {
@@ -72,7 +78,7 @@ function LendingContractListComponent() {
         })
         .catch((err) => {
           console.error("Error adding lending contract", err);
-          alert(`Failed to add: ${err?.message ?? err}`);
+          alert(`${t("lendingContracts.failedToAdd")} ${err?.message ?? err}`);
         })
         .finally(() => modalRef.current?.close());
     }
@@ -82,10 +88,10 @@ function LendingContractListComponent() {
     <>
       <div className="flex justify-between">
         <h2 className="shadow-secondary mb-3 text-3xl font-bold underline shadow-xl ring-4">
-          Lending Contracts
+          {t("lendingContracts.title")}
         </h2>
         <button className="btn btn-soft btn-primary" onClick={handleAdd}>
-          Add Contract
+          {t("lendingContracts.addContract")}
           <HandCoins size={24} />
         </button>
       </div>
@@ -94,15 +100,15 @@ function LendingContractListComponent() {
         <table className="table-pin-rows table">
           <thead>
             <tr>
-              <th>ID</th>
-              <th>Contact</th>
-              <th>Amount</th>
-              <th>Duration</th>
-              <th>Return Date</th>
-              <th>Category</th>
-              <th>Status</th>
-              <th>Repaid</th>
-              <th>Actions</th>
+              <th>{t("common.id")}</th>
+              <th>{t("common.contact")}</th>
+              <th>{t("common.amount")}</th>
+              <th>{t("common.duration")}</th>
+              <th>{t("common.returnDate")}</th>
+              <th>{t("common.category")}</th>
+              <th>{t("common.status")}</th>
+              <th>{t("common.repaid")}</th>
+              <th>{t("common.actions")}</th>
             </tr>
           </thead>
           <tbody>
@@ -116,12 +122,12 @@ function LendingContractListComponent() {
                 <td>{contract.amount.toLocaleString()}</td>
                 <td>{contract.durationDays}d</td>
                 <td>{new Date(contract.returnDate).toLocaleDateString()}</td>
-                <td>{contract.financeCategoryType}</td>
+                <td>{t(`financeCategory.${contract.financeCategoryType}`)}</td>
                 <td>
                   <span
                     className={`badge badge-sm ${STATUS_BADGE[contract.contractStatus] ?? ""}`}
                   >
-                    {contract.contractStatus}
+                    {t(`contractStatus.${contract.contractStatus}`)}
                   </span>
                 </td>
                 <td>{(contract.totalRepaid ?? 0).toLocaleString()}</td>
@@ -152,10 +158,12 @@ function LendingContractListComponent() {
               className="btn btn-sm btn-circle btn-ghost absolute top-2 right-2"
               onClick={() => setSelectedContract(null)}
             >
-              ✕
+              {t("common.close")}
             </button>
           </form>
-          <h2 className="mb-4 text-2xl font-bold">Lending Contract</h2>
+          <h2 className="mb-4 text-2xl font-bold">
+            {t("lendingContracts.formTitle")}
+          </h2>
           <LendingContractForm
             contract={selectedContract}
             onSubmit={handleFormSubmit}

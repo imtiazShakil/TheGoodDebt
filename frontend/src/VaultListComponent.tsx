@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   addVault,
   deleteVault,
@@ -11,6 +12,7 @@ import VaultForm from "./VaultForm";
 import { PencilSimple, Trash, Vault as VaultIcon } from "@phosphor-icons/react";
 
 function VaultListComponent() {
+  const { t } = useTranslation();
   const [vaults, setVaults] = useState<Vault[]>([]);
   const [selectedVault, setSelectedVault] = useState<Vault | null>(null);
   const vaultModalRef = useRef<HTMLDialogElement>(null);
@@ -46,17 +48,20 @@ function VaultListComponent() {
     [vaultModalRef],
   );
 
-  const handleDeleteVault = useCallback((vault: Vault) => {
-    if (!confirm(`Delete vault "${vault.name}"?`)) return;
-    deleteVault(vault.id)
-      .then((result) => {
-        if (!result) return;
-        setVaults((prev) => prev.filter((v) => v.id !== vault.id));
-      })
-      .catch((error) => {
-        console.error("Error deleting vault", error);
-      });
-  }, []);
+  const handleDeleteVault = useCallback(
+    (vault: Vault) => {
+      if (!confirm(t("vaults.deleteConfirm", { name: vault.name }))) return;
+      deleteVault(vault.id)
+        .then((result) => {
+          if (!result) return;
+          setVaults((prev) => prev.filter((v) => v.id !== vault.id));
+        })
+        .catch((error) => {
+          console.error("Error deleting vault", error);
+        });
+    },
+    [t],
+  );
 
   const handleFormSubmit = (data: Vault) => {
     if (data.id) {
@@ -98,10 +103,10 @@ function VaultListComponent() {
     <>
       <div className="flex justify-between">
         <h2 className="shadow-secondary mb-3 text-3xl font-bold underline shadow-xl ring-4">
-          Vaults
+          {t("vaults.title")}
         </h2>
         <button className="btn btn-soft btn-primary" onClick={handleAddVault}>
-          Add Vault
+          {t("vaults.addVault")}
           <VaultIcon size={24} />
         </button>
       </div>
@@ -109,15 +114,15 @@ function VaultListComponent() {
         <table className="table-pin-rows table">
           <thead>
             <tr>
-              <th>ID</th>
-              <th>Name</th>
-              <th>Description</th>
-              <th className="text-right">Qard al-Hasan</th>
-              <th className="text-right">Zakat</th>
-              <th className="text-right">Sadaqa</th>
-              <th className="text-right">Waqf</th>
-              <th className="text-right">Total</th>
-              <th>Actions</th>
+              <th>{t("common.id")}</th>
+              <th>{t("common.name")}</th>
+              <th>{t("common.description")}</th>
+              <th className="text-right">{t("financeCategory.Qard al-Hasan")}</th>
+              <th className="text-right">{t("financeCategory.Zakat")}</th>
+              <th className="text-right">{t("financeCategory.Sadaqa")}</th>
+              <th className="text-right">{t("financeCategory.Waqf")}</th>
+              <th className="text-right">{t("vaults.total")}</th>
+              <th>{t("common.actions")}</th>
             </tr>
           </thead>
           <tbody>
@@ -141,7 +146,6 @@ function VaultListComponent() {
                 >
                   {vault.description}
                 </td>
-
                 <td className="text-right">
                   {(
                     vault.latestBalance?.qardAlHasanBalance ?? 0
@@ -189,10 +193,10 @@ function VaultListComponent() {
               className="btn btn-sm btn-circle btn-ghost absolute top-2 right-2"
               onClick={() => setSelectedVault(null)}
             >
-              ✕
+              {t("common.close")}
             </button>
           </form>
-          <h2 className="mb-4 text-2xl font-bold">Vault Form</h2>
+          <h2 className="mb-4 text-2xl font-bold">{t("vaults.formTitle")}</h2>
           <VaultForm
             vault={selectedVault}
             onSubmit={handleFormSubmit}
@@ -211,30 +215,31 @@ function VaultListComponent() {
                 setHistoryRecords([]);
               }}
             >
-              ✕
+              {t("common.close")}
             </button>
           </form>
           <h2 className="mb-4 text-2xl font-bold">
-            Balance History{historyVault ? ` — ${historyVault.name}` : ""}
+            {t("vaults.balanceHistory")}
+            {historyVault ? ` — ${historyVault.name}` : ""}
           </h2>
           <div className="overflow-auto ring-1">
             <table className="table-pin-rows table">
               <thead>
                 <tr>
-                  <th>ID</th>
-                  <th>Recorded At</th>
-                  <th className="text-right">Qard al-Hasan</th>
-                  <th className="text-right">Zakat</th>
-                  <th className="text-right">Sadaqa</th>
-                  <th className="text-right">Waqf</th>
-                  <th className="text-right">Total</th>
+                  <th>{t("common.id")}</th>
+                  <th>{t("vaults.recordedAt")}</th>
+                  <th className="text-right">{t("financeCategory.Qard al-Hasan")}</th>
+                  <th className="text-right">{t("financeCategory.Zakat")}</th>
+                  <th className="text-right">{t("financeCategory.Sadaqa")}</th>
+                  <th className="text-right">{t("financeCategory.Waqf")}</th>
+                  <th className="text-right">{t("vaults.total")}</th>
                 </tr>
               </thead>
               <tbody>
                 {historyRecords.length === 0 ? (
                   <tr>
                     <td colSpan={7} className="py-4 text-center opacity-60">
-                      No balance history yet.
+                      {t("vaults.noBalanceHistory")}
                     </td>
                   </tr>
                 ) : (

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { ContactDetails } from "./entity.interface";
 
 interface ContactFormProps {
@@ -8,6 +9,7 @@ interface ContactFormProps {
 }
 
 const ContactForm = ({ contact, onSubmit, onCancel }: ContactFormProps) => {
+  const { t } = useTranslation();
   const [id, setId] = useState(contact?.id ?? "");
   const [name, setName] = useState(contact?.name ?? "");
   const [nidInfo, setNidInfo] = useState(contact?.nidInfo ?? "");
@@ -16,7 +18,6 @@ const ContactForm = ({ contact, onSubmit, onCancel }: ContactFormProps) => {
   const [fatherName, setFatherName] = useState(contact?.fatherName ?? "");
 
   useEffect(() => {
-    console.log("contactform useeffect");
     if (contact) {
       setId(contact.id);
       setName(contact.name);
@@ -29,8 +30,6 @@ const ContactForm = ({ contact, onSubmit, onCancel }: ContactFormProps) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission logic here
-    // Handle form submission logic here
     const contact: ContactDetails = {
       id,
       name,
@@ -58,7 +57,7 @@ const ContactForm = ({ contact, onSubmit, onCancel }: ContactFormProps) => {
       <div className="space-y-4">
         <div className="flex items-center">
           <label className="w-1/4 text-sm font-semibold" htmlFor="name">
-            Name
+            {t("common.name")}
           </label>
           <input
             type="text"
@@ -71,7 +70,7 @@ const ContactForm = ({ contact, onSubmit, onCancel }: ContactFormProps) => {
         </div>
         <div className="flex items-center">
           <label className="w-1/4 text-sm font-semibold" htmlFor="nidInfo">
-            NID Info
+            {t("contacts.nidInfo")}
           </label>
           <input
             type="text"
@@ -84,7 +83,7 @@ const ContactForm = ({ contact, onSubmit, onCancel }: ContactFormProps) => {
         </div>
         <div className="flex items-center">
           <label className="w-1/4 text-sm font-semibold" htmlFor="address">
-            Address
+            {t("common.address")}
           </label>
           <input
             type="text"
@@ -97,7 +96,7 @@ const ContactForm = ({ contact, onSubmit, onCancel }: ContactFormProps) => {
         </div>
         <div className="flex items-center">
           <label className="w-1/4 text-sm font-semibold" htmlFor="phone">
-            Phone
+            {t("common.phone")}
           </label>
           <input
             type="text"
@@ -110,7 +109,7 @@ const ContactForm = ({ contact, onSubmit, onCancel }: ContactFormProps) => {
         </div>
         <div className="flex items-center">
           <label className="w-1/4 text-sm font-semibold" htmlFor="fatherName">
-            Father&apos;s Name
+            {t("contacts.fathersName")}
           </label>
           <input
             type="text"
@@ -127,11 +126,10 @@ const ContactForm = ({ contact, onSubmit, onCancel }: ContactFormProps) => {
             className="btn btn-neutral btn-outline mr-2"
             onClick={onCancel}
           >
-            Cancel
+            {t("common.cancel")}
           </button>
-
           <button type="submit" className="btn btn-primary btn-outline">
-            {contact ? "Update" : "Add"}
+            {contact ? t("common.update") : t("common.add")}
           </button>
         </div>
       </div>

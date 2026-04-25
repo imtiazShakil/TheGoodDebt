@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { getVaults, searchContacts } from "./api";
 import {
   ContactDetails,
@@ -33,6 +34,7 @@ const LendingContractForm = ({
   onSubmit,
   onCancel,
 }: LendingContractFormProps) => {
+  const { t } = useTranslation();
   const [contactQuery, setContactQuery] = useState("");
   const [contactResults, setContactResults] = useState<ContactDetails[]>([]);
   const [selectedContactId, setSelectedContactId] = useState<number | null>(
@@ -84,15 +86,12 @@ const LendingContractForm = ({
     const q = e.target.value;
     setContactQuery(q);
     setSelectedContactId(null);
-
     if (searchTimeout.current) clearTimeout(searchTimeout.current);
-
     if (q.trim().length === 0) {
       setContactResults([]);
       setShowDropdown(false);
       return;
     }
-
     searchTimeout.current = setTimeout(() => {
       searchContacts(q.trim())
         .then((results) => {
@@ -153,8 +152,11 @@ const LendingContractForm = ({
         {isCreate && (
           <>
             <div className="flex items-start">
-              <label className="w-1/3 pt-2 text-sm font-semibold" htmlFor="contact">
-                Contact *
+              <label
+                className="w-1/3 pt-2 text-sm font-semibold"
+                htmlFor="contact"
+              >
+                {t("common.contact")} *
               </label>
               <div className="relative w-full" ref={dropdownRef}>
                 <input
@@ -162,16 +164,18 @@ const LendingContractForm = ({
                   id="contact"
                   value={contactQuery}
                   onChange={handleContactQueryChange}
-                  onFocus={() => contactResults.length > 0 && setShowDropdown(true)}
+                  onFocus={() =>
+                    contactResults.length > 0 && setShowDropdown(true)
+                  }
                   onBlur={handleContactBlur}
                   className="input input-bordered w-full"
-                  placeholder="Search by name…"
+                  placeholder={t("common.searchByName")}
                   autoComplete="off"
                   required
                 />
                 {!selectedContactId && contactQuery.length > 0 && (
                   <span className="text-error mt-1 block text-xs">
-                    Please select a contact from the list
+                    {t("common.selectContact")}
                   </span>
                 )}
                 {showDropdown && contactResults.length > 0 && (
@@ -188,34 +192,45 @@ const LendingContractForm = ({
                     ))}
                   </ul>
                 )}
-                {showDropdown && contactResults.length === 0 && contactQuery.length > 0 && (
-                  <ul className="border-base-300 bg-base-100 absolute z-10 mt-1 w-full rounded-md border shadow-lg">
-                    <li className="px-4 py-2 text-sm opacity-60">No contacts found</li>
-                  </ul>
-                )}
+                {showDropdown &&
+                  contactResults.length === 0 &&
+                  contactQuery.length > 0 && (
+                    <ul className="border-base-300 bg-base-100 absolute z-10 mt-1 w-full rounded-md border shadow-lg">
+                      <li className="px-4 py-2 text-sm opacity-60">
+                        {t("common.noContactsFound")}
+                      </li>
+                    </ul>
+                  )}
               </div>
             </div>
 
             <div className="flex items-center">
-              <label className="w-1/3 text-sm font-semibold" htmlFor="financeCategory">
-                Category *
+              <label
+                className="w-1/3 text-sm font-semibold"
+                htmlFor="financeCategory"
+              >
+                {t("common.category")} *
               </label>
               <select
                 id="financeCategory"
                 value={financeCategoryType}
-                onChange={(e) => setFinanceCategoryType(e.target.value as FinanceCategoryType)}
+                onChange={(e) =>
+                  setFinanceCategoryType(e.target.value as FinanceCategoryType)
+                }
                 className="select select-bordered w-full"
                 required
               >
                 {FINANCE_CATEGORIES.map((cat) => (
-                  <option key={cat} value={cat}>{cat}</option>
+                  <option key={cat} value={cat}>
+                    {t(`financeCategory.${cat}`)}
+                  </option>
                 ))}
               </select>
             </div>
 
             <div className="flex items-center">
               <label className="w-1/3 text-sm font-semibold" htmlFor="amount">
-                Amount *
+                {t("common.amount")} *
               </label>
               <input
                 type="number"
@@ -231,10 +246,9 @@ const LendingContractForm = ({
           </>
         )}
 
-        {/* Duration days */}
         <div className="flex items-center">
           <label className="w-1/3 text-sm font-semibold" htmlFor="durationDays">
-            Duration (days)
+            {t("common.durationDays")} *
           </label>
           <input
             type="number"
@@ -247,10 +261,9 @@ const LendingContractForm = ({
           />
         </div>
 
-        {/* Return date (read-only) */}
         <div className="flex items-center">
           <label className="w-1/3 text-sm font-semibold" htmlFor="returnDate">
-            Return Date
+            {t("common.returnDate")}
           </label>
           <input
             type="date"
@@ -262,11 +275,10 @@ const LendingContractForm = ({
           />
         </div>
 
-        {/* Vault (create only) */}
         {isCreate && (
           <div className="flex items-center">
             <label className="w-1/3 text-sm font-semibold" htmlFor="vault">
-              Vault *
+              {t("common.vault")} *
             </label>
             <select
               id="vault"
@@ -279,7 +291,7 @@ const LendingContractForm = ({
               className="select select-bordered w-full"
               required
             >
-              <option value="">— Select vault —</option>
+              <option value="">{t("common.selectVault")}</option>
               {vaults.map((v) => (
                 <option key={v.id} value={v.id}>
                   #{v.id} — {v.name}
@@ -289,10 +301,9 @@ const LendingContractForm = ({
           </div>
         )}
 
-        {/* Reason */}
         <div className="flex items-start">
           <label className="w-1/3 pt-2 text-sm font-semibold" htmlFor="reason">
-            Reason
+            {t("lendingContracts.reason")}
           </label>
           <textarea
             id="reason"
@@ -309,10 +320,10 @@ const LendingContractForm = ({
             className="btn btn-neutral btn-outline"
             onClick={onCancel}
           >
-            Cancel
+            {t("common.cancel")}
           </button>
           <button type="submit" className="btn btn-primary btn-outline">
-            {contract ? "Update" : "Add"}
+            {contract ? t("common.update") : t("common.add")}
           </button>
         </div>
       </div>

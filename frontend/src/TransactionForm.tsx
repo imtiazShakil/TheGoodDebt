@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   getBorrowingContracts,
   getLendingContracts,
@@ -63,6 +64,7 @@ function ExpenseContactSearchField({
   selectedContact: ContactDetails | null;
   onSelect: (c: ContactDetails | null) => void;
 }) {
+  const { t } = useTranslation();
   const [query, setQuery] = useState(selectedContact?.name ?? "");
   const [results, setResults] = useState<ContactDetails[]>([]);
   const [showDropdown, setShowDropdown] = useState(false);
@@ -94,7 +96,9 @@ function ExpenseContactSearchField({
 
   return (
     <div className="flex items-start">
-      <label className="w-1/3 pt-2 text-sm font-semibold">Contact</label>
+      <label className="w-1/3 pt-2 text-sm font-semibold">
+        {t("common.contact")}
+      </label>
       <div className="relative w-full">
         <div className="flex gap-1">
           <input
@@ -104,7 +108,7 @@ function ExpenseContactSearchField({
             onFocus={() => results.length > 0 && setShowDropdown(true)}
             onBlur={() => setTimeout(() => setShowDropdown(false), 150)}
             className="input input-bordered w-full"
-            placeholder="Search by name…"
+            placeholder={t("common.searchByName")}
             autoComplete="off"
           />
           {selectedContact && (
@@ -118,7 +122,7 @@ function ExpenseContactSearchField({
               }}
               tabIndex={-1}
             >
-              ✕
+              {t("common.close")}
             </button>
           )}
         </div>
@@ -143,7 +147,9 @@ function ExpenseContactSearchField({
         )}
         {showDropdown && results.length === 0 && query.length > 0 && (
           <ul className="border-base-300 bg-base-100 absolute z-10 mt-1 w-full rounded-md border shadow-lg">
-            <li className="px-4 py-2 text-sm opacity-60">No contacts found</li>
+            <li className="px-4 py-2 text-sm opacity-60">
+              {t("common.noContactsFound")}
+            </li>
           </ul>
         )}
       </div>
@@ -152,6 +158,7 @@ function ExpenseContactSearchField({
 }
 
 const TransactionForm = ({ onSubmit, onCancel }: TransactionFormProps) => {
+  const { t } = useTranslation();
   const [transactionType, setTransactionType] =
     useState<TransactionType>("LendRepay");
   const [amount, setAmount] = useState("");
@@ -267,7 +274,7 @@ const TransactionForm = ({ onSubmit, onCancel }: TransactionFormProps) => {
       <div className="space-y-4">
         <div className="flex items-center">
           <label className="w-1/3 text-sm font-semibold" htmlFor="txType">
-            Type *
+            {t("transactions.type")} *
           </label>
           <select
             id="txType"
@@ -278,9 +285,9 @@ const TransactionForm = ({ onSubmit, onCancel }: TransactionFormProps) => {
             className="select select-bordered w-full"
             required
           >
-            {TRANSACTION_TYPES.map((t) => (
-              <option key={t} value={t}>
-                {t}
+            {TRANSACTION_TYPES.map((type) => (
+              <option key={type} value={type}>
+                {t(`transactionType.${type}`)}
               </option>
             ))}
           </select>
@@ -292,7 +299,7 @@ const TransactionForm = ({ onSubmit, onCancel }: TransactionFormProps) => {
               className="w-1/3 text-sm font-semibold"
               htmlFor="lendingContract"
             >
-              Lending Contract *
+              {t("transactions.lendingContract")} *
             </label>
             <select
               id="lendingContract"
@@ -305,10 +312,13 @@ const TransactionForm = ({ onSubmit, onCancel }: TransactionFormProps) => {
               className="select select-bordered w-full"
               required
             >
-              <option value="">— Select lending contract —</option>
+              <option value="">
+                {t("transactions.selectLendingContract")}
+              </option>
               {lendingContracts.map((c) => (
                 <option key={c.id} value={c.id}>
-                  #{c.id} — {c.contact.name} — {c.financeCategoryType} (
+                  #{c.id} — {c.contact.name} —{" "}
+                  {t(`financeCategory.${c.financeCategoryType}`)} (
                   {c.amount.toLocaleString()})
                 </option>
               ))}
@@ -322,7 +332,7 @@ const TransactionForm = ({ onSubmit, onCancel }: TransactionFormProps) => {
               className="w-1/3 text-sm font-semibold"
               htmlFor="borrowingContract"
             >
-              Borrowing Contract *
+              {t("transactions.borrowingContract")} *
             </label>
             <select
               id="borrowingContract"
@@ -335,10 +345,13 @@ const TransactionForm = ({ onSubmit, onCancel }: TransactionFormProps) => {
               className="select select-bordered w-full"
               required
             >
-              <option value="">— Select borrowing contract —</option>
+              <option value="">
+                {t("transactions.selectBorrowingContract")}
+              </option>
               {borrowingContracts.map((c) => (
                 <option key={c.id} value={c.id}>
-                  #{c.id} — {c.contact.name} — {c.financeCategoryType} (
+                  #{c.id} — {c.contact.name} —{" "}
+                  {t(`financeCategory.${c.financeCategoryType}`)} (
                   {c.amount.toLocaleString()})
                 </option>
               ))}
@@ -348,15 +361,19 @@ const TransactionForm = ({ onSubmit, onCancel }: TransactionFormProps) => {
 
         <div className="flex items-center">
           <label className="w-1/3 text-sm font-semibold" htmlFor="financeCat">
-            Category *
+            {t("common.category")} *
           </label>
           {isRepay(transactionType) ? (
             <input
               id="financeCat"
               type="text"
-              value={repayContractSelected ? financeCategoryType : ""}
+              value={
+                repayContractSelected
+                  ? t(`financeCategory.${financeCategoryType}`)
+                  : ""
+              }
               readOnly
-              placeholder="Select a contract first"
+              placeholder={t("transactions.selectContractFirst")}
               className="input input-bordered w-full cursor-not-allowed opacity-60"
               tabIndex={-1}
             />
@@ -372,7 +389,7 @@ const TransactionForm = ({ onSubmit, onCancel }: TransactionFormProps) => {
             >
               {FINANCE_CATEGORIES.map((c) => (
                 <option key={c} value={c}>
-                  {c}
+                  {t(`financeCategory.${c}`)}
                 </option>
               ))}
             </select>
@@ -381,7 +398,7 @@ const TransactionForm = ({ onSubmit, onCancel }: TransactionFormProps) => {
 
         <div className="flex items-center">
           <label className="w-1/3 text-sm font-semibold" htmlFor="vault">
-            Vault *
+            {t("common.vault")} *
           </label>
           <select
             id="vault"
@@ -392,7 +409,7 @@ const TransactionForm = ({ onSubmit, onCancel }: TransactionFormProps) => {
             className="select select-bordered w-full"
             required
           >
-            <option value="">— Select vault —</option>
+            <option value="">{t("common.selectVault")}</option>
             {vaults.map((v) => (
               <option key={v.id} value={v.id}>
                 #{v.id} — {v.name}
@@ -403,7 +420,7 @@ const TransactionForm = ({ onSubmit, onCancel }: TransactionFormProps) => {
 
         <div className="flex items-center">
           <label className="w-1/3 text-sm font-semibold" htmlFor="amount">
-            Amount *
+            {t("common.amount")} *
           </label>
           <input
             id="amount"
@@ -424,7 +441,7 @@ const TransactionForm = ({ onSubmit, onCancel }: TransactionFormProps) => {
                 className="w-1/3 text-sm font-semibold"
                 htmlFor="expenseType"
               >
-                Expense Type *
+                {t("transactions.expenseType")} *
               </label>
               <select
                 id="expenseType"
@@ -435,9 +452,9 @@ const TransactionForm = ({ onSubmit, onCancel }: TransactionFormProps) => {
                 className="select select-bordered w-full"
                 required
               >
-                {EXPENSE_TYPES.map((t) => (
-                  <option key={t} value={t}>
-                    {t}
+                {EXPENSE_TYPES.map((et) => (
+                  <option key={et} value={et}>
+                    {t(`expenseType.${et}`)}
                   </option>
                 ))}
               </select>
@@ -455,7 +472,7 @@ const TransactionForm = ({ onSubmit, onCancel }: TransactionFormProps) => {
             className="w-1/3 pt-2 text-sm font-semibold"
             htmlFor="description"
           >
-            Description *
+            {t("common.description")} *
           </label>
           <textarea
             id="description"
@@ -473,10 +490,10 @@ const TransactionForm = ({ onSubmit, onCancel }: TransactionFormProps) => {
             className="btn btn-neutral btn-outline"
             onClick={onCancel}
           >
-            Cancel
+            {t("common.cancel")}
           </button>
           <button type="submit" className="btn btn-primary btn-outline">
-            Add
+            {t("common.add")}
           </button>
         </div>
       </div>

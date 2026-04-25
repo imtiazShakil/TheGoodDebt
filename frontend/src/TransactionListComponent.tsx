@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { PencilSimple, Plus, Trash } from "@phosphor-icons/react";
 import {
   addTransaction,
@@ -26,6 +27,7 @@ function contractLabel(tx: Transaction): { label: string; cls: string } {
 }
 
 function TransactionListComponent() {
+  const { t } = useTranslation();
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const addModalRef = useRef<HTMLDialogElement>(null);
   const editModalRef = useRef<HTMLDialogElement>(null);
@@ -50,7 +52,7 @@ function TransactionListComponent() {
       })
       .catch((err) => {
         console.error("Error adding transaction", err);
-        alert(`Failed to add transaction: ${err?.message ?? err}`);
+        alert(`${t("transactions.failedToAdd")} ${err?.message ?? err}`);
       })
       .finally(() => addModalRef.current?.close());
   };
@@ -67,7 +69,7 @@ function TransactionListComponent() {
       .then((updated) => {
         if (!updated) return;
         setTransactions((prev) =>
-          prev.map((t) => (t.id === updated.id ? updated : t)),
+          prev.map((tx) => (tx.id === updated.id ? updated : tx)),
         );
       })
       .catch((err) => console.error("Error editing transaction", err))
@@ -77,27 +79,30 @@ function TransactionListComponent() {
       });
   };
 
-  const handleDelete = useCallback((tx: Transaction) => {
-    if (!confirm(`Delete transaction #${tx.id}? This is irreversible.`)) return;
-    deleteTransaction(tx.id)
-      .then((result) => {
-        if (!result) return;
-        setTransactions((prev) => prev.filter((t) => t.id !== tx.id));
-      })
-      .catch((err) => {
-        console.error("Error deleting transaction", err);
-        alert(`Failed to delete: ${err?.message ?? err}`);
-      });
-  }, []);
+  const handleDelete = useCallback(
+    (tx: Transaction) => {
+      if (!confirm(t("transactions.deleteConfirm", { id: tx.id }))) return;
+      deleteTransaction(tx.id)
+        .then((result) => {
+          if (!result) return;
+          setTransactions((prev) => prev.filter((t) => t.id !== tx.id));
+        })
+        .catch((err) => {
+          console.error("Error deleting transaction", err);
+          alert(`${t("transactions.failedToDelete")} ${err?.message ?? err}`);
+        });
+    },
+    [t],
+  );
 
   return (
     <>
       <div className="flex justify-between">
         <h2 className="shadow-secondary mb-3 text-3xl font-bold underline shadow-xl ring-4">
-          Transactions
+          {t("transactions.title")}
         </h2>
         <button className="btn btn-soft btn-primary" onClick={handleAdd}>
-          Add Transaction
+          {t("transactions.addTransaction")}
           <Plus size={24} />
         </button>
       </div>
@@ -106,17 +111,17 @@ function TransactionListComponent() {
         <table className="table-pin-rows table">
           <thead>
             <tr>
-              <th>ID</th>
-              <th>Date</th>
-              <th>Type</th>
-              <th className="text-right">Amount</th>
-              <th>Vault</th>
-              <th>Contact</th>
-              <th>Category</th>
-              <th>Contract</th>
-              <th>Description</th>
-              <th className="text-right">Balance</th>
-              <th>Actions</th>
+              <th>{t("common.id")}</th>
+              <th>{t("common.date")}</th>
+              <th>{t("transactions.type")}</th>
+              <th className="text-right">{t("common.amount")}</th>
+              <th>{t("common.vault")}</th>
+              <th>{t("common.contact")}</th>
+              <th>{t("common.category")}</th>
+              <th>{t("transactions.contract")}</th>
+              <th>{t("common.description")}</th>
+              <th className="text-right">{t("common.balance")}</th>
+              <th>{t("common.actions")}</th>
             </tr>
           </thead>
           <tbody>
@@ -138,18 +143,18 @@ function TransactionListComponent() {
                     <span
                       className={`badge badge-sm ${TYPE_BADGE[tx.transactionType] ?? ""}`}
                     >
-                      {tx.transactionType}
+                      {t(`transactionType.${tx.transactionType}`)}
                     </span>
                     {tx.expenseType && (
                       <span className="ml-1 text-xs opacity-70">
-                        ({tx.expenseType})
+                        ({t(`expenseType.${tx.expenseType}`)})
                       </span>
                     )}
                   </td>
                   <td className="text-right">{tx.amount.toLocaleString()}</td>
                   <td>{tx.vault?.name ?? `#${tx.vault?.id ?? "?"}`}</td>
                   <td>{tx.contact?.name ?? "—"}</td>
-                  <td>{tx.financeCategoryType}</td>
+                  <td>{t(`financeCategory.${tx.financeCategoryType}`)}</td>
                   <td className={contract.cls}>{contract.label}</td>
                   <td className="max-w-xs truncate" title={tx.description}>
                     {tx.description}
@@ -161,7 +166,7 @@ function TransactionListComponent() {
                     <button
                       className="btn btn-ghost btn-circle"
                       onClick={() => handleEdit(tx)}
-                      title="Edit description"
+                      title={t("transactions.editDescriptionTitle")}
                     >
                       <PencilSimple size={24} />
                     </button>
@@ -169,7 +174,7 @@ function TransactionListComponent() {
                       <button
                         className="btn btn-ghost btn-circle text-error"
                         onClick={() => handleDelete(tx)}
-                        title="Delete (latest only)"
+                        title={t("transactions.deleteTitle")}
                       >
                         <Trash size={24} />
                       </button>
@@ -186,10 +191,12 @@ function TransactionListComponent() {
         <div className="modal-box max-w-2xl">
           <form method="dialog">
             <button className="btn btn-sm btn-circle btn-ghost absolute top-2 right-2">
-              ✕
+              {t("common.close")}
             </button>
           </form>
-          <h2 className="mb-4 text-2xl font-bold">New Transaction</h2>
+          <h2 className="mb-4 text-2xl font-bold">
+            {t("transactions.newTransaction")}
+          </h2>
           <TransactionForm
             onSubmit={handleFormSubmit}
             onCancel={() => addModalRef.current?.close()}
@@ -204,11 +211,13 @@ function TransactionListComponent() {
               className="btn btn-sm btn-circle btn-ghost absolute top-2 right-2"
               onClick={() => setEditingTx(null)}
             >
-              ✕
+              {t("common.close")}
             </button>
           </form>
           <h2 className="mb-4 text-2xl font-bold">
-            Edit Description{editingTx ? ` — #${editingTx.id}` : ""}
+            {editingTx
+              ? t("transactions.editDescription", { id: editingTx.id })
+              : t("transactions.editDescriptionTitle")}
           </h2>
           <textarea
             className="textarea textarea-bordered w-full"
@@ -222,14 +231,14 @@ function TransactionListComponent() {
               className="btn btn-neutral btn-outline"
               onClick={() => editModalRef.current?.close()}
             >
-              Cancel
+              {t("common.cancel")}
             </button>
             <button
               type="button"
               className="btn btn-primary btn-outline"
               onClick={handleEditSave}
             >
-              Save
+              {t("common.save")}
             </button>
           </div>
         </div>

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Vault } from "./entity.interface";
 
 interface VaultFormProps {
@@ -8,6 +9,7 @@ interface VaultFormProps {
 }
 
 const VaultForm = ({ vault, onSubmit, onCancel }: VaultFormProps) => {
+  const { t } = useTranslation();
   const [id, setId] = useState(vault?.id ?? "");
   const [name, setName] = useState(vault?.name ?? "");
   const [description, setDescription] = useState(vault?.description ?? "");
@@ -40,7 +42,7 @@ const VaultForm = ({ vault, onSubmit, onCancel }: VaultFormProps) => {
       <div className="space-y-4">
         <div className="flex items-center">
           <label className="w-1/4 text-sm font-semibold" htmlFor="name">
-            Name
+            {t("common.name")}
           </label>
           <input
             type="text"
@@ -53,7 +55,7 @@ const VaultForm = ({ vault, onSubmit, onCancel }: VaultFormProps) => {
         </div>
         <div className="flex items-center">
           <label className="w-1/4 text-sm font-semibold" htmlFor="description">
-            Description
+            {t("common.description")}
           </label>
           <textarea
             id="description"
@@ -69,10 +71,10 @@ const VaultForm = ({ vault, onSubmit, onCancel }: VaultFormProps) => {
             className="btn btn-neutral btn-outline mr-2"
             onClick={onCancel}
           >
-            Cancel
+            {t("common.cancel")}
           </button>
           <button type="submit" className="btn btn-primary btn-outline">
-            {vault ? "Update" : "Add"}
+            {vault ? t("common.update") : t("common.add")}
           </button>
         </div>
       </div>
