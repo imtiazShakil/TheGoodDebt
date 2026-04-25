@@ -34,6 +34,7 @@ export interface LendingContract extends BaseEntity {
   financeCategoryType: "Qard al-Hasan" | "Zakat" | "Sadaqa" | "Waqf";
   reasonForLending?: string;
   contractStatus: "Active" | "Completed" | "Defaulted";
+  totalRepaid?: number;
 }
 
 export type FinanceCategoryType = LendingContract["financeCategoryType"];
@@ -55,6 +56,7 @@ export interface BorrowingContract extends BaseEntity {
     | "Guarantors reminder";
   contractStatus: "Active" | "Completed" | "Defaulted";
   adjustmentWithTransactionId?: number;
+  totalRepaid?: number;
 }
 
 export type LoanRecallStatus = BorrowingContract["loanRecallStatus"];

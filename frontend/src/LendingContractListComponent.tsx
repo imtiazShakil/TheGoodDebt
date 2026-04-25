@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useRef, useState } from "react";
 import { HandCoins, PencilSimple, Trash } from "@phosphor-icons/react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   addLendingContract,
   deleteLendingContract,
@@ -101,6 +101,7 @@ function LendingContractListComponent() {
               <th>Return Date</th>
               <th>Category</th>
               <th>Status</th>
+              <th>Repaid</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -123,6 +124,7 @@ function LendingContractListComponent() {
                     {contract.contractStatus}
                   </span>
                 </td>
+                <td>{(contract.totalRepaid ?? 0).toLocaleString()}</td>
                 <td className="flex gap-1">
                   <button
                     className="btn btn-ghost btn-circle"

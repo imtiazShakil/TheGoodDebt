@@ -1,13 +1,13 @@
-import { useCallback, useEffect, useRef, useState } from "react";
 import { HandDeposit, PencilSimple, Trash } from "@phosphor-icons/react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   addBorrowingContract,
   deleteBorrowingContract,
   editBorrowingContract,
   getBorrowingContracts,
 } from "./api";
-import { BorrowingContract } from "./entity.interface";
 import BorrowingContractForm from "./BorrowingContractForm";
+import { BorrowingContract } from "./entity.interface";
 
 const STATUS_BADGE: Record<string, string> = {
   Active: "badge-success",
@@ -38,9 +38,7 @@ function BorrowingContractListComponent() {
   useEffect(() => {
     getBorrowingContracts()
       .then(setContracts)
-      .catch((err) =>
-        console.error("Error fetching borrowing contracts", err),
-      );
+      .catch((err) => console.error("Error fetching borrowing contracts", err));
   }, []);
 
   const handleAdd = useCallback(() => {
@@ -77,9 +75,7 @@ function BorrowingContractListComponent() {
             prev.map((c) => (c.id === contract.id ? contract : c)),
           );
         })
-        .catch((err) =>
-          console.error("Error editing borrowing contract", err),
-        )
+        .catch((err) => console.error("Error editing borrowing contract", err))
         .finally(() => modalRef.current?.close());
     } else {
       if (vaultId === undefined) return;
@@ -121,6 +117,7 @@ function BorrowingContractListComponent() {
               <th>Guarantors</th>
               <th>Recall</th>
               <th>Status</th>
+              <th>Repaid</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -155,6 +152,7 @@ function BorrowingContractListComponent() {
                     {contract.contractStatus}
                   </span>
                 </td>
+                <td>{(contract.totalRepaid ?? 0).toLocaleString()}</td>
                 <td className="flex gap-1">
                   <button
                     className="btn btn-ghost btn-circle"

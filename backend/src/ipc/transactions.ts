@@ -1,19 +1,19 @@
-import { IpcMain } from "electron";
 import { EntityManager } from "@mikro-orm/core";
+import { IpcMain } from "electron";
 import { orm } from "../repository/db";
-import { ContactDetails } from "../repository/entity/contact-details";
-import { Vault } from "../repository/entity/vault";
-import { VaultBalanceHistory } from "../repository/entity/vault-balance-history";
-import {
-  LendingContract,
-  FinanceCategoryType,
-} from "../repository/entity/lending-contract";
 import { BorrowingContract } from "../repository/entity/borrowing-contract";
+import { ContactDetails } from "../repository/entity/contact-details";
+import {
+  FinanceCategoryType,
+  LendingContract,
+} from "../repository/entity/lending-contract";
 import {
   ExpenseType,
   Transaction,
   TransactionType,
 } from "../repository/entity/transaction";
+import { Vault } from "../repository/entity/vault";
+import { VaultBalanceHistory } from "../repository/entity/vault-balance-history";
 
 const POPULATE = [
   "vault",
@@ -38,6 +38,25 @@ const CATEGORY_FIELD: Record<
   [FinanceCategoryType.Sadaqa]: "sadaqaBalance",
   [FinanceCategoryType.Waqf]: "waqfBalance",
 };
+
+export async function computeRepaidTotals(
+  em: EntityManager,
+  contractIds: number[],
+  contractKey: "lendingContract" | "borrowingContract",
+  transactionType: TransactionType,
+): Promise<Record<number, number>> {
+  if (contractIds.length === 0) return {};
+  const txs = await em.find(Transaction, {
+    [contractKey]: { $in: contractIds },
+    transactionType,
+  });
+  const result: Record<number, number> = {};
+  for (const tx of txs) {
+    const id = (tx[contractKey] as { id: number }).id;
+    result[id] = (result[id] ?? 0) + tx.amount;
+  }
+  return result;
+}
 
 export interface LedgerEntryInput {
   vaultId: number;
@@ -130,10 +149,7 @@ function validatePayload(data: {
   const hasBorrowing = !!data.borrowingContract?.id;
   const hasExpenseType = !!data.expenseType;
 
-  if (
-    type === TransactionType.Lend ||
-    type === TransactionType.Borrow
-  ) {
+  if (type === TransactionType.Lend || type === TransactionType.Borrow) {
     throw new Error(
       `${type} transactions are created automatically via contracts`,
     );

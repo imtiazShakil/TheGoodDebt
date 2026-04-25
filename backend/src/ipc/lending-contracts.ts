@@ -5,17 +5,24 @@ import {
   ContractStatus,
   LendingContract,
 } from "../repository/entity/lending-contract";
-import {
-  Transaction,
-  TransactionType,
-} from "../repository/entity/transaction";
+import { Transaction, TransactionType } from "../repository/entity/transaction";
 import { VaultBalanceHistory } from "../repository/entity/vault-balance-history";
-import { createLedgerEntry } from "./transactions";
+import { computeRepaidTotals, createLedgerEntry } from "./transactions";
 
 export function registerHandlers(ipcMain: IpcMain) {
   ipcMain.handle("GET lending-contracts", async () => {
     const em = orm.em.fork();
-    return await em.findAll(LendingContract, { populate: ["contact"] });
+    const contracts = await em.findAll(LendingContract, {
+      populate: ["contact"],
+    });
+    const ids = contracts.map((c) => c.id);
+    const repaidMap = await computeRepaidTotals(
+      em,
+      ids,
+      "lendingContract",
+      TransactionType.LendRepay,
+    );
+    return contracts.map((c) => ({ ...c, totalRepaid: repaidMap[c.id] ?? 0 }));
   });
 
   ipcMain.handle("POST lending-contracts", async (_event, data) => {

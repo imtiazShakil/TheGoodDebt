@@ -3,19 +3,24 @@ import { orm } from "../repository/db";
 import { ContactDetails } from "../repository/entity/contact-details";
 import { BorrowingContract } from "../repository/entity/borrowing-contract";
 import { ContractStatus } from "../repository/entity/lending-contract";
-import {
-  Transaction,
-  TransactionType,
-} from "../repository/entity/transaction";
+import { Transaction, TransactionType } from "../repository/entity/transaction";
 import { VaultBalanceHistory } from "../repository/entity/vault-balance-history";
-import { createLedgerEntry } from "./transactions";
+import { computeRepaidTotals, createLedgerEntry } from "./transactions";
 
 export function registerHandlers(ipcMain: IpcMain) {
   ipcMain.handle("GET borrowing-contracts", async () => {
     const em = orm.em.fork();
-    return await em.findAll(BorrowingContract, {
+    const contracts = await em.findAll(BorrowingContract, {
       populate: ["contact", "guarantor1", "guarantor2"],
     });
+    const ids = contracts.map((c) => c.id);
+    const repaidMap = await computeRepaidTotals(
+      em,
+      ids,
+      "borrowingContract",
+      TransactionType.BorrowRepay,
+    );
+    return contracts.map((c) => ({ ...c, totalRepaid: repaidMap[c.id] ?? 0 }));
   });
 
   ipcMain.handle("POST borrowing-contracts", async (_event, data) => {
