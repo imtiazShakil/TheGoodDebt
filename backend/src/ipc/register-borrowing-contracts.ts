@@ -1,39 +1,50 @@
 import { IpcMain } from "electron";
 import { orm } from "../repository/db";
 import { ContactDetails } from "../repository/entity/contact-details";
-import {
-  ContractStatus,
-  LendingContract,
-} from "../repository/entity/lending-contract";
+import { BorrowingContract } from "../repository/entity/borrowing-contract";
+import { ContractStatus } from "../repository/entity/lending-contract";
 import { Transaction, TransactionType } from "../repository/entity/transaction";
 import { VaultBalanceHistory } from "../repository/entity/vault-balance-history";
-import { computeRepaidTotals, createLedgerEntry } from "./transactions";
+import { assertVaultCategoryBalance, computeRepaidTotals, createLedgerEntry } from "./register-transactions";
 
 export function registerHandlers(ipcMain: IpcMain) {
-  ipcMain.handle("GET lending-contracts", async () => {
+  ipcMain.handle("GET borrowing-contracts", async () => {
     const em = orm.em.fork();
-    const contracts = await em.findAll(LendingContract, {
-      populate: ["contact"],
+    const contracts = await em.findAll(BorrowingContract, {
+      populate: ["contact", "guarantor1", "guarantor2"],
     });
     const ids = contracts.map((c) => c.id);
     const repaidMap = await computeRepaidTotals(
       em,
       ids,
-      "lendingContract",
-      TransactionType.LendRepay,
+      "borrowingContract",
+      TransactionType.BorrowRepay,
     );
     return contracts.map((c) => ({ ...c, totalRepaid: repaidMap[c.id] ?? 0 }));
   });
 
-  ipcMain.handle("POST lending-contracts", async (_event, data) => {
+  ipcMain.handle("POST borrowing-contracts", async (_event, data) => {
     if (!data.vaultId) throw new Error("vaultId is required");
     const { vaultId, ...rest } = data;
     rest.id = undefined;
 
     return await orm.em.fork().transactional(async (em) => {
-      const contract = em.create(LendingContract, {
+      await assertVaultCategoryBalance(
+        em,
+        vaultId,
+        data.financeCategoryType,
+        data.amount,
+      );
+
+      const contract = em.create(BorrowingContract, {
         ...rest,
         contact: em.getReference(ContactDetails, data.contact.id),
+        guarantor1: data.guarantor1?.id
+          ? em.getReference(ContactDetails, data.guarantor1.id)
+          : null,
+        guarantor2: data.guarantor2?.id
+          ? em.getReference(ContactDetails, data.guarantor2.id)
+          : null,
         contractStatus: ContractStatus.Active,
       });
       em.persist(contract);
@@ -42,37 +53,37 @@ export function registerHandlers(ipcMain: IpcMain) {
       await createLedgerEntry(em, {
         vaultId,
         amount: contract.amount,
-        transactionType: TransactionType.Lend,
+        transactionType: TransactionType.Borrow,
         financeCategoryType: contract.financeCategoryType,
-        description: contract.reasonForLending ?? "",
+        description: contract.purposeOfLoan ?? "",
         contactId: data.contact.id,
-        lendingContractId: contract.id,
+        borrowingContractId: contract.id,
       });
 
-      await em.populate(contract, ["contact"]);
+      await em.populate(contract, ["contact", "guarantor1", "guarantor2"]);
       return contract;
     });
   });
 
-  ipcMain.handle("PUT lending-contracts", async (_event, data) => {
+  ipcMain.handle("PUT borrowing-contracts", async (_event, data) => {
     const em = orm.em.fork();
-    const contract = await em.findOneOrFail(LendingContract, { id: data.id });
+    const contract = await em.findOneOrFail(BorrowingContract, { id: data.id });
     contract.durationDays = data.durationDays;
     contract.returnDate = data.returnDate;
-    contract.reasonForLending = data.reasonForLending;
+    contract.purposeOfLoan = data.purposeOfLoan;
     await em.persistAndFlush(contract);
-    await em.populate(contract, ["contact"]);
+    await em.populate(contract, ["contact", "guarantor1", "guarantor2"]);
     return contract;
   });
 
-  ipcMain.handle("DELETE lending-contracts", async (_event, data) => {
+  ipcMain.handle("DELETE borrowing-contracts", async (_event, data) => {
     return await orm.em.fork().transactional(async (em) => {
-      const contract = await em.findOneOrFail(LendingContract, {
+      const contract = await em.findOneOrFail(BorrowingContract, {
         id: data.id,
       });
 
       const autoTx = await em.findOne(Transaction, {
-        lendingContract: data.id,
+        borrowingContract: data.id,
       });
       if (autoTx) {
         const last = await em.findOne(

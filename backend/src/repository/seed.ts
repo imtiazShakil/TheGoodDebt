@@ -1,4 +1,4 @@
-import { createLedgerEntry } from "../ipc/transactions";
+import { createLedgerEntry } from "../ipc/register-transactions";
 import { orm } from "./db";
 import { BorrowingContract } from "./entity/borrowing-contract";
 import { ContactDetails } from "./entity/contact-details";

@@ -3,11 +3,11 @@ import path from "path";
 
 import { initializeDatabase } from "./repository/seed";
 import { closeORM, initORM } from "./repository/db";
-import { registerHandlers as registerContactHandlers } from "./ipc/contacts";
-import { registerHandlers as registerVaultHandlers } from "./ipc/vaults";
-import { registerHandlers as registerLendingHandlers } from "./ipc/lending-contracts";
-import { registerHandlers as registerBorrowingHandlers } from "./ipc/borrowing-contracts";
-import { registerHandlers as registerTransactionHandlers } from "./ipc/transactions";
+import { registerHandlers as registerContactHandlers } from "./ipc/register-contacts";
+import { registerHandlers as registerVaultHandlers } from "./ipc/register-vaults";
+import { registerHandlers as registerLendingHandlers } from "./ipc/register-lending-contracts";
+import { registerHandlers as registerBorrowingHandlers } from "./ipc/register-borrowing-contracts";
+import { registerHandlers as registerTransactionHandlers } from "./ipc/register-transactions";
 
 let mainWindow: BrowserWindow;
 
