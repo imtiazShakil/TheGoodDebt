@@ -15,6 +15,7 @@ async function createWindow() {
   mainWindow = new BrowserWindow({
     width: 1200,
     height: 900,
+    autoHideMenuBar: true,
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
     },
