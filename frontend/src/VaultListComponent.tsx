@@ -1,5 +1,7 @@
+import { PencilSimple, Trash, Vault as VaultIcon } from "@phosphor-icons/react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { toast } from "sonner";
 import {
   addVault,
   deleteVault,
@@ -9,7 +11,6 @@ import {
 } from "./api";
 import { Vault, VaultBalanceHistory } from "./entity.interface";
 import VaultForm from "./VaultForm";
-import { PencilSimple, Trash, Vault as VaultIcon } from "@phosphor-icons/react";
 
 function VaultListComponent() {
   const { t } = useTranslation();
@@ -55,9 +56,11 @@ function VaultListComponent() {
         .then((result) => {
           if (!result) return;
           setVaults((prev) => prev.filter((v) => v.id !== vault.id));
+          toast.success(t("vaults.deleted"));
         })
         .catch((error) => {
           console.error("Error deleting vault", error);
+          toast.error(t("vaults.failedToDelete"));
         });
     },
     [t],
@@ -69,25 +72,25 @@ function VaultListComponent() {
         .then((vault) => {
           if (!vault) return;
           setVaults((prev) => prev.map((v) => (v.id === vault.id ? vault : v)));
+          toast.success(t("vaults.updated"));
         })
         .catch((error) => {
           console.error("Error editing vault", error);
+          toast.error(t("vaults.failedToUpdate"));
         })
-        .finally(() => {
-          vaultModalRef.current?.close();
-        });
+        .finally(() => vaultModalRef.current?.close());
     } else {
       addVault(data)
         .then((vault) => {
           if (!vault) return;
           setVaults((prev) => [...prev, vault]);
+          toast.success(t("vaults.added"));
         })
         .catch((error) => {
           console.error("Error adding vault", error);
+          toast.error(t("vaults.failedToAdd"));
         })
-        .finally(() => {
-          vaultModalRef.current?.close();
-        });
+        .finally(() => vaultModalRef.current?.close());
     }
   };
 
@@ -117,7 +120,9 @@ function VaultListComponent() {
               <th>{t("common.id")}</th>
               <th>{t("common.name")}</th>
               <th>{t("common.description")}</th>
-              <th className="text-right">{t("financeCategory.Qard al-Hasan")}</th>
+              <th className="text-right">
+                {t("financeCategory.Qard al-Hasan")}
+              </th>
               <th className="text-right">{t("financeCategory.Zakat")}</th>
               <th className="text-right">{t("financeCategory.Sadaqa")}</th>
               <th className="text-right">{t("financeCategory.Waqf")}</th>
@@ -228,7 +233,9 @@ function VaultListComponent() {
                 <tr>
                   <th>{t("common.id")}</th>
                   <th>{t("vaults.recordedAt")}</th>
-                  <th className="text-right">{t("financeCategory.Qard al-Hasan")}</th>
+                  <th className="text-right">
+                    {t("financeCategory.Qard al-Hasan")}
+                  </th>
                   <th className="text-right">{t("financeCategory.Zakat")}</th>
                   <th className="text-right">{t("financeCategory.Sadaqa")}</th>
                   <th className="text-right">{t("financeCategory.Waqf")}</th>

@@ -45,7 +45,11 @@
     "fatherName": "পিতার নাম",
     "formTitle": "যোগাযোগ ফর্ম",
     "nidInfo": "জাতীয় পরিচয়পত্র তথ্য",
-    "fathersName": "পিতার নাম"
+    "fathersName": "পিতার নাম",
+    "added": "যোগাযোগ যোগ হয়েছে",
+    "updated": "যোগাযোগ আপডেট হয়েছে",
+    "failedToAdd": "যোগাযোগ যোগ করতে ব্যর্থ",
+    "failedToUpdate": "যোগাযোগ আপডেট করতে ব্যর্থ"
   },
   "vaults": {
     "title": "ভল্ট",
@@ -55,7 +59,13 @@
     "balanceHistory": "ব্যালেন্স ইতিহাস",
     "recordedAt": "রেকর্ড করা হয়েছে",
     "noBalanceHistory": "এখনো কোনো ব্যালেন্স ইতিহাস নেই।",
-    "deleteConfirm": "ভল্ট \"{{name}}\" মুছবেন?"
+    "deleteConfirm": "ভল্ট \"{{name}}\" মুছবেন?",
+    "added": "ভল্ট যোগ হয়েছে",
+    "updated": "ভল্ট আপডেট হয়েছে",
+    "deleted": "ভল্ট মুছে গেছে",
+    "failedToAdd": "ভল্ট যোগ করতে ব্যর্থ",
+    "failedToUpdate": "ভল্ট আপডেট করতে ব্যর্থ",
+    "failedToDelete": "ভল্ট মুছতে ব্যর্থ"
   },
   "lendingContracts": {
     "title": "ধার দেওয়ার চুক্তি",
@@ -63,8 +73,12 @@
     "reason": "কারণ",
     "formTitle": "ধার দেওয়ার চুক্তি",
     "deleteConfirm": "ধার দেওয়ার চুক্তি #{{id}} মুছবেন?",
-    "failedToAdd": "যোগ করতে ব্যর্থ:",
-    "failedToDelete": "মুছতে ব্যর্থ:"
+    "added": "ধার দেওয়ার চুক্তি যোগ হয়েছে",
+    "updated": "ধার দেওয়ার চুক্তি আপডেট হয়েছে",
+    "deleted": "ধার দেওয়ার চুক্তি মুছে গেছে",
+    "failedToAdd": "চুক্তি যোগ করতে ব্যর্থ",
+    "failedToUpdate": "চুক্তি আপডেট করতে ব্যর্থ",
+    "failedToDelete": "চুক্তি মুছতে ব্যর্থ"
   },
   "borrowingContracts": {
     "title": "ধার নেওয়ার চুক্তি",
@@ -78,8 +92,12 @@
     "adjTransactionId": "সমন্বয় লেনদেন আইডি",
     "formTitle": "ধার নেওয়ার চুক্তি",
     "deleteConfirm": "ধার নেওয়ার চুক্তি #{{id}} মুছবেন?",
-    "failedToAdd": "যোগ করতে ব্যর্থ:",
-    "failedToDelete": "মুছতে ব্যর্থ:"
+    "added": "ধার নেওয়ার চুক্তি যোগ হয়েছে",
+    "updated": "ধার নেওয়ার চুক্তি আপডেট হয়েছে",
+    "deleted": "ধার নেওয়ার চুক্তি মুছে গেছে",
+    "failedToAdd": "চুক্তি যোগ করতে ব্যর্থ",
+    "failedToUpdate": "চুক্তি আপডেট করতে ব্যর্থ",
+    "failedToDelete": "চুক্তি মুছতে ব্যর্থ"
   },
   "transactions": {
     "title": "লেনদেন",
@@ -91,8 +109,12 @@
     "editDescriptionTitle": "বিবরণ সম্পাদনা করুন",
     "deleteTitle": "মুছুন (শুধুমাত্র সর্বশেষ)",
     "deleteConfirm": "লেনদেন #{{id}} মুছবেন? এটি অপরিবর্তনীয়।",
-    "failedToAdd": "লেনদেন যোগ করতে ব্যর্থ:",
-    "failedToDelete": "মুছতে ব্যর্থ:",
+    "added": "লেনদেন যোগ হয়েছে",
+    "updated": "বিবরণ আপডেট হয়েছে",
+    "deleted": "লেনদেন মুছে গেছে",
+    "failedToAdd": "লেনদেন যোগ করতে ব্যর্থ",
+    "failedToUpdate": "বিবরণ আপডেট করতে ব্যর্থ",
+    "failedToDelete": "লেনদেন মুছতে ব্যর্থ",
     "lendingContract": "ধার দেওয়ার চুক্তি",
     "borrowingContract": "ধার নেওয়ার চুক্তি",
     "selectLendingContract": "— ধার দেওয়ার চুক্তি নির্বাচন করুন —",

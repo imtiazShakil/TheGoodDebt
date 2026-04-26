@@ -1,6 +1,7 @@
 import { HandDeposit, PencilSimple, Trash } from "@phosphor-icons/react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { toast } from "sonner";
 import {
   addBorrowingContract,
   deleteBorrowingContract,
@@ -63,12 +64,13 @@ function BorrowingContractListComponent() {
         .then((result) => {
           if (!result) return;
           setContracts((prev) => prev.filter((c) => c.id !== contract.id));
+          toast.success(t("borrowingContracts.deleted"));
         })
         .catch((err) => {
           console.error("Error deleting borrowing contract", err);
-          alert(
-            `${t("borrowingContracts.failedToDelete")} ${err?.message ?? err}`,
-          );
+          toast.error(t("borrowingContracts.failedToDelete"), {
+            description: err?.message ?? String(err),
+          });
         });
     },
     [t],
@@ -82,8 +84,12 @@ function BorrowingContractListComponent() {
           setContracts((prev) =>
             prev.map((c) => (c.id === contract.id ? contract : c)),
           );
+          toast.success(t("borrowingContracts.updated"));
         })
-        .catch((err) => console.error("Error editing borrowing contract", err))
+        .catch((err) => {
+          console.error("Error editing borrowing contract", err);
+          toast.error(t("borrowingContracts.failedToUpdate"));
+        })
         .finally(() => modalRef.current?.close());
     } else {
       if (vaultId === undefined) return;
@@ -91,12 +97,13 @@ function BorrowingContractListComponent() {
         .then((contract) => {
           if (!contract) return;
           setContracts((prev) => [...prev, contract]);
+          toast.success(t("borrowingContracts.added"));
         })
         .catch((err) => {
           console.error("Error adding borrowing contract", err);
-          alert(
-            `${t("borrowingContracts.failedToAdd")} ${err?.message ?? err}`,
-          );
+          toast.error(t("borrowingContracts.failedToAdd"), {
+            description: err?.message ?? String(err),
+          });
         })
         .finally(() => modalRef.current?.close());
     }

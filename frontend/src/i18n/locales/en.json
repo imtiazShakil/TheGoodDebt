@@ -45,7 +45,11 @@
     "fatherName": "Father Name",
     "formTitle": "Contact Form",
     "nidInfo": "NID Info",
-    "fathersName": "Father's Name"
+    "fathersName": "Father's Name",
+    "added": "Contact added",
+    "updated": "Contact updated",
+    "failedToAdd": "Failed to add contact",
+    "failedToUpdate": "Failed to update contact"
   },
   "vaults": {
     "title": "Vaults",
@@ -55,7 +59,13 @@
     "balanceHistory": "Balance History",
     "recordedAt": "Recorded At",
     "noBalanceHistory": "No balance history yet.",
-    "deleteConfirm": "Delete vault \"{{name}}\"?"
+    "deleteConfirm": "Delete vault \"{{name}}\"?",
+    "added": "Vault added",
+    "updated": "Vault updated",
+    "deleted": "Vault deleted",
+    "failedToAdd": "Failed to add vault",
+    "failedToUpdate": "Failed to update vault",
+    "failedToDelete": "Failed to delete vault"
   },
   "lendingContracts": {
     "title": "Lending Contracts",
@@ -63,8 +73,12 @@
     "reason": "Reason",
     "formTitle": "Lending Contract",
     "deleteConfirm": "Delete lending contract #{{id}}?",
-    "failedToAdd": "Failed to add:",
-    "failedToDelete": "Failed to delete:"
+    "added": "Lending contract added",
+    "updated": "Lending contract updated",
+    "deleted": "Lending contract deleted",
+    "failedToAdd": "Failed to add contract",
+    "failedToUpdate": "Failed to update contract",
+    "failedToDelete": "Failed to delete contract"
   },
   "borrowingContracts": {
     "title": "Borrowing Contracts",
@@ -78,8 +92,12 @@
     "adjTransactionId": "Adj. Transaction ID",
     "formTitle": "Borrowing Contract",
     "deleteConfirm": "Delete borrowing contract #{{id}}?",
-    "failedToAdd": "Failed to add:",
-    "failedToDelete": "Failed to delete:"
+    "added": "Borrowing contract added",
+    "updated": "Borrowing contract updated",
+    "deleted": "Borrowing contract deleted",
+    "failedToAdd": "Failed to add contract",
+    "failedToUpdate": "Failed to update contract",
+    "failedToDelete": "Failed to delete contract"
   },
   "transactions": {
     "title": "Transactions",
@@ -91,8 +109,12 @@
     "editDescriptionTitle": "Edit description",
     "deleteTitle": "Delete (latest only)",
     "deleteConfirm": "Delete transaction #{{id}}? This is irreversible.",
-    "failedToAdd": "Failed to add transaction:",
-    "failedToDelete": "Failed to delete:",
+    "added": "Transaction added",
+    "updated": "Description updated",
+    "deleted": "Transaction deleted",
+    "failedToAdd": "Failed to add transaction",
+    "failedToUpdate": "Failed to update description",
+    "failedToDelete": "Failed to delete transaction",
     "lendingContract": "Lending Contract",
     "borrowingContract": "Borrowing Contract",
     "selectLendingContract": "— Select lending contract —",

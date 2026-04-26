@@ -1,6 +1,7 @@
+import { PencilSimple, Plus, Trash } from "@phosphor-icons/react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { PencilSimple, Plus, Trash } from "@phosphor-icons/react";
+import { toast } from "sonner";
 import {
   addTransaction,
   deleteTransaction,
@@ -49,10 +50,13 @@ function TransactionListComponent() {
       .then((tx) => {
         if (!tx) return;
         setTransactions((prev) => [tx, ...prev]);
+        toast.success(t("transactions.added"));
       })
       .catch((err) => {
         console.error("Error adding transaction", err);
-        alert(`${t("transactions.failedToAdd")} ${err?.message ?? err}`);
+        toast.error(t("transactions.failedToAdd"), {
+          description: err?.message ?? String(err),
+        });
       })
       .finally(() => addModalRef.current?.close());
   };
@@ -71,8 +75,12 @@ function TransactionListComponent() {
         setTransactions((prev) =>
           prev.map((tx) => (tx.id === updated.id ? updated : tx)),
         );
+        toast.success(t("transactions.updated"));
       })
-      .catch((err) => console.error("Error editing transaction", err))
+      .catch((err) => {
+        console.error("Error editing transaction", err);
+        toast.error(t("transactions.failedToUpdate"));
+      })
       .finally(() => {
         editModalRef.current?.close();
         setEditingTx(null);
@@ -86,10 +94,13 @@ function TransactionListComponent() {
         .then((result) => {
           if (!result) return;
           setTransactions((prev) => prev.filter((t) => t.id !== tx.id));
+          toast.success(t("transactions.deleted"));
         })
         .catch((err) => {
           console.error("Error deleting transaction", err);
-          alert(`${t("transactions.failedToDelete")} ${err?.message ?? err}`);
+          toast.error(t("transactions.failedToDelete"), {
+            description: err?.message ?? String(err),
+          });
         });
     },
     [t],

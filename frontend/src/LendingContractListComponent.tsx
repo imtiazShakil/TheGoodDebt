@@ -1,6 +1,7 @@
 import { HandCoins, PencilSimple, Trash } from "@phosphor-icons/react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { toast } from "sonner";
 import {
   addLendingContract,
   deleteLendingContract,
@@ -49,10 +50,13 @@ function LendingContractListComponent() {
         .then((result) => {
           if (!result) return;
           setContracts((prev) => prev.filter((c) => c.id !== contract.id));
+          toast.success(t("lendingContracts.deleted"));
         })
         .catch((err) => {
           console.error("Error deleting lending contract", err);
-          alert(`${t("lendingContracts.failedToDelete")} ${err?.message ?? err}`);
+          toast.error(t("lendingContracts.failedToDelete"), {
+            description: err?.message ?? String(err),
+          });
         });
     },
     [t],
@@ -66,8 +70,12 @@ function LendingContractListComponent() {
           setContracts((prev) =>
             prev.map((c) => (c.id === contract.id ? contract : c)),
           );
+          toast.success(t("lendingContracts.updated"));
         })
-        .catch((err) => console.error("Error editing lending contract", err))
+        .catch((err) => {
+          console.error("Error editing lending contract", err);
+          toast.error(t("lendingContracts.failedToUpdate"));
+        })
         .finally(() => modalRef.current?.close());
     } else {
       if (vaultId === undefined) return;
@@ -75,10 +83,13 @@ function LendingContractListComponent() {
         .then((contract) => {
           if (!contract) return;
           setContracts((prev) => [...prev, contract]);
+          toast.success(t("lendingContracts.added"));
         })
         .catch((err) => {
           console.error("Error adding lending contract", err);
-          alert(`${t("lendingContracts.failedToAdd")} ${err?.message ?? err}`);
+          toast.error(t("lendingContracts.failedToAdd"), {
+            description: err?.message ?? String(err),
+          });
         })
         .finally(() => modalRef.current?.close());
     }

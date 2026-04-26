@@ -1,9 +1,10 @@
+import { PencilSimple, UserPlus } from "@phosphor-icons/react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { toast } from "sonner";
 import { addContact, editContact, getContacts } from "./api";
-import { ContactDetails } from "./entity.interface";
 import ContactForm from "./ContactForm";
-import { PencilSimple, UserPlus } from "@phosphor-icons/react";
+import { ContactDetails } from "./entity.interface";
 
 function ContactListComponent() {
   const { t } = useTranslation();
@@ -29,40 +30,32 @@ function ContactListComponent() {
   );
 
   const handleFormSubmit = (data: ContactDetails) => {
-    console.log("handleFormsubmit contact", data);
-
     if (data.id) {
       editContact(data)
         .then((contact) => {
-          if (contact === null) {
-            console.error("Error editing contact");
-            return;
-          }
+          if (contact === null) return;
           setContacts((prevContacts) =>
             prevContacts.map((c) => (c.id === contact.id ? contact : c)),
           );
+          toast.success(t("contacts.updated"));
         })
         .catch((error) => {
           console.error("Error editing contact", error);
+          toast.error(t("contacts.failedToUpdate"));
         })
-        .finally(() => {
-          contactModalRef.current?.close();
-        });
+        .finally(() => contactModalRef.current?.close());
     } else {
       addContact(data)
         .then((contact) => {
-          if (contact === null) {
-            console.error("Error adding contact");
-            return;
-          }
+          if (contact === null) return;
           setContacts([...contacts, contact]);
+          toast.success(t("contacts.added"));
         })
         .catch((error) => {
           console.error("Error adding contact", error);
+          toast.error(t("contacts.failedToAdd"));
         })
-        .finally(() => {
-          contactModalRef.current?.close();
-        });
+        .finally(() => contactModalRef.current?.close());
     }
   };
 
