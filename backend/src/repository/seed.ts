@@ -3,7 +3,6 @@ import { orm } from "./db";
 import { BorrowingContract } from "./entity/borrowing-contract";
 import { ContactDetails } from "./entity/contact-details";
 import {
-  ContractStatus,
   FinanceCategoryType,
   LendingContract,
 } from "./entity/lending-contract";
@@ -26,64 +25,64 @@ export async function initializeDatabase() {
   const em = orm.em.fork();
   if ((await em.count(ContactDetails)) > 0) return;
 
-  const john = em.create(ContactDetails, {
-    name: "John Doe",
-    fatherName: "John Doe Sr.",
-    nidInfo: "100001",
-    phone: "0170000001",
-    address: "123 Main St.",
+  const rafiqul = em.create(ContactDetails, {
+    name: "Mohammad Rafiqul Islam",
+    fatherName: "Mohammad Ataur Rahman",
+    nidInfo: "1987245360",
+    phone: "01712345678",
+    address: "House 12, Road 4, Mirpur-10, Dhaka",
   });
-  const alice = em.create(ContactDetails, {
-    name: "Alice Rahman",
-    fatherName: "Abdul Rahman",
-    nidInfo: "100002",
-    phone: "0170000002",
-    address: "45 Park Ave.",
-  });
-  const jane = em.create(ContactDetails, {
-    name: "Jane Dutch",
-    fatherName: "James Dutch",
-    nidInfo: "100003",
-    phone: "0170000003",
-    address: "987 Elm St.",
+  const fatema = em.create(ContactDetails, {
+    name: "Fatema Akter",
+    fatherName: "Abul Kashem Mia",
+    nidInfo: "1992456789",
+    phone: "01819876543",
+    address: "Village: Rampur, Upazila: Comilla Sadar, Comilla",
   });
   const karim = em.create(ContactDetails, {
-    name: "Karim Uddin",
-    fatherName: "Jalal Uddin",
-    nidInfo: "100004",
-    phone: "0170000004",
-    address: "12 Lake Rd.",
+    name: "Abdul Karim Chowdhury",
+    fatherName: "Abdul Jabbar Chowdhury",
+    nidInfo: "1978563412",
+    phone: "01911234567",
+    address: "Flat 3B, Nasirabad Housing Society, Chittagong",
   });
-  const omar = em.create(ContactDetails, {
-    name: "Omar Faruq",
-    fatherName: "Hasan Faruq",
-    nidInfo: "100005",
-    phone: "0170000005",
-    address: "88 River Side",
+  const nasrin = em.create(ContactDetails, {
+    name: "Nasrin Sultana",
+    fatherName: "Mohammad Yunus Mia",
+    nidInfo: "1995874321",
+    phone: "01634567890",
+    address: "Block D, House 7, Sylhet Sadar, Sylhet",
   });
-  await em.persistAndFlush([john, alice, jane, karim, omar]);
+  const sohrab = em.create(ContactDetails, {
+    name: "Sohrab Hossain",
+    fatherName: "Golam Hossain",
+    nidInfo: "1983127654",
+    phone: "01756789012",
+    address: "Ward 5, Barishal Sadar, Barishal",
+  });
+  await em.persistAndFlush([rafiqul, fatema, karim, nasrin, sohrab]);
   console.log("Contacts seeded");
 
   const main = em.create(Vault, {
-    name: "Main Treasury",
-    description: "Primary operating vault",
-  } as unknown as Vault);
+    name: "Masjid Baitul Aman Fund",
+    description: "Primary operating fund for masjid welfare and Qard al-Hasan",
+  });
   const reserve = em.create(Vault, {
-    name: "Reserve Fund",
-    description: "Long-term reserve",
-  } as unknown as Vault);
+    name: "Zakat & Sadaqa Reserve",
+    description: "Dedicated reserve for Zakat, Sadaqa and Waqf disbursements",
+  });
   await em.persistAndFlush([main, reserve]);
   console.log("Vaults seeded");
 
+  // Lending contracts — money comes IN to the fund
   const lc1 = em.create(LendingContract, {
-    contact: john,
-    amount: 50000,
+    contact: rafiqul,
+    amount: 100000,
     durationDays: 365,
     returnDate: addDaysISO(365),
     financeCategoryType: FinanceCategoryType.QardAlHasan,
-    reasonForLending: "Qard al-Hasan seed from John Doe",
-    contractStatus: ContractStatus.Active,
-  } as unknown as LendingContract);
+    reasonForLending: "Qard al-Hasan contribution from Mohammad Rafiqul Islam",
+  });
   em.persist(lc1);
   await em.flush();
   await createLedgerEntry(em, {
@@ -92,19 +91,18 @@ export async function initializeDatabase() {
     transactionType: TransactionType.Lend,
     financeCategoryType: lc1.financeCategoryType,
     description: lc1.reasonForLending ?? "",
-    contactId: john.id,
+    contactId: rafiqul.id,
     lendingContractId: lc1.id,
   });
 
   const lc2 = em.create(LendingContract, {
-    contact: alice,
-    amount: 20000,
+    contact: fatema,
+    amount: 50000,
     durationDays: 180,
     returnDate: addDaysISO(180),
     financeCategoryType: FinanceCategoryType.Zakat,
-    reasonForLending: "Zakat contribution from Alice Rahman",
-    contractStatus: ContractStatus.Active,
-  } as unknown as LendingContract);
+    reasonForLending: "Annual Zakat contribution from Fatema Akter",
+  });
   em.persist(lc2);
   await em.flush();
   await createLedgerEntry(em, {
@@ -113,19 +111,18 @@ export async function initializeDatabase() {
     transactionType: TransactionType.Lend,
     financeCategoryType: lc2.financeCategoryType,
     description: lc2.reasonForLending ?? "",
-    contactId: alice.id,
+    contactId: fatema.id,
     lendingContractId: lc2.id,
   });
 
   const lc3 = em.create(LendingContract, {
-    contact: alice,
-    amount: 30000,
-    durationDays: 365,
-    returnDate: addDaysISO(365),
+    contact: karim,
+    amount: 75000,
+    durationDays: 730,
+    returnDate: addDaysISO(730),
     financeCategoryType: FinanceCategoryType.Waqf,
-    reasonForLending: "Waqf endowment from Alice Rahman",
-    contractStatus: ContractStatus.Active,
-  } as unknown as LendingContract);
+    reasonForLending: "Waqf endowment from Abdul Karim Chowdhury for masjid development",
+  });
   em.persist(lc3);
   await em.flush();
   await createLedgerEntry(em, {
@@ -134,19 +131,18 @@ export async function initializeDatabase() {
     transactionType: TransactionType.Lend,
     financeCategoryType: lc3.financeCategoryType,
     description: lc3.reasonForLending ?? "",
-    contactId: alice.id,
+    contactId: karim.id,
     lendingContractId: lc3.id,
   });
 
   const lc4 = em.create(LendingContract, {
-    contact: john,
-    amount: 25000,
+    contact: nasrin,
+    amount: 40000,
     durationDays: 365,
     returnDate: addDaysISO(365),
     financeCategoryType: FinanceCategoryType.Sadaqa,
-    reasonForLending: "Sadaqa donation from John Doe",
-    contractStatus: ContractStatus.Active,
-  } as unknown as LendingContract);
+    reasonForLending: "Sadaqa donation from Nasrin Sultana for community support",
+  });
   em.persist(lc4);
   await em.flush();
   await createLedgerEntry(em, {
@@ -155,21 +151,22 @@ export async function initializeDatabase() {
     transactionType: TransactionType.Lend,
     financeCategoryType: lc4.financeCategoryType,
     description: lc4.reasonForLending ?? "",
-    contactId: john.id,
+    contactId: nasrin.id,
     lendingContractId: lc4.id,
   });
   console.log("Lending contracts seeded");
 
+  // Borrowing contracts — fund lends money OUT
+  // main QardAlHasan balance: 100,000 → bc1 draws 30,000
   const bc1 = em.create(BorrowingContract, {
-    contact: jane,
-    amount: 15000,
-    durationDays: 90,
-    returnDate: addDaysDate(90),
+    contact: karim,
+    amount: 30000,
+    durationDays: 120,
+    returnDate: addDaysDate(120),
     financeCategoryType: FinanceCategoryType.QardAlHasan,
-    purposeOfLoan: "Small business bridge loan",
-    guarantor1: omar,
-    contractStatus: ContractStatus.Active,
-  } as unknown as BorrowingContract);
+    purposeOfLoan: "Interest-free loan for small tailoring business startup",
+    guarantor1: sohrab,
+  });
   em.persist(bc1);
   await em.flush();
   await createLedgerEntry(em, {
@@ -178,20 +175,20 @@ export async function initializeDatabase() {
     transactionType: TransactionType.Borrow,
     financeCategoryType: bc1.financeCategoryType,
     description: bc1.purposeOfLoan ?? "",
-    contactId: jane.id,
+    contactId: karim.id,
     borrowingContractId: bc1.id,
   });
 
+  // reserve Sadaqa balance: 40,000 → bc2 draws 15,000
   const bc2 = em.create(BorrowingContract, {
-    contact: karim,
-    amount: 8000,
-    durationDays: 60,
-    returnDate: addDaysDate(60),
+    contact: fatema,
+    amount: 15000,
+    durationDays: 90,
+    returnDate: addDaysDate(90),
     financeCategoryType: FinanceCategoryType.Sadaqa,
-    purposeOfLoan: "Medical emergency support",
-    guarantor1: omar,
-    contractStatus: ContractStatus.Active,
-  } as unknown as BorrowingContract);
+    purposeOfLoan: "Emergency medical assistance for family treatment",
+    guarantor1: sohrab,
+  });
   em.persist(bc2);
   await em.flush();
   await createLedgerEntry(em, {
@@ -200,27 +197,27 @@ export async function initializeDatabase() {
     transactionType: TransactionType.Borrow,
     financeCategoryType: bc2.financeCategoryType,
     description: bc2.purposeOfLoan ?? "",
-    contactId: karim.id,
+    contactId: fatema.id,
     borrowingContractId: bc2.id,
   });
   console.log("Borrowing contracts seeded");
 
   await createLedgerEntry(em, {
     vaultId: main.id,
-    amount: 3000,
+    amount: 10000,
     transactionType: TransactionType.BorrowRepay,
     financeCategoryType: FinanceCategoryType.QardAlHasan,
-    description: "Partial repayment from Jane Dutch",
-    contactId: jane.id,
+    description: "First installment repayment from Abdul Karim Chowdhury",
+    contactId: karim.id,
     borrowingContractId: bc1.id,
   });
 
   await createLedgerEntry(em, {
     vaultId: main.id,
-    amount: 100,
+    amount: 500,
     transactionType: TransactionType.Expense,
     financeCategoryType: FinanceCategoryType.QardAlHasan,
-    description: "Monthly bank charge",
+    description: "Monthly bank statement and transfer charges",
     expenseType: ExpenseType.BankCharge,
   });
   console.log("Demo transactions seeded");
