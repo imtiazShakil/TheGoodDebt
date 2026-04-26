@@ -5,7 +5,7 @@ import { BorrowingContract } from "../repository/entity/borrowing-contract";
 import { ContractStatus } from "../repository/entity/lending-contract";
 import { Transaction, TransactionType } from "../repository/entity/transaction";
 import { VaultBalanceHistory } from "../repository/entity/vault-balance-history";
-import { computeRepaidTotals, createLedgerEntry } from "./transactions";
+import { assertVaultCategoryBalance, computeRepaidTotals, createLedgerEntry } from "./transactions";
 
 export function registerHandlers(ipcMain: IpcMain) {
   ipcMain.handle("GET borrowing-contracts", async () => {
@@ -29,6 +29,13 @@ export function registerHandlers(ipcMain: IpcMain) {
     rest.id = undefined;
 
     return await orm.em.fork().transactional(async (em) => {
+      await assertVaultCategoryBalance(
+        em,
+        vaultId,
+        data.financeCategoryType,
+        data.amount,
+      );
+
       const contract = em.create(BorrowingContract, {
         ...rest,
         contact: em.getReference(ContactDetails, data.contact.id),

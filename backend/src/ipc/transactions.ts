@@ -59,6 +59,26 @@ export async function computeRepaidTotals(
   return result;
 }
 
+export async function assertVaultCategoryBalance(
+  em: EntityManager,
+  vaultId: number,
+  financeCategoryType: FinanceCategoryType,
+  requiredAmount: number,
+): Promise<void> {
+  const latestVbh = await em.findOne(
+    VaultBalanceHistory,
+    { vault: vaultId },
+    { orderBy: { createdAt: "DESC" } },
+  );
+  const field = CATEGORY_FIELD[financeCategoryType];
+  const available = latestVbh?.[field] ?? 0;
+  if (available < requiredAmount) {
+    throw new Error(
+      `Insufficient ${financeCategoryType} balance: available ${available}, required ${requiredAmount}`,
+    );
+  }
+}
+
 export interface LedgerEntryInput {
   vaultId: number;
   amount: number;
@@ -190,6 +210,12 @@ export function registerHandlers(ipcMain: IpcMain) {
           id: data.lendingContract.id,
         });
         contactId = lc.contact.id;
+        await assertVaultCategoryBalance(
+          em,
+          data.vault.id,
+          lc.financeCategoryType,
+          data.amount,
+        );
         const repaidMap = await computeRepaidTotals(
           em,
           [lc.id],
