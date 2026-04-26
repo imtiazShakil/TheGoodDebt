@@ -196,18 +196,25 @@ const TransactionForm = ({ onSubmit, onCancel }: TransactionFormProps) => {
     setLendingContractId("");
     setBorrowingContractId("");
     setExpenseContact(null);
+    setAmount("");
   }, [transactionType]);
 
   useEffect(() => {
     if (transactionType === "LendRepay" && lendingContractId !== "") {
       const lc = lendingContracts.find((c) => c.id === lendingContractId);
-      if (lc) setFinanceCategoryType(lc.financeCategoryType);
+      if (lc) {
+        setFinanceCategoryType(lc.financeCategoryType);
+        setAmount(String(Math.max(0, lc.amount - (lc.totalRepaid ?? 0))));
+      }
     } else if (
       transactionType === "BorrowRepay" &&
       borrowingContractId !== ""
     ) {
       const bc = borrowingContracts.find((c) => c.id === borrowingContractId);
-      if (bc) setFinanceCategoryType(bc.financeCategoryType);
+      if (bc) {
+        setFinanceCategoryType(bc.financeCategoryType);
+        setAmount(String(Math.max(0, bc.amount - (bc.totalRepaid ?? 0))));
+      }
     }
   }, [
     transactionType,
@@ -220,6 +227,18 @@ const TransactionForm = ({ onSubmit, onCancel }: TransactionFormProps) => {
   const repayContractSelected =
     (transactionType === "LendRepay" && lendingContractId !== "") ||
     (transactionType === "BorrowRepay" && borrowingContractId !== "");
+
+  const maxRepayAmount: number | undefined = (() => {
+    if (transactionType === "LendRepay" && lendingContractId !== "") {
+      const lc = lendingContracts.find((c) => c.id === lendingContractId);
+      return lc ? Math.max(0, lc.amount - (lc.totalRepaid ?? 0)) : undefined;
+    }
+    if (transactionType === "BorrowRepay" && borrowingContractId !== "") {
+      const bc = borrowingContracts.find((c) => c.id === borrowingContractId);
+      return bc ? Math.max(0, bc.amount - (bc.totalRepaid ?? 0)) : undefined;
+    }
+    return undefined;
+  })();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -429,6 +448,7 @@ const TransactionForm = ({ onSubmit, onCancel }: TransactionFormProps) => {
             onChange={(e) => setAmount(e.target.value)}
             className="input input-bordered w-full"
             min="0"
+            max={maxRepayAmount}
             step="0.01"
             required
           />

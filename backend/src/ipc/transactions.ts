@@ -189,11 +189,21 @@ export function registerHandlers(ipcMain: IpcMain) {
           id: data.lendingContract.id,
         });
         contactId = lc.contact.id;
+        const repaidMap = await computeRepaidTotals(em, [lc.id], "lendingContract", TransactionType.LendRepay);
+        const remaining = lc.amount - (repaidMap[lc.id] ?? 0);
+        if (data.amount > remaining) {
+          throw new Error(`Amount ${data.amount} exceeds remaining repayable balance of ${remaining}`);
+        }
       } else if (data.borrowingContract?.id) {
         const bc = await em.findOneOrFail(BorrowingContract, {
           id: data.borrowingContract.id,
         });
         contactId = bc.contact.id;
+        const repaidMap = await computeRepaidTotals(em, [bc.id], "borrowingContract", TransactionType.BorrowRepay);
+        const remaining = bc.amount - (repaidMap[bc.id] ?? 0);
+        if (data.amount > remaining) {
+          throw new Error(`Amount ${data.amount} exceeds remaining repayable balance of ${remaining}`);
+        }
       } else if (data.contact?.id) {
         contactId = data.contact.id;
       }
