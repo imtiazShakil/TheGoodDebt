@@ -1,5 +1,6 @@
-import { NavLink } from "react-router";
+import { HandCoins } from "@phosphor-icons/react";
 import { useTranslation } from "react-i18next";
+import { NavLink } from "react-router";
 
 function Header() {
   const { t, i18n } = useTranslation();
@@ -13,7 +14,7 @@ function Header() {
   ];
 
   return (
-    <div className="navbar bg-primary text-primary-content shadow-md shadow-accent-content rounded-xl mb-6 mt-2 mx-2 w-auto">
+    <div className="navbar bg-primary text-primary-content shadow-accent-content mx-2 mt-2 mb-6 w-auto rounded-xl shadow-md">
       <div className="navbar-start">
         <div className="dropdown">
           <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
@@ -50,7 +51,10 @@ function Header() {
             ))}
           </ul>
         </div>
-        <a className="btn btn-ghost text-xl">daisyUI</a>
+        <a className="btn btn-ghost gap-2">
+          <HandCoins size={28} weight="duotone" />
+          <span className="text-base font-bold">The Good Debt</span>
+        </a>
       </div>
 
       <div className="navbar-center hidden lg:flex">
@@ -70,16 +74,20 @@ function Header() {
       </div>
 
       <div className="navbar-end">
-        <div className="flex items-center gap-1 mr-2">
+        <div className="mr-2 flex items-center gap-1">
           <button
             className={`btn btn-sm ${i18n.language === "bn" ? "btn-active" : "btn-ghost"}`}
-            onClick={() => { void i18n.changeLanguage("bn"); }}
+            onClick={() => {
+              void i18n.changeLanguage("bn");
+            }}
           >
             বাংলা
           </button>
           <button
             className={`btn btn-sm ${i18n.language === "en" ? "btn-active" : "btn-ghost"}`}
-            onClick={() => { void i18n.changeLanguage("en"); }}
+            onClick={() => {
+              void i18n.changeLanguage("en");
+            }}
           >
             EN
           </button>
@@ -105,7 +113,7 @@ function Header() {
               <input
                 type="radio"
                 name="theme-dropdown"
-                className="theme-controller w-full btn btn-sm btn-block justify-start"
+                className="theme-controller btn btn-sm btn-block w-full justify-start"
                 aria-label="Default"
                 value="default"
               />
@@ -114,7 +122,7 @@ function Header() {
               <input
                 type="radio"
                 name="theme-dropdown"
-                className="theme-controller w-full btn btn-sm btn-block justify-start"
+                className="theme-controller btn btn-sm btn-block w-full justify-start"
                 aria-label="night"
                 value="night"
               />
@@ -123,7 +131,7 @@ function Header() {
               <input
                 type="radio"
                 name="theme-dropdown"
-                className="theme-controller w-full btn btn-sm btn-block justify-start"
+                className="theme-controller btn btn-sm btn-block w-full justify-start"
                 aria-label="retro"
                 value="retro"
               />
@@ -132,7 +140,7 @@ function Header() {
               <input
                 type="radio"
                 name="theme-dropdown"
-                className="theme-controller w-full btn btn-sm btn-block justify-start"
+                className="theme-controller btn btn-sm btn-block w-full justify-start"
                 aria-label="lemonade"
                 value="lemonade"
               />
@@ -141,7 +149,7 @@ function Header() {
               <input
                 type="radio"
                 name="theme-dropdown"
-                className="theme-controller w-full btn btn-sm btn-block justify-start"
+                className="theme-controller btn btn-sm btn-block w-full justify-start"
                 aria-label="nord"
                 value="nord"
               />
@@ -150,7 +158,7 @@ function Header() {
               <input
                 type="radio"
                 name="theme-dropdown"
-                className="theme-controller w-full btn btn-sm btn-block justify-start"
+                className="theme-controller btn btn-sm btn-block w-full justify-start"
                 aria-label="silk"
                 value="silk"
               />
