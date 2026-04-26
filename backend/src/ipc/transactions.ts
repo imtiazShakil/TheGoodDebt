@@ -4,6 +4,7 @@ import { orm } from "../repository/db";
 import { BorrowingContract } from "../repository/entity/borrowing-contract";
 import { ContactDetails } from "../repository/entity/contact-details";
 import {
+  ContractStatus,
   FinanceCategoryType,
   LendingContract,
 } from "../repository/entity/lending-contract";
@@ -189,20 +190,40 @@ export function registerHandlers(ipcMain: IpcMain) {
           id: data.lendingContract.id,
         });
         contactId = lc.contact.id;
-        const repaidMap = await computeRepaidTotals(em, [lc.id], "lendingContract", TransactionType.LendRepay);
+        const repaidMap = await computeRepaidTotals(
+          em,
+          [lc.id],
+          "lendingContract",
+          TransactionType.LendRepay,
+        );
         const remaining = lc.amount - (repaidMap[lc.id] ?? 0);
         if (data.amount > remaining) {
-          throw new Error(`Amount ${data.amount} exceeds remaining repayable balance of ${remaining}`);
+          throw new Error(
+            `Amount ${data.amount} exceeds remaining repayable balance of ${remaining}`,
+          );
+        }
+        if (data.amount === remaining) {
+          lc.contractStatus = ContractStatus.Completed;
         }
       } else if (data.borrowingContract?.id) {
         const bc = await em.findOneOrFail(BorrowingContract, {
           id: data.borrowingContract.id,
         });
         contactId = bc.contact.id;
-        const repaidMap = await computeRepaidTotals(em, [bc.id], "borrowingContract", TransactionType.BorrowRepay);
+        const repaidMap = await computeRepaidTotals(
+          em,
+          [bc.id],
+          "borrowingContract",
+          TransactionType.BorrowRepay,
+        );
         const remaining = bc.amount - (repaidMap[bc.id] ?? 0);
         if (data.amount > remaining) {
-          throw new Error(`Amount ${data.amount} exceeds remaining repayable balance of ${remaining}`);
+          throw new Error(
+            `Amount ${data.amount} exceeds remaining repayable balance of ${remaining}`,
+          );
+        }
+        if (data.amount === remaining) {
+          bc.contractStatus = ContractStatus.Completed;
         }
       } else if (data.contact?.id) {
         contactId = data.contact.id;
@@ -233,14 +254,16 @@ export function registerHandlers(ipcMain: IpcMain) {
 
   ipcMain.handle("DELETE transactions", async (_event, data) => {
     return await orm.em.fork().transactional(async (em) => {
-      const last = await em.findOne(
+      const lastTransactions = await em.find(
         Transaction,
         {},
         {
+          limit: 1,
           orderBy: { id: "DESC" },
           populate: ["lendingContract", "borrowingContract"],
         },
       );
+      const last = lastTransactions ? lastTransactions[0] : null;
       if (!last || last.id !== data.id) {
         throw new Error("Only the most recent transaction can be deleted");
       }
@@ -249,8 +272,28 @@ export function registerHandlers(ipcMain: IpcMain) {
         transaction: data.id,
       });
       if (vbh) em.remove(vbh);
-      if (last.lendingContract) em.remove(last.lendingContract);
-      if (last.borrowingContract) em.remove(last.borrowingContract);
+
+      if (
+        last.transactionType === TransactionType.LendRepay &&
+        last.lendingContract
+      ) {
+        if (last.lendingContract.contractStatus === ContractStatus.Completed) {
+          last.lendingContract.contractStatus = ContractStatus.Active;
+        }
+      } else if (
+        last.transactionType === TransactionType.BorrowRepay &&
+        last.borrowingContract
+      ) {
+        if (
+          last.borrowingContract.contractStatus === ContractStatus.Completed
+        ) {
+          last.borrowingContract.contractStatus = ContractStatus.Active;
+        }
+      } else {
+        if (last.lendingContract) em.remove(last.lendingContract);
+        if (last.borrowingContract) em.remove(last.borrowingContract);
+      }
+
       em.remove(last);
       await em.flush();
       return { id: data.id };
