@@ -30,6 +30,8 @@
     "durationDays": "Duration (days)",
     "returnDate": "Return Date",
     "repaid": "Repaid",
+    "in": "In",
+    "out": "Out",
     "balance": "Balance",
     "searchByName": "Search by name…",
     "selectContact": "Please select a contact from the list",

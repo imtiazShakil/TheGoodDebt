@@ -19,6 +19,8 @@ const TYPE_BADGE: Record<string, string> = {
   Expense: "badge-warning",
 };
 
+const IN_TYPES = new Set(["Lend", "BorrowRepay"]);
+
 function contractLabel(tx: Transaction): { label: string; cls: string } {
   if (tx.lendingContract)
     return { label: `L#${tx.lendingContract.id}`, cls: "text-success" };
@@ -125,12 +127,13 @@ function TransactionListComponent() {
               <th>{t("common.id")}</th>
               <th>{t("common.date")}</th>
               <th>{t("transactions.type")}</th>
-              <th className="text-right">{t("common.amount")}</th>
               <th>{t("common.vault")}</th>
               <th>{t("common.contact")}</th>
               <th>{t("common.category")}</th>
               <th>{t("transactions.contract")}</th>
               <th>{t("common.description")}</th>
+              <th className="text-right text-success">{t("common.in")}</th>
+              <th className="text-right text-error">{t("common.out")}</th>
               <th className="text-right">{t("common.balance")}</th>
               <th>{t("common.actions")}</th>
             </tr>
@@ -162,13 +165,18 @@ function TransactionListComponent() {
                       </span>
                     )}
                   </td>
-                  <td className="text-right">{tx.amount.toLocaleString()}</td>
                   <td>{tx.vault?.name ?? `#${tx.vault?.id ?? "?"}`}</td>
                   <td>{tx.contact?.name ?? "—"}</td>
                   <td>{t(`financeCategory.${tx.financeCategoryType}`)}</td>
                   <td className={contract.cls}>{contract.label}</td>
                   <td className="max-w-xs truncate" title={tx.description}>
                     {tx.description}
+                  </td>
+                  <td className="text-right text-success font-semibold">
+                    {IN_TYPES.has(tx.transactionType) ? tx.amount.toLocaleString() : "—"}
+                  </td>
+                  <td className="text-right text-error font-semibold">
+                    {IN_TYPES.has(tx.transactionType) ? "—" : tx.amount.toLocaleString()}
                   </td>
                   <td className="text-right font-semibold">
                     {tx.balance.toLocaleString()}
