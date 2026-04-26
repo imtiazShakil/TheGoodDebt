@@ -46,6 +46,10 @@ export function registerHandlers(ipcMain: IpcMain) {
   ipcMain.handle("DELETE vaults", async (_event, data) => {
     const em = orm.em.fork();
     const vault = await em.findOneOrFail(Vault, { id: data.id });
+    const hasHistory = await em.count(VaultBalanceHistory, { vault: data.id });
+    if (hasHistory > 0) {
+      throw new Error("Cannot delete a vault that has transaction history");
+    }
     await em.removeAndFlush(vault);
     return { id: data.id };
   });

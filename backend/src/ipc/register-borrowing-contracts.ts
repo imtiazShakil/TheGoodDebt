@@ -86,10 +86,10 @@ export function registerHandlers(ipcMain: IpcMain) {
         borrowingContract: data.id,
       });
       if (autoTx) {
-        const last = await em.findOne(
+        const [last] = await em.find(
           Transaction,
           {},
-          { orderBy: { id: "DESC" } },
+          { limit: 1, orderBy: { id: "DESC" } },
         );
         if (!last || last.id !== autoTx.id) {
           throw new Error(
