@@ -1,9 +1,7 @@
-import { Entity, ManyToOne, PrimaryKey, Property } from "@mikro-orm/core";
+import { Entity, ManyToOne, Property } from "@mikro-orm/core";
+import { BaseModel } from "./base-model";
 import { ContactDetails } from "./contact-details";
-import {
-  ContractStatus,
-  FinanceCategoryType,
-} from "./lending-contract";
+import { ContractStatus, FinanceCategoryType } from "./lending-contract";
 
 export enum LoanRecallStatus {
   FirstReminder = "1st Reminder",
@@ -13,10 +11,7 @@ export enum LoanRecallStatus {
 }
 
 @Entity()
-export class BorrowingContract {
-  @PrimaryKey()
-  id!: number;
-
+export class BorrowingContract extends BaseModel<"contractStatus"> {
   @ManyToOne(() => ContactDetails)
   contact!: ContactDetails;
 
@@ -49,10 +44,4 @@ export class BorrowingContract {
 
   @Property({ nullable: true })
   adjustmentWithTransactionId?: number;
-
-  @Property({ onCreate: () => new Date() })
-  createdAt: Date = new Date();
-
-  @Property({ onCreate: () => new Date(), onUpdate: () => new Date() })
-  updatedAt: Date = new Date();
 }

@@ -123,7 +123,7 @@ export async function createLedgerEntry(
       ? em.getReference(BorrowingContract, data.borrowingContractId)
       : undefined,
     balance: newSystemBalance,
-  } as unknown as Transaction);
+  });
   em.persist(transaction);
 
   const vbh = em.create(VaultBalanceHistory, {
@@ -131,7 +131,7 @@ export async function createLedgerEntry(
     transaction,
     ...buckets,
     totalBalance,
-  } as unknown as VaultBalanceHistory);
+  });
   em.persist(vbh);
 
   await em.flush();

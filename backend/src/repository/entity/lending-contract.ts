@@ -1,4 +1,5 @@
-import { DateType, Entity, ManyToOne, PrimaryKey, Property } from "@mikro-orm/core";
+import { DateType, Entity, ManyToOne, Property } from "@mikro-orm/core";
+import { BaseModel } from "./base-model";
 import { ContactDetails } from "./contact-details";
 
 export enum FinanceCategoryType {
@@ -15,10 +16,7 @@ export enum ContractStatus {
 }
 
 @Entity()
-export class LendingContract {
-  @PrimaryKey()
-  id!: number;
-
+export class LendingContract extends BaseModel<"contractStatus"> {
   @ManyToOne(() => ContactDetails)
   contact!: ContactDetails;
 
@@ -29,7 +27,7 @@ export class LendingContract {
   durationDays!: number;
 
   @Property({ type: DateType })
-  returnDate!: string; // Stored as 'YYYY-MM-DD';
+  returnDate!: string; // Stored as 'YYYY-MM-DD'
 
   @Property()
   financeCategoryType!: FinanceCategoryType;
@@ -39,10 +37,4 @@ export class LendingContract {
 
   @Property()
   contractStatus: ContractStatus = ContractStatus.Active;
-
-  @Property({ onCreate: () => new Date() })
-  createdAt: Date = new Date();
-
-  @Property({ onCreate: () => new Date(), onUpdate: () => new Date() })
-  updatedAt: Date = new Date();
 }

@@ -1,8 +1,9 @@
-import { Entity, ManyToOne, PrimaryKey, Property } from "@mikro-orm/core";
+import { Entity, ManyToOne, Property } from "@mikro-orm/core";
+import { BaseModel } from "./base-model";
 import { ContactDetails } from "./contact-details";
-import { Vault } from "./vault";
 import { FinanceCategoryType, LendingContract } from "./lending-contract";
 import { BorrowingContract } from "./borrowing-contract";
+import { Vault } from "./vault";
 
 export enum TransactionType {
   Lend = "Lend",
@@ -22,10 +23,7 @@ export enum ExpenseType {
 }
 
 @Entity()
-export class Transaction {
-  @PrimaryKey()
-  id!: number;
-
+export class Transaction extends BaseModel {
   @Property()
   description!: string;
 
@@ -55,10 +53,4 @@ export class Transaction {
 
   @Property()
   balance!: number;
-
-  @Property({ onCreate: () => new Date() })
-  createdAt: Date = new Date();
-
-  @Property({ onCreate: () => new Date(), onUpdate: () => new Date() })
-  updatedAt: Date = new Date();
 }

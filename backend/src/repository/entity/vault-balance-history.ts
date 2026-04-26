@@ -1,12 +1,10 @@
-import { Entity, ManyToOne, PrimaryKey, Property } from "@mikro-orm/core";
-import { Vault } from "./vault";
+import { Entity, ManyToOne, Property } from "@mikro-orm/core";
+import { BaseModel } from "./base-model";
 import { Transaction } from "./transaction";
+import { Vault } from "./vault";
 
 @Entity()
-export class VaultBalanceHistory {
-  @PrimaryKey()
-  id!: number;
-
+export class VaultBalanceHistory extends BaseModel {
   @ManyToOne(() => Vault)
   vault!: Vault;
 
@@ -27,10 +25,4 @@ export class VaultBalanceHistory {
 
   @Property()
   totalBalance: number = 0;
-
-  @Property({ onCreate: () => new Date() })
-  createdAt: Date = new Date();
-
-  @Property({ onCreate: () => new Date(), onUpdate: () => new Date() })
-  updatedAt: Date = new Date();
 }

@@ -1,10 +1,8 @@
-import { Entity, PrimaryKey, Property } from "@mikro-orm/core";
+import { Entity, Property } from "@mikro-orm/core";
+import { BaseModel } from "./base-model";
 
 @Entity()
-export class ContactDetails {
-  @PrimaryKey()
-  id!: number;
-
+export class ContactDetails extends BaseModel {
   @Property({ unique: true })
   name!: string;
 
