@@ -54,9 +54,9 @@ function LendingContractListComponent() {
         })
         .catch((err) => {
           console.error("Error deleting lending contract", err);
-          toast.error(t("lendingContracts.failedToDelete"), {
-            description: err?.message ?? String(err),
-          });
+          err?.code
+            ? toast.error(t(err.code, err.values))
+            : toast.error(t("lendingContracts.failedToDelete"), { description: err?.message });
         });
     },
     [t],
@@ -74,7 +74,9 @@ function LendingContractListComponent() {
         })
         .catch((err) => {
           console.error("Error editing lending contract", err);
-          toast.error(t("lendingContracts.failedToUpdate"));
+          err?.code
+            ? toast.error(t(err.code, err.values))
+            : toast.error(t("lendingContracts.failedToUpdate"));
         })
         .finally(() => modalRef.current?.close());
     } else {
@@ -87,9 +89,9 @@ function LendingContractListComponent() {
         })
         .catch((err) => {
           console.error("Error adding lending contract", err);
-          toast.error(t("lendingContracts.failedToAdd"), {
-            description: err?.message ?? String(err),
-          });
+          err?.code
+            ? toast.error(t(err.code, err.values))
+            : toast.error(t("lendingContracts.failedToAdd"), { description: err?.message });
         })
         .finally(() => modalRef.current?.close());
     }

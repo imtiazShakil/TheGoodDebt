@@ -1,4 +1,5 @@
 import { IpcMain } from "electron";
+import { AppError } from "./app-error";
 import { orm } from "../repository/db";
 import { Vault } from "../repository/entity/vault";
 import { VaultBalanceHistory } from "../repository/entity/vault-balance-history";
@@ -48,7 +49,7 @@ export function registerHandlers(ipcMain: IpcMain) {
     const vault = await em.findOneOrFail(Vault, { id: data.id });
     const hasHistory = await em.count(VaultBalanceHistory, { vault: data.id });
     if (hasHistory > 0) {
-      throw new Error("Cannot delete a vault that has transaction history");
+      throw new AppError("errors.vault.deleteWithHistory");
     }
     await em.removeAndFlush(vault);
     return { id: data.id };

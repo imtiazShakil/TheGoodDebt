@@ -1,5 +1,6 @@
 import { EntityManager } from "@mikro-orm/core";
 import { IpcMain } from "electron";
+import { AppError } from "./app-error";
 import { orm } from "../repository/db";
 import { BorrowingContract } from "../repository/entity/borrowing-contract";
 import { ContactDetails } from "../repository/entity/contact-details";
@@ -73,9 +74,11 @@ export async function assertVaultCategoryBalance(
   const field = CATEGORY_FIELD[financeCategoryType];
   const available = latestVbh?.[field] ?? 0;
   if (available < requiredAmount) {
-    throw new Error(
-      `Insufficient ${financeCategoryType} balance: available ${available}, required ${requiredAmount}`,
-    );
+    throw new AppError("errors.balance.insufficient", {
+      category: financeCategoryType,
+      available,
+      required: requiredAmount,
+    });
   }
 }
 
@@ -224,9 +227,10 @@ export function registerHandlers(ipcMain: IpcMain) {
         );
         const remaining = lc.amount - (repaidMap[lc.id] ?? 0);
         if (data.amount > remaining) {
-          throw new Error(
-            `Amount ${data.amount} exceeds remaining repayable balance of ${remaining}`,
-          );
+          throw new AppError("errors.transaction.repayExceedsBalance", {
+            amount: data.amount,
+            remaining,
+          });
         }
         if (data.amount === remaining) {
           lc.contractStatus = ContractStatus.Completed;
@@ -244,9 +248,10 @@ export function registerHandlers(ipcMain: IpcMain) {
         );
         const remaining = bc.amount - (repaidMap[bc.id] ?? 0);
         if (data.amount > remaining) {
-          throw new Error(
-            `Amount ${data.amount} exceeds remaining repayable balance of ${remaining}`,
-          );
+          throw new AppError("errors.transaction.repayExceedsBalance", {
+            amount: data.amount,
+            remaining,
+          });
         }
         if (data.amount === remaining) {
           bc.contractStatus = ContractStatus.Completed;
@@ -291,7 +296,7 @@ export function registerHandlers(ipcMain: IpcMain) {
       );
       const last = lastTransactions ? lastTransactions[0] : null;
       if (!last || last.id !== data.id) {
-        throw new Error("Only the most recent transaction can be deleted");
+        throw new AppError("errors.transaction.deleteNotLatest");
       }
 
       const vbh = await em.findOne(VaultBalanceHistory, {

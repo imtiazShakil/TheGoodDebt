@@ -1,4 +1,5 @@
 import { IpcMain } from "electron";
+import { AppError } from "./app-error";
 import { orm } from "../repository/db";
 import { ContactDetails } from "../repository/entity/contact-details";
 import {
@@ -81,9 +82,7 @@ export function registerHandlers(ipcMain: IpcMain) {
           { limit: 1, orderBy: { id: "DESC" } },
         );
         if (!last || last.id !== autoTx.id) {
-          throw new Error(
-            "Cannot delete: a newer transaction exists after this contract's auto-transaction",
-          );
+          throw new AppError("errors.contract.deleteNotLatest");
         }
         const vbh = await em.findOne(VaultBalanceHistory, {
           transaction: autoTx.id,

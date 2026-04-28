@@ -1,11 +1,16 @@
 import { IpcMain } from "electron";
 import { orm } from "../repository/db";
-import { ContactDetails } from "../repository/entity/contact-details";
 import { BorrowingContract } from "../repository/entity/borrowing-contract";
+import { ContactDetails } from "../repository/entity/contact-details";
 import { ContractStatus } from "../repository/entity/lending-contract";
 import { Transaction, TransactionType } from "../repository/entity/transaction";
 import { VaultBalanceHistory } from "../repository/entity/vault-balance-history";
-import { assertVaultCategoryBalance, computeRepaidTotals, createLedgerEntry } from "./register-transactions";
+import { AppError } from "./app-error";
+import {
+  assertVaultCategoryBalance,
+  computeRepaidTotals,
+  createLedgerEntry,
+} from "./register-transactions";
 
 export function registerHandlers(ipcMain: IpcMain) {
   ipcMain.handle("GET borrowing-contracts", async () => {
@@ -92,9 +97,7 @@ export function registerHandlers(ipcMain: IpcMain) {
           { limit: 1, orderBy: { id: "DESC" } },
         );
         if (!last || last.id !== autoTx.id) {
-          throw new Error(
-            "Cannot delete: a newer transaction exists after this contract's auto-transaction",
-          );
+          throw new AppError("errors.contract.deleteNotLatest");
         }
         const vbh = await em.findOne(VaultBalanceHistory, {
           transaction: autoTx.id,

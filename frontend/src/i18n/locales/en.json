@@ -156,5 +156,20 @@
     "2nd Reminder": "2nd Reminder",
     "3rd Reminder": "3rd Reminder",
     "Guarantors reminder": "Guarantors reminder"
+  },
+  "errors": {
+    "balance": {
+      "insufficient": "Insufficient {{category}} balance — available: {{available}}, required: {{required}}"
+    },
+    "transaction": {
+      "deleteNotLatest": "Only the most recent transaction can be deleted",
+      "repayExceedsBalance": "Amount {{amount}} exceeds the repayable balance of {{remaining}}"
+    },
+    "vault": {
+      "deleteWithHistory": "Cannot delete a vault that has transaction history"
+    },
+    "contract": {
+      "deleteNotLatest": "Cannot delete — a newer transaction exists after this contract"
+    }
   }
 }

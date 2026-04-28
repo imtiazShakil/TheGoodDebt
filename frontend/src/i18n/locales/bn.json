@@ -156,5 +156,20 @@
     "2nd Reminder": "২য় স্মরণপত্র",
     "3rd Reminder": "৩য় স্মরণপত্র",
     "Guarantors reminder": "জামিনদারদের স্মরণপত্র"
+  },
+  "errors": {
+    "balance": {
+      "insufficient": "অপর্যাপ্ত {{category}} ব্যালেন্স — পাওয়া গেছে: {{available}}, প্রয়োজন: {{required}}"
+    },
+    "transaction": {
+      "deleteNotLatest": "শুধুমাত্র সর্বশেষ লেনদেন মুছে ফেলা যাবে",
+      "repayExceedsBalance": "পরিমাণ {{amount}} পরিশোধযোগ্য ব্যালেন্স {{remaining}} এর বেশি"
+    },
+    "vault": {
+      "deleteWithHistory": "লেনদেনের ইতিহাস থাকলে ভল্ট মুছে ফেলা যাবে না"
+    },
+    "contract": {
+      "deleteNotLatest": "মুছে ফেলা সম্ভব নয় — এই চুক্তির পরে একটি নতুন লেনদেন রয়েছে"
+    }
   }
 }

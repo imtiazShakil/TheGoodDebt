@@ -56,9 +56,9 @@ function TransactionListComponent() {
       })
       .catch((err) => {
         console.error("Error adding transaction", err);
-        toast.error(t("transactions.failedToAdd"), {
-          description: err?.message ?? String(err),
-        });
+        err?.code
+          ? toast.error(t(err.code, err.values))
+          : toast.error(t("transactions.failedToAdd"), { description: err?.message });
       })
       .finally(() => addModalRef.current?.close());
   };
@@ -81,7 +81,9 @@ function TransactionListComponent() {
       })
       .catch((err) => {
         console.error("Error editing transaction", err);
-        toast.error(t("transactions.failedToUpdate"));
+        err?.code
+          ? toast.error(t(err.code, err.values))
+          : toast.error(t("transactions.failedToUpdate"));
       })
       .finally(() => {
         editModalRef.current?.close();
@@ -100,9 +102,9 @@ function TransactionListComponent() {
         })
         .catch((err) => {
           console.error("Error deleting transaction", err);
-          toast.error(t("transactions.failedToDelete"), {
-            description: err?.message ?? String(err),
-          });
+          err?.code
+            ? toast.error(t(err.code, err.values))
+            : toast.error(t("transactions.failedToDelete"), { description: err?.message });
         });
     },
     [t],

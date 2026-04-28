@@ -60,9 +60,9 @@ function VaultListComponent() {
         })
         .catch((error) => {
           console.error("Error deleting vault", error);
-          toast.error(t("vaults.failedToDelete"), {
-            description: error?.message ?? String(error),
-          });
+          error?.code
+            ? toast.error(t(error.code, error.values))
+            : toast.error(t("vaults.failedToDelete"), { description: error?.message });
         });
     },
     [t],

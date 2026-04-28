@@ -68,9 +68,9 @@ function BorrowingContractListComponent() {
         })
         .catch((err) => {
           console.error("Error deleting borrowing contract", err);
-          toast.error(t("borrowingContracts.failedToDelete"), {
-            description: err?.message ?? String(err),
-          });
+          err?.code
+            ? toast.error(t(err.code, err.values))
+            : toast.error(t("borrowingContracts.failedToDelete"), { description: err?.message });
         });
     },
     [t],
@@ -88,7 +88,9 @@ function BorrowingContractListComponent() {
         })
         .catch((err) => {
           console.error("Error editing borrowing contract", err);
-          toast.error(t("borrowingContracts.failedToUpdate"));
+          err?.code
+            ? toast.error(t(err.code, err.values))
+            : toast.error(t("borrowingContracts.failedToUpdate"));
         })
         .finally(() => modalRef.current?.close());
     } else {
@@ -101,9 +103,9 @@ function BorrowingContractListComponent() {
         })
         .catch((err) => {
           console.error("Error adding borrowing contract", err);
-          toast.error(t("borrowingContracts.failedToAdd"), {
-            description: err?.message ?? String(err),
-          });
+          err?.code
+            ? toast.error(t(err.code, err.values))
+            : toast.error(t("borrowingContracts.failedToAdd"), { description: err?.message });
         })
         .finally(() => modalRef.current?.close());
     }
