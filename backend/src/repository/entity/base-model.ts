@@ -2,6 +2,7 @@ import { Entity, OptionalProps, PrimaryKey, Property } from "@mikro-orm/core";
 
 export type BaseOptionalProps = "id" | "createdAt" | "updatedAt" | "version";
 
+/** Abstract base entity providing auto-managed id, created/updated timestamps, and an optimistic-lock version. */
 @Entity({ abstract: true })
 export abstract class BaseModel<Optional extends string = never> {
   [OptionalProps]?: BaseOptionalProps | Optional;

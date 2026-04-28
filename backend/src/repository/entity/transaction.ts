@@ -22,6 +22,7 @@ export enum ExpenseType {
   LegalExpenses = "Legal Expenses",
 }
 
+/** Immutable ledger entry. Each row carries a running system-wide balance across all vaults. */
 @Entity()
 export class Transaction extends BaseModel {
   @Property()

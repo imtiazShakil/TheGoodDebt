@@ -15,6 +15,7 @@ export enum ContractStatus {
   Defaulted = "Defaulted",
 }
 
+/** Records money coming IN to the fund — a donor or lender contributing to the organisation. */
 @Entity()
 export class LendingContract extends BaseModel<"contractStatus"> {
   @ManyToOne(() => ContactDetails)

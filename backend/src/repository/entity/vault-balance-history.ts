@@ -3,6 +3,7 @@ import { BaseModel } from "./base-model";
 import { Transaction } from "./transaction";
 import { Vault } from "./vault";
 
+/** Per-category balance snapshot recorded for a vault after each transaction. Used to derive current balances without replaying the ledger. */
 @Entity()
 export class VaultBalanceHistory extends BaseModel {
   @ManyToOne(() => Vault)

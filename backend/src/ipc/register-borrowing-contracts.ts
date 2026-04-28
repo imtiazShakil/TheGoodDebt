@@ -12,6 +12,11 @@ import {
   createLedgerEntry,
 } from "./register-transactions";
 
+/**
+ * Registers IPC handlers for BorrowingContract CRUD.
+ * Creating a contract validates the vault has sufficient category balance, then fires a Borrow ledger entry.
+ * Deleting is only allowed if the auto-created transaction is still the latest in the ledger.
+ */
 export function registerHandlers(ipcMain: IpcMain) {
   ipcMain.handle("GET borrowing-contracts", async () => {
     const em = orm.em.fork();

@@ -2,6 +2,11 @@ import { contextBridge, ipcRenderer } from "electron";
 
 const APP_ERR_PREFIX = "__APP_ERR__:";
 
+/**
+ * Wraps every ipcRenderer.invoke call. On failure, AppErrors are unpacked to
+ * `{ code, values }` and plain Errors to `{ message }` — both are plain objects
+ * that contextBridge can fully serialize to the renderer.
+ */
 function invoke(channel: string, data?: unknown) {
   return ipcRenderer.invoke(channel, data).catch((err: Error) => {
     const idx = err.message?.indexOf(APP_ERR_PREFIX) ?? -1;

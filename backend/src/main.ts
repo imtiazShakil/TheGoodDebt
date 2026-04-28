@@ -11,6 +11,7 @@ import { registerHandlers as registerTransactionHandlers } from "./ipc/register-
 
 let mainWindow: BrowserWindow;
 
+/** Creates and configures the main browser window. */
 async function createWindow() {
   mainWindow = new BrowserWindow({
     width: 1200,

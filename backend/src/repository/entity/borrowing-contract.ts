@@ -10,6 +10,7 @@ export enum LoanRecallStatus {
   GuarantorsReminder = "Guarantors reminder",
 }
 
+/** Records money going OUT from the fund — the organisation lending to a beneficiary (Qard al-Hasan etc.). */
 @Entity()
 export class BorrowingContract extends BaseModel<"contractStatus"> {
   @ManyToOne(() => ContactDetails)

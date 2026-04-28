@@ -41,6 +41,10 @@ const CATEGORY_FIELD: Record<
   [FinanceCategoryType.Waqf]: "waqfBalance",
 };
 
+/**
+ * Sums all repayment transactions for a list of contracts.
+ * Returns a map of contract id → total amount repaid so far.
+ */
 export async function computeRepaidTotals(
   em: EntityManager,
   contractIds: number[],
@@ -60,6 +64,10 @@ export async function computeRepaidTotals(
   return result;
 }
 
+/**
+ * Throws AppError if the vault's current balance for the given finance category
+ * is below the required amount. Used before creating a BorrowingContract or LendRepay.
+ */
 export async function assertVaultCategoryBalance(
   em: EntityManager,
   vaultId: number,
@@ -82,6 +90,7 @@ export async function assertVaultCategoryBalance(
   }
 }
 
+/** Input shape for createLedgerEntry. */
 export interface LedgerEntryInput {
   vaultId: number;
   amount: number;
@@ -94,6 +103,11 @@ export interface LedgerEntryInput {
   borrowingContractId?: number;
 }
 
+/**
+ * Appends a Transaction row and a matching VaultBalanceHistory snapshot in one flush.
+ * Computes the new running system-wide balance and updates per-category vault buckets.
+ * This is the single write path for all money movements in the ledger.
+ */
 export async function createLedgerEntry(
   em: EntityManager,
   data: LedgerEntryInput,
@@ -162,6 +176,10 @@ export async function createLedgerEntry(
   return transaction;
 }
 
+/**
+ * Guards the POST transactions handler. Rejects Lend/Borrow (system-only types created via contracts)
+ * and enforces that each type carries exactly the right contract/expenseType fields.
+ */
 function validatePayload(data: {
   transactionType: TransactionType;
   lendingContract?: { id?: number };
@@ -194,6 +212,11 @@ function validatePayload(data: {
   }
 }
 
+/**
+ * Registers IPC handlers for transaction operations.
+ * Only the description of an existing transaction can be edited.
+ * Deletion is restricted to the most recent transaction (append-only ledger constraint).
+ */
 export function registerHandlers(ipcMain: IpcMain) {
   ipcMain.handle("GET transactions", async () => {
     const em = orm.em.fork();

@@ -4,6 +4,7 @@ import { orm } from "../repository/db";
 import { Vault } from "../repository/entity/vault";
 import { VaultBalanceHistory } from "../repository/entity/vault-balance-history";
 
+/** Registers IPC handlers for vault CRUD and per-vault balance history queries. */
 export function registerHandlers(ipcMain: IpcMain) {
   ipcMain.handle("GET vaults", async () => {
     const em = orm.em.fork();

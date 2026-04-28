@@ -9,18 +9,21 @@ import {
 import { ExpenseType, TransactionType } from "./entity/transaction";
 import { Vault } from "./entity/vault";
 
+/** Returns an ISO date string (YYYY-MM-DD) offset by the given number of days from today. */
 function addDaysISO(days: number): string {
   const d = new Date();
   d.setDate(d.getDate() + days);
   return d.toISOString().split("T")[0];
 }
 
+/** Returns a Date offset by the given number of days from today. */
 function addDaysDate(days: number): Date {
   const d = new Date();
   d.setDate(d.getDate() + days);
   return d;
 }
 
+/** Seeds demo contacts, vaults, contracts, and transactions on first run. No-ops if the DB already has data. */
 export async function initializeDatabase() {
   const em = orm.em.fork();
   if ((await em.count(ContactDetails)) > 0) return;

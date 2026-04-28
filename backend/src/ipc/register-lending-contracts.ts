@@ -10,6 +10,11 @@ import { Transaction, TransactionType } from "../repository/entity/transaction";
 import { VaultBalanceHistory } from "../repository/entity/vault-balance-history";
 import { computeRepaidTotals, createLedgerEntry } from "./register-transactions";
 
+/**
+ * Registers IPC handlers for LendingContract CRUD.
+ * Creating a contract automatically fires a Lend ledger entry into the selected vault.
+ * Deleting is only allowed if the auto-created transaction is still the latest in the ledger.
+ */
 export function registerHandlers(ipcMain: IpcMain) {
   ipcMain.handle("GET lending-contracts", async () => {
     const em = orm.em.fork();

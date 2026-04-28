@@ -2,6 +2,7 @@ import { IpcMain } from "electron";
 import { orm } from "../repository/db";
 import { ContactDetails } from "../repository/entity/contact-details";
 
+/** Registers IPC handlers for CRUD operations on ContactDetails. */
 export function registerHandlers(ipcMain: IpcMain) {
   ipcMain.handle("GET contacts", async () => {
     const em = orm.em.fork();
