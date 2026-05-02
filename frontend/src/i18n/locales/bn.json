@@ -1,7 +1,7 @@
 {
   "nav": {
     "contacts": "যোগাযোগ",
-    "vaults": "ভল্ট",
+    "vaults": "সিন্দুক",
     "lendingContracts": "ধার দেওয়ার চুক্তি",
     "borrowingContracts": "ধার নেওয়ার চুক্তি",
     "transactions": "লেনদেন"
@@ -25,7 +25,7 @@
     "date": "তারিখ",
     "phone": "ফোন",
     "address": "ঠিকানা",
-    "vault": "ভল্ট",
+    "vault": "সিন্দুক",
     "duration": "মেয়াদ",
     "durationDays": "মেয়াদ (দিন)",
     "returnDate": "ফেরতের তারিখ",
@@ -36,7 +36,7 @@
     "searchByName": "নাম দিয়ে অনুসন্ধান করুন…",
     "selectContact": "তালিকা থেকে একটি যোগাযোগ নির্বাচন করুন",
     "noContactsFound": "কোনো যোগাযোগ পাওয়া যায়নি",
-    "selectVault": "— ভল্ট নির্বাচন করুন —",
+    "selectVault": "— সিন্দুক নির্বাচন করুন —",
     "close": "✕",
     "optional": "ঐচ্ছিক"
   },
@@ -54,20 +54,20 @@
     "failedToUpdate": "যোগাযোগ আপডেট করতে ব্যর্থ"
   },
   "vaults": {
-    "title": "ভল্ট",
-    "addVault": "ভল্ট যোগ করুন",
+    "title": "সিন্দুক",
+    "addVault": "সিন্দুক যোগ করুন",
     "total": "মোট",
-    "formTitle": "ভল্ট ফর্ম",
+    "formTitle": "সিন্দুক ফর্ম",
     "balanceHistory": "ব্যালেন্স ইতিহাস",
     "recordedAt": "রেকর্ড করা হয়েছে",
     "noBalanceHistory": "এখনো কোনো ব্যালেন্স ইতিহাস নেই।",
-    "deleteConfirm": "ভল্ট \"{{name}}\" মুছবেন?",
-    "added": "ভল্ট যোগ হয়েছে",
-    "updated": "ভল্ট আপডেট হয়েছে",
-    "deleted": "ভল্ট মুছে গেছে",
-    "failedToAdd": "ভল্ট যোগ করতে ব্যর্থ",
-    "failedToUpdate": "ভল্ট আপডেট করতে ব্যর্থ",
-    "failedToDelete": "ভল্ট মুছতে ব্যর্থ"
+    "deleteConfirm": "সিন্দুক \"{{name}}\" মুছবেন?",
+    "added": "সিন্দুক যোগ হয়েছে",
+    "updated": "সিন্দুক আপডেট হয়েছে",
+    "deleted": "সিন্দুক মুছে গেছে",
+    "failedToAdd": "সিন্দুক যোগ করতে ব্যর্থ",
+    "failedToUpdate": "সিন্দুক আপডেট করতে ব্যর্থ",
+    "failedToDelete": "সিন্দুক মুছতে ব্যর্থ"
   },
   "lendingContracts": {
     "title": "ধার দেওয়ার চুক্তি",
@@ -163,7 +163,7 @@
       "repayExceedsBalance": "পরিমাণ {{amount}} পরিশোধযোগ্য ব্যালেন্স {{remaining}} এর বেশি"
     },
     "vault": {
-      "deleteWithHistory": "লেনদেনের ইতিহাস থাকলে ভল্ট মুছে ফেলা যাবে না"
+      "deleteWithHistory": "লেনদেনের ইতিহাস থাকলে সিন্দুক মুছে ফেলা যাবে না"
     },
     "contract": {
       "deleteNotLatest": "মুছে ফেলা সম্ভব নয় — এই চুক্তির পরে একটি নতুন লেনদেন রয়েছে"
