@@ -1,4 +1,4 @@
-import { DateType, Entity, ManyToOne, Property } from "@mikro-orm/core";
+import { Entity, ManyToOne, Property } from "@mikro-orm/core";
 import { BaseModel } from "./base-model";
 import { ContactDetails } from "./contact-details";
 
@@ -27,8 +27,8 @@ export class LendingContract extends BaseModel<"contractStatus"> {
   @Property()
   durationDays!: number;
 
-  @Property({ type: DateType })
-  returnDate!: string; // Stored as 'YYYY-MM-DD'
+  @Property()
+  returnDate!: Date; // Stored as 'YYYY-MM-DD'
 
   @Property()
   financeCategoryType!: FinanceCategoryType;

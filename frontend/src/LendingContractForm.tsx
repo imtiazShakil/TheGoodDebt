@@ -68,7 +68,7 @@ const LendingContractForm = ({
       setContactQuery(contract.contact.name);
       setAmount(String(contract.amount));
       setDurationDays(String(contract.durationDays));
-      setReturnDate(contract.returnDate);
+      setReturnDate(contract.returnDate.toISOString().split("T")[0]);
       setFinanceCategoryType(contract.financeCategoryType);
       setReasonForLending(contract.reasonForLending ?? "");
       setContractStatus(contract.contractStatus);

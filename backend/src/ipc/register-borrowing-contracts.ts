@@ -81,10 +81,10 @@ export function registerHandlers(ipcMain: IpcMain) {
     contract.durationDays = data.durationDays;
     contract.returnDate = data.returnDate;
     contract.purposeOfLoan = data.purposeOfLoan;
-    contract.firstReminder = data.firstReminder ? new Date(data.firstReminder) : null;
-    contract.secondReminder = data.secondReminder ? new Date(data.secondReminder) : null;
-    contract.thirdReminder = data.thirdReminder ? new Date(data.thirdReminder) : null;
-    contract.guarantorsReminder = data.guarantorsReminder ? new Date(data.guarantorsReminder) : null;
+    contract.firstReminder = data.firstReminder;
+    contract.secondReminder = data.secondReminder;
+    contract.thirdReminder = data.thirdReminder;
+    contract.guarantorsReminder = data.guarantorsReminder;
     await em.persistAndFlush(contract);
     await em.populate(contract, ["contact", "guarantor1", "guarantor2"]);
     return contract;

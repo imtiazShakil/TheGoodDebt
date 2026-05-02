@@ -201,7 +201,7 @@ const BorrowingContractForm = ({
       setSelectedGuarantor2(contract.guarantor2 ?? null);
       setAmount(String(contract.amount));
       setDurationDays(String(contract.durationDays));
-      setReturnDate(contract.returnDate);
+      setReturnDate(contract.returnDate.toISOString().split("T")[0]);
       setFinanceCategoryType(contract.financeCategoryType);
       setPurposeOfLoan(contract.purposeOfLoan ?? "");
       setFirstReminder(
@@ -250,15 +250,17 @@ const BorrowingContractForm = ({
       contact: selectedContact,
       amount: parseFloat(amount),
       durationDays: parseInt(durationDays, 10),
-      returnDate,
+      returnDate: new Date(returnDate),
       financeCategoryType,
       purposeOfLoan,
       guarantor1: selectedGuarantor1 ?? undefined,
       guarantor2: selectedGuarantor2 ?? undefined,
-      firstReminder: firstReminder || undefined,
-      secondReminder: secondReminder || undefined,
-      thirdReminder: thirdReminder || undefined,
-      guarantorsReminder: guarantorsReminder || undefined,
+      firstReminder: firstReminder ? new Date(firstReminder) : undefined,
+      secondReminder: secondReminder ? new Date(secondReminder) : undefined,
+      thirdReminder: thirdReminder ? new Date(thirdReminder) : undefined,
+      guarantorsReminder: guarantorsReminder
+        ? new Date(guarantorsReminder)
+        : undefined,
       contractStatus,
       adjustmentWithTransactionId: adjustmentWithTransactionId
         ? parseInt(adjustmentWithTransactionId, 10)

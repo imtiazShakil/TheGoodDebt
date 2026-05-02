@@ -30,7 +30,7 @@ export interface LendingContract extends BaseEntity {
   contact: ContactDetails;
   amount: number;
   durationDays: number;
-  returnDate: string;
+  returnDate: Date;
   financeCategoryType: "Qard al-Hasan" | "Zakat" | "Sadaqa" | "Waqf";
   reasonForLending?: string;
   contractStatus: "Active" | "Completed" | "Defaulted";
@@ -44,7 +44,7 @@ export interface BorrowingContract extends BaseEntity {
   contact: ContactDetails;
   amount: number;
   durationDays: number;
-  returnDate: string;
+  returnDate: Date;
   financeCategoryType: "Qard al-Hasan" | "Zakat" | "Sadaqa" | "Waqf";
   purposeOfLoan?: string;
   guarantor1?: ContactDetails;
