@@ -453,7 +453,6 @@ const TransactionForm = ({ onSubmit, onCancel }: TransactionFormProps) => {
             className="input input-bordered w-full"
             min="0"
             max={maxRepayAmount}
-            step="0.01"
             required
           />
         </div>

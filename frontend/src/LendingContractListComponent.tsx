@@ -57,7 +57,9 @@ function LendingContractListComponent() {
           if (err.code) {
             toast.error(t(err.code, err.values));
           } else {
-            toast.error(t("lendingContracts.failedToDelete"), { description: err.message });
+            toast.error(t("lendingContracts.failedToDelete"), {
+              description: err.message,
+            });
           }
         });
     },
@@ -96,7 +98,9 @@ function LendingContractListComponent() {
           if (err.code) {
             toast.error(t(err.code, err.values));
           } else {
-            toast.error(t("lendingContracts.failedToAdd"), { description: err.message });
+            toast.error(t("lendingContracts.failedToAdd"), {
+              description: err.message,
+            });
           }
         })
         .finally(() => modalRef.current?.close());
@@ -127,6 +131,7 @@ function LendingContractListComponent() {
               <th>{t("common.category")}</th>
               <th>{t("common.status")}</th>
               <th>{t("common.repaid")}</th>
+              <th className="text-right">{t("common.balance")}</th>
               <th>{t("common.actions")}</th>
             </tr>
           </thead>
@@ -150,6 +155,11 @@ function LendingContractListComponent() {
                   </span>
                 </td>
                 <td>{(contract.totalRepaid ?? 0).toLocaleString()}</td>
+                <td className="text-right font-semibold">
+                  {(
+                    contract.amount - (contract.totalRepaid ?? 0)
+                  ).toLocaleString()}
+                </td>
                 <td className="flex gap-1">
                   <button
                     className="btn btn-ghost btn-circle"
