@@ -86,11 +86,13 @@
     "title": "ধার নেওয়ার চুক্তি",
     "addContract": "চুক্তি যোগ করুন",
     "guarantors": "জামিনদার",
-    "recall": "স্মরণপত্র",
     "purposeOfLoan": "ঋণের উদ্দেশ্য",
     "guarantor1": "জামিনদার ১",
     "guarantor2": "জামিনদার ২",
-    "recallStatus": "স্মরণপত্রের অবস্থা",
+    "firstReminder": "১ম স্মরণপত্রের তারিখ",
+    "secondReminder": "২য় স্মরণপত্রের তারিখ",
+    "thirdReminder": "৩য় স্মরণপত্রের তারিখ",
+    "guarantorsReminder": "জামিনদারদের স্মরণপত্রের তারিখ",
     "adjTransactionId": "সমন্বয় লেনদেন আইডি",
     "formTitle": "ধার নেওয়ার চুক্তি",
     "deleteConfirm": "ধার নেওয়ার চুক্তি #{{id}} মুছবেন?",
@@ -149,13 +151,6 @@
     "Active": "সক্রিয়",
     "Completed": "সম্পন্ন",
     "Defaulted": "খেলাপি"
-  },
-  "loanRecallStatus": {
-    "none": "— কোনোটি নয় —",
-    "1st Reminder": "১ম স্মরণপত্র",
-    "2nd Reminder": "২য় স্মরণপত্র",
-    "3rd Reminder": "৩য় স্মরণপত্র",
-    "Guarantors reminder": "জামিনদারদের স্মরণপত্র"
   },
   "errors": {
     "balance": {

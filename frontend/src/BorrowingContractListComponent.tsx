@@ -17,13 +17,6 @@ const STATUS_BADGE: Record<string, string> = {
   Defaulted: "badge-error",
 };
 
-const RECALL_BADGE: Record<string, string> = {
-  "1st Reminder": "badge-warning",
-  "2nd Reminder": "badge-warning",
-  "3rd Reminder": "badge-error",
-  "Guarantors reminder": "badge-error",
-};
-
 function guarantorNames(contract: BorrowingContract): string {
   const names = [contract.guarantor1?.name, contract.guarantor2?.name].filter(
     Boolean,
@@ -70,7 +63,9 @@ function BorrowingContractListComponent() {
           console.error("Error deleting borrowing contract", err);
           err?.code
             ? toast.error(t(err.code, err.values))
-            : toast.error(t("borrowingContracts.failedToDelete"), { description: err?.message });
+            : toast.error(t("borrowingContracts.failedToDelete"), {
+                description: err?.message,
+              });
         });
     },
     [t],
@@ -105,7 +100,9 @@ function BorrowingContractListComponent() {
           console.error("Error adding borrowing contract", err);
           err?.code
             ? toast.error(t(err.code, err.values))
-            : toast.error(t("borrowingContracts.failedToAdd"), { description: err?.message });
+            : toast.error(t("borrowingContracts.failedToAdd"), {
+                description: err?.message,
+              });
         })
         .finally(() => modalRef.current?.close());
     }
@@ -134,7 +131,6 @@ function BorrowingContractListComponent() {
               <th>{t("common.returnDate")}</th>
               <th>{t("common.category")}</th>
               <th>{t("borrowingContracts.guarantors")}</th>
-              <th>{t("borrowingContracts.recall")}</th>
               <th>{t("common.status")}</th>
               <th>{t("common.repaid")}</th>
               <th>{t("common.actions")}</th>
@@ -153,17 +149,6 @@ function BorrowingContractListComponent() {
                 <td>{new Date(contract.returnDate).toLocaleDateString()}</td>
                 <td>{t(`financeCategory.${contract.financeCategoryType}`)}</td>
                 <td>{guarantorNames(contract)}</td>
-                <td>
-                  {contract.loanRecallStatus ? (
-                    <span
-                      className={`badge badge-sm ${RECALL_BADGE[contract.loanRecallStatus] ?? ""}`}
-                    >
-                      {t(`loanRecallStatus.${contract.loanRecallStatus}`)}
-                    </span>
-                  ) : (
-                    "—"
-                  )}
-                </td>
                 <td>
                   <span
                     className={`badge badge-sm ${STATUS_BADGE[contract.contractStatus] ?? ""}`}

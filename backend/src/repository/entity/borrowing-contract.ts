@@ -3,13 +3,6 @@ import { BaseModel } from "./base-model";
 import { ContactDetails } from "./contact-details";
 import { ContractStatus, FinanceCategoryType } from "./lending-contract";
 
-export enum LoanRecallStatus {
-  FirstReminder = "1st Reminder",
-  SecondReminder = "2nd Reminder",
-  ThirdReminder = "3rd Reminder",
-  GuarantorsReminder = "Guarantors reminder",
-}
-
 /** Records money going OUT from the fund — the organisation lending to a beneficiary (Qard al-Hasan etc.). */
 @Entity()
 export class BorrowingContract extends BaseModel<"contractStatus"> {
@@ -38,7 +31,16 @@ export class BorrowingContract extends BaseModel<"contractStatus"> {
   guarantor2?: ContactDetails;
 
   @Property({ nullable: true })
-  loanRecallStatus?: LoanRecallStatus;
+  firstReminder?: Date;
+
+  @Property({ nullable: true })
+  secondReminder?: Date;
+
+  @Property({ nullable: true })
+  thirdReminder?: Date;
+
+  @Property({ nullable: true })
+  guarantorsReminder?: Date;
 
   @Property()
   contractStatus: ContractStatus = ContractStatus.Active;

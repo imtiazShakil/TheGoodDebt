@@ -49,17 +49,15 @@ export interface BorrowingContract extends BaseEntity {
   purposeOfLoan?: string;
   guarantor1?: ContactDetails;
   guarantor2?: ContactDetails;
-  loanRecallStatus?:
-    | "1st Reminder"
-    | "2nd Reminder"
-    | "3rd Reminder"
-    | "Guarantors reminder";
+  firstReminder?: string;
+  secondReminder?: string;
+  thirdReminder?: string;
+  guarantorsReminder?: string;
   contractStatus: "Active" | "Completed" | "Defaulted";
   adjustmentWithTransactionId?: number;
   totalRepaid?: number;
 }
 
-export type LoanRecallStatus = BorrowingContract["loanRecallStatus"];
 
 export interface Transaction extends BaseEntity {
   description: string;

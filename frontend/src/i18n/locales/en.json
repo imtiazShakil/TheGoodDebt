@@ -86,11 +86,13 @@
     "title": "Borrowing Contracts",
     "addContract": "Add Contract",
     "guarantors": "Guarantors",
-    "recall": "Recall",
     "purposeOfLoan": "Purpose of Loan",
     "guarantor1": "Guarantor 1",
     "guarantor2": "Guarantor 2",
-    "recallStatus": "Recall Status",
+    "firstReminder": "1st Reminder Date",
+    "secondReminder": "2nd Reminder Date",
+    "thirdReminder": "3rd Reminder Date",
+    "guarantorsReminder": "Guarantors Reminder Date",
     "adjTransactionId": "Adj. Transaction ID",
     "formTitle": "Borrowing Contract",
     "deleteConfirm": "Delete borrowing contract #{{id}}?",
@@ -149,13 +151,6 @@
     "Active": "Active",
     "Completed": "Completed",
     "Defaulted": "Defaulted"
-  },
-  "loanRecallStatus": {
-    "none": "— None —",
-    "1st Reminder": "1st Reminder",
-    "2nd Reminder": "2nd Reminder",
-    "3rd Reminder": "3rd Reminder",
-    "Guarantors reminder": "Guarantors reminder"
   },
   "errors": {
     "balance": {

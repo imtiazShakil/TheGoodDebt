@@ -6,7 +6,6 @@ import {
   ContactDetails,
   ContractStatus,
   FinanceCategoryType,
-  LoanRecallStatus,
   Vault,
 } from "./entity.interface";
 
@@ -21,13 +20,6 @@ const FINANCE_CATEGORIES: FinanceCategoryType[] = [
   "Zakat",
   "Sadaqa",
   "Waqf",
-];
-
-const LOAN_RECALL_STATUSES: NonNullable<LoanRecallStatus>[] = [
-  "1st Reminder",
-  "2nd Reminder",
-  "3rd Reminder",
-  "Guarantors reminder",
 ];
 
 function calcReturnDate(days: number): string {
@@ -183,9 +175,10 @@ const BorrowingContractForm = ({
   const [financeCategoryType, setFinanceCategoryType] =
     useState<FinanceCategoryType>("Qard al-Hasan");
   const [purposeOfLoan, setPurposeOfLoan] = useState("");
-  const [loanRecallStatus, setLoanRecallStatus] = useState<
-    NonNullable<LoanRecallStatus> | ""
-  >("");
+  const [firstReminder, setFirstReminder] = useState("");
+  const [secondReminder, setSecondReminder] = useState("");
+  const [thirdReminder, setThirdReminder] = useState("");
+  const [guarantorsReminder, setGuarantorsReminder] = useState("");
   const [contractStatus, setContractStatus] =
     useState<ContractStatus>("Active");
   const [adjustmentWithTransactionId, setAdjustmentWithTransactionId] =
@@ -211,7 +204,10 @@ const BorrowingContractForm = ({
       setReturnDate(contract.returnDate);
       setFinanceCategoryType(contract.financeCategoryType);
       setPurposeOfLoan(contract.purposeOfLoan ?? "");
-      setLoanRecallStatus(contract.loanRecallStatus ?? "");
+      setFirstReminder(contract.firstReminder ?? "");
+      setSecondReminder(contract.secondReminder ?? "");
+      setThirdReminder(contract.thirdReminder ?? "");
+      setGuarantorsReminder(contract.guarantorsReminder ?? "");
       setContractStatus(contract.contractStatus);
       setAdjustmentWithTransactionId(
         contract.adjustmentWithTransactionId
@@ -243,7 +239,10 @@ const BorrowingContractForm = ({
       purposeOfLoan,
       guarantor1: selectedGuarantor1 ?? undefined,
       guarantor2: selectedGuarantor2 ?? undefined,
-      loanRecallStatus: loanRecallStatus || undefined,
+      firstReminder: firstReminder || undefined,
+      secondReminder: secondReminder || undefined,
+      thirdReminder: thirdReminder || undefined,
+      guarantorsReminder: guarantorsReminder || undefined,
       contractStatus,
       adjustmentWithTransactionId: adjustmentWithTransactionId
         ? parseInt(adjustmentWithTransactionId, 10)
@@ -262,7 +261,10 @@ const BorrowingContractForm = ({
     setReturnDate("");
     setFinanceCategoryType("Qard al-Hasan");
     setPurposeOfLoan("");
-    setLoanRecallStatus("");
+    setFirstReminder("");
+    setSecondReminder("");
+    setThirdReminder("");
+    setGuarantorsReminder("");
     setContractStatus("Active");
     setAdjustmentWithTransactionId("");
     setVaultId("");
@@ -409,51 +411,68 @@ const BorrowingContractForm = ({
               selectedContact={selectedGuarantor2}
               onSelect={setSelectedGuarantor2}
             />
+          </>
+        )}
 
-            <div className="flex items-center">
-              <label
-                className="w-1/3 text-sm font-semibold"
-                htmlFor="loanRecallStatus"
-              >
-                {t("borrowingContracts.recallStatus")}
-              </label>
-              <select
-                id="loanRecallStatus"
-                value={loanRecallStatus}
-                onChange={(e) =>
-                  setLoanRecallStatus(
-                    e.target.value as NonNullable<LoanRecallStatus> | "",
-                  )
-                }
-                className="select select-bordered w-full"
-              >
-                <option value="">{t("loanRecallStatus.none")}</option>
-                {LOAN_RECALL_STATUSES.map((s) => (
-                  <option key={s} value={s}>
-                    {t(`loanRecallStatus.${s}`)}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className="flex items-center">
-              <label
-                className="w-1/3 text-sm font-semibold"
-                htmlFor="adjustmentTxId"
-              >
-                {t("borrowingContracts.adjTransactionId")}
+        {!isCreate &&
+          [
+            {
+              id: "firstReminder",
+              label: t("borrowingContracts.firstReminder"),
+              value: firstReminder,
+              set: setFirstReminder,
+            },
+            {
+              id: "secondReminder",
+              label: t("borrowingContracts.secondReminder"),
+              value: secondReminder,
+              set: setSecondReminder,
+            },
+            {
+              id: "thirdReminder",
+              label: t("borrowingContracts.thirdReminder"),
+              value: thirdReminder,
+              set: setThirdReminder,
+            },
+            {
+              id: "guarantorsReminder",
+              label: t("borrowingContracts.guarantorsReminder"),
+              value: guarantorsReminder,
+              set: setGuarantorsReminder,
+            },
+          ].map(({ id, label, value, set }) => (
+            <div key={id} className="flex items-center">
+              <label className="w-1/3 text-sm font-semibold" htmlFor={id}>
+                {label}
               </label>
               <input
-                type="number"
-                id="adjustmentTxId"
-                value={adjustmentWithTransactionId}
-                onChange={(e) => setAdjustmentWithTransactionId(e.target.value)}
+                type="date"
+                id={id}
+                value={value}
+                onChange={(e) => set(e.target.value)}
                 className="input input-bordered w-full"
-                min="1"
-                placeholder={t("common.optional")}
               />
             </div>
-          </>
+          ))}
+
+        {!isCreate && (
+          <div className="flex items-center">
+            <label
+              className="w-1/3 text-sm font-semibold"
+              htmlFor="adjustmentTxId"
+            >
+              {t("borrowingContracts.adjTransactionId")}
+            </label>
+            <input
+              type="number"
+              id="adjustmentTxId"
+              value={adjustmentWithTransactionId}
+              onChange={(e) => setAdjustmentWithTransactionId(e.target.value)}
+              className="input input-bordered w-full"
+              min="1"
+              placeholder={t("common.optional")}
+            />
+          </div>
         )}
 
         <div className="flex justify-end gap-2">
