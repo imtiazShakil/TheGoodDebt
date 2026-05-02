@@ -22,9 +22,9 @@ const FINANCE_CATEGORIES: FinanceCategoryType[] = [
   "Waqf",
 ];
 
-function calcReturnDate(days: number): string {
+function calcReturnDate(days: number, baseDate?: Date | null): string {
   if (!days || days <= 0) return "";
-  const d = new Date();
+  const d = baseDate ? new Date(baseDate) : new Date();
   d.setDate(d.getDate() + days);
   return d.toISOString().split("T")[0];
 }
@@ -237,8 +237,8 @@ const BorrowingContractForm = ({
 
   useEffect(() => {
     const days = parseInt(durationDays, 10);
-    setReturnDate(calcReturnDate(days));
-  }, [durationDays]);
+    setReturnDate(calcReturnDate(days, contract?.createdAt));
+  }, [durationDays, contract?.createdAt]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
