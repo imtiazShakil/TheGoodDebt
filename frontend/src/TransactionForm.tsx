@@ -334,13 +334,15 @@ const TransactionForm = ({ onSubmit, onCancel }: TransactionFormProps) => {
               <option value="">
                 {t("transactions.selectLendingContract")}
               </option>
-              {lendingContracts.map((c) => (
-                <option key={c.id} value={c.id}>
-                  #{c.id} — {c.contact.name} —{" "}
-                  {t(`financeCategory.${c.financeCategoryType}`)} (
-                  {c.amount.toLocaleString()})
-                </option>
-              ))}
+              {lendingContracts
+                .filter((c) => c.contractStatus === "Active")
+                .map((c) => (
+                  <option key={c.id} value={c.id}>
+                    #{c.id} — {c.contact.name} —{" "}
+                    {t(`financeCategory.${c.financeCategoryType}`)} (
+                    {c.amount.toLocaleString()})
+                  </option>
+                ))}
             </select>
           </div>
         )}
@@ -367,13 +369,15 @@ const TransactionForm = ({ onSubmit, onCancel }: TransactionFormProps) => {
               <option value="">
                 {t("transactions.selectBorrowingContract")}
               </option>
-              {borrowingContracts.map((c) => (
-                <option key={c.id} value={c.id}>
-                  #{c.id} — {c.contact.name} —{" "}
-                  {t(`financeCategory.${c.financeCategoryType}`)} (
-                  {c.amount.toLocaleString()})
-                </option>
-              ))}
+              {borrowingContracts
+                .filter((c) => c.contractStatus === "Active")
+                .map((c) => (
+                  <option key={c.id} value={c.id}>
+                    #{c.id} — {c.contact.name} —{" "}
+                    {t(`financeCategory.${c.financeCategoryType}`)} (
+                    {c.amount.toLocaleString()})
+                  </option>
+                ))}
             </select>
           </div>
         )}
