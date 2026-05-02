@@ -123,7 +123,7 @@ const LendingContractForm = ({
       contact: { id: selectedContactId, name: contactQuery } as ContactDetails,
       amount: parseFloat(amount),
       durationDays: parseInt(durationDays, 10),
-      returnDate,
+      returnDate: new Date(returnDate),
       financeCategoryType,
       reasonForLending,
       contractStatus,
