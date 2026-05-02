@@ -49,10 +49,10 @@ export interface BorrowingContract extends BaseEntity {
   purposeOfLoan?: string;
   guarantor1?: ContactDetails;
   guarantor2?: ContactDetails;
-  firstReminder?: string;
-  secondReminder?: string;
-  thirdReminder?: string;
-  guarantorsReminder?: string;
+  firstReminder?: Date;
+  secondReminder?: Date;
+  thirdReminder?: Date;
+  guarantorsReminder?: Date;
   contractStatus: "Active" | "Completed" | "Defaulted";
   adjustmentWithTransactionId?: number;
   totalRepaid?: number;

@@ -31,16 +31,16 @@ export class BorrowingContract extends BaseModel<"contractStatus"> {
   guarantor2?: ContactDetails;
 
   @Property({ nullable: true })
-  firstReminder?: Date;
+  firstReminder?: Date | null;
 
   @Property({ nullable: true })
-  secondReminder?: Date;
+  secondReminder?: Date | null;
 
   @Property({ nullable: true })
-  thirdReminder?: Date;
+  thirdReminder?: Date | null;
 
   @Property({ nullable: true })
-  guarantorsReminder?: Date;
+  guarantorsReminder?: Date | null;
 
   @Property()
   contractStatus: ContractStatus = ContractStatus.Active;

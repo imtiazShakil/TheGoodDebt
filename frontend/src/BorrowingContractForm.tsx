@@ -204,10 +204,26 @@ const BorrowingContractForm = ({
       setReturnDate(contract.returnDate);
       setFinanceCategoryType(contract.financeCategoryType);
       setPurposeOfLoan(contract.purposeOfLoan ?? "");
-      setFirstReminder(contract.firstReminder ?? "");
-      setSecondReminder(contract.secondReminder ?? "");
-      setThirdReminder(contract.thirdReminder ?? "");
-      setGuarantorsReminder(contract.guarantorsReminder ?? "");
+      setFirstReminder(
+        contract.firstReminder
+          ? contract.firstReminder.toISOString().split("T")[0]
+          : "",
+      );
+      setSecondReminder(
+        contract.secondReminder
+          ? contract.secondReminder.toISOString().split("T")[0]
+          : "",
+      );
+      setThirdReminder(
+        contract.thirdReminder
+          ? contract.thirdReminder.toISOString().split("T")[0]
+          : "",
+      );
+      setGuarantorsReminder(
+        contract.guarantorsReminder
+          ? contract.guarantorsReminder.toISOString().split("T")[0]
+          : "",
+      );
       setContractStatus(contract.contractStatus);
       setAdjustmentWithTransactionId(
         contract.adjustmentWithTransactionId
