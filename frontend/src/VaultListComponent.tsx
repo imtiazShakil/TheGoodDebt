@@ -9,7 +9,7 @@ import {
   getVaultBalanceHistory,
   getVaults,
 } from "./api";
-import { Vault, VaultBalanceHistory } from "./entity.interface";
+import { IpcError, Vault, VaultBalanceHistory } from "./entity.interface";
 import VaultForm from "./VaultForm";
 
 function VaultListComponent() {
@@ -58,11 +58,13 @@ function VaultListComponent() {
           setVaults((prev) => prev.filter((v) => v.id !== vault.id));
           toast.success(t("vaults.deleted"));
         })
-        .catch((error) => {
+        .catch((error: IpcError) => {
           console.error("Error deleting vault", error);
-          error?.code
-            ? toast.error(t(error.code, error.values))
-            : toast.error(t("vaults.failedToDelete"), { description: error?.message });
+          if (error.code) {
+            toast.error(t(error.code, error.values));
+          } else {
+            toast.error(t("vaults.failedToDelete"), { description: error.message });
+          }
         });
     },
     [t],

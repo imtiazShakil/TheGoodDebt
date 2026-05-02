@@ -80,3 +80,9 @@ export interface Transaction extends BaseEntity {
 
 export type TransactionType = Transaction["transactionType"];
 export type ExpenseType = Transaction["expenseType"];
+
+export interface IpcError {
+  code?: string;
+  values?: Record<string, unknown>;
+  message?: string;
+}

@@ -8,7 +8,7 @@ import {
   editLendingContract,
   getLendingContracts,
 } from "./api";
-import { LendingContract } from "./entity.interface";
+import { IpcError, LendingContract } from "./entity.interface";
 import LendingContractForm from "./LendingContractForm";
 
 const STATUS_BADGE: Record<string, string> = {
@@ -52,11 +52,13 @@ function LendingContractListComponent() {
           setContracts((prev) => prev.filter((c) => c.id !== contract.id));
           toast.success(t("lendingContracts.deleted"));
         })
-        .catch((err) => {
+        .catch((err: IpcError) => {
           console.error("Error deleting lending contract", err);
-          err?.code
-            ? toast.error(t(err.code, err.values))
-            : toast.error(t("lendingContracts.failedToDelete"), { description: err?.message });
+          if (err.code) {
+            toast.error(t(err.code, err.values));
+          } else {
+            toast.error(t("lendingContracts.failedToDelete"), { description: err.message });
+          }
         });
     },
     [t],
@@ -72,11 +74,13 @@ function LendingContractListComponent() {
           );
           toast.success(t("lendingContracts.updated"));
         })
-        .catch((err) => {
+        .catch((err: IpcError) => {
           console.error("Error editing lending contract", err);
-          err?.code
-            ? toast.error(t(err.code, err.values))
-            : toast.error(t("lendingContracts.failedToUpdate"));
+          if (err.code) {
+            toast.error(t(err.code, err.values));
+          } else {
+            toast.error(t("lendingContracts.failedToUpdate"));
+          }
         })
         .finally(() => modalRef.current?.close());
     } else {
@@ -87,11 +91,13 @@ function LendingContractListComponent() {
           setContracts((prev) => [...prev, contract]);
           toast.success(t("lendingContracts.added"));
         })
-        .catch((err) => {
+        .catch((err: IpcError) => {
           console.error("Error adding lending contract", err);
-          err?.code
-            ? toast.error(t(err.code, err.values))
-            : toast.error(t("lendingContracts.failedToAdd"), { description: err?.message });
+          if (err.code) {
+            toast.error(t(err.code, err.values));
+          } else {
+            toast.error(t("lendingContracts.failedToAdd"), { description: err.message });
+          }
         })
         .finally(() => modalRef.current?.close());
     }

@@ -8,7 +8,7 @@ import {
   editTransactionDescription,
   getTransactions,
 } from "./api";
-import { Transaction } from "./entity.interface";
+import { IpcError, Transaction } from "./entity.interface";
 import TransactionForm from "./TransactionForm";
 
 const TYPE_BADGE: Record<string, string> = {
@@ -54,11 +54,13 @@ function TransactionListComponent() {
         setTransactions((prev) => [tx, ...prev]);
         toast.success(t("transactions.added"));
       })
-      .catch((err) => {
+      .catch((err: IpcError) => {
         console.error("Error adding transaction", err);
-        err?.code
-          ? toast.error(t(err.code, err.values))
-          : toast.error(t("transactions.failedToAdd"), { description: err?.message });
+        if (err.code) {
+          toast.error(t(err.code, err.values));
+        } else {
+          toast.error(t("transactions.failedToAdd"), { description: err.message });
+        }
       })
       .finally(() => addModalRef.current?.close());
   };
@@ -79,11 +81,13 @@ function TransactionListComponent() {
         );
         toast.success(t("transactions.updated"));
       })
-      .catch((err) => {
+      .catch((err: IpcError) => {
         console.error("Error editing transaction", err);
-        err?.code
-          ? toast.error(t(err.code, err.values))
-          : toast.error(t("transactions.failedToUpdate"));
+        if (err.code) {
+          toast.error(t(err.code, err.values));
+        } else {
+          toast.error(t("transactions.failedToUpdate"));
+        }
       })
       .finally(() => {
         editModalRef.current?.close();
@@ -100,11 +104,13 @@ function TransactionListComponent() {
           setTransactions((prev) => prev.filter((t) => t.id !== tx.id));
           toast.success(t("transactions.deleted"));
         })
-        .catch((err) => {
+        .catch((err: IpcError) => {
           console.error("Error deleting transaction", err);
-          err?.code
-            ? toast.error(t(err.code, err.values))
-            : toast.error(t("transactions.failedToDelete"), { description: err?.message });
+          if (err.code) {
+            toast.error(t(err.code, err.values));
+          } else {
+            toast.error(t("transactions.failedToDelete"), { description: err.message });
+          }
         });
     },
     [t],
