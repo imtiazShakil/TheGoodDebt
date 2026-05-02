@@ -80,7 +80,8 @@
     "deleted": "ধার দেওয়ার চুক্তি মুছে গেছে",
     "failedToAdd": "চুক্তি যোগ করতে ব্যর্থ",
     "failedToUpdate": "চুক্তি আপডেট করতে ব্যর্থ",
-    "failedToDelete": "চুক্তি মুছতে ব্যর্থ"
+    "failedToDelete": "চুক্তি মুছতে ব্যর্থ",
+    "totalRepayable": "জমা ফেরতযোগ্য"
   },
   "borrowingContracts": {
     "title": "ধার নেওয়ার চুক্তি",
@@ -101,7 +102,8 @@
     "deleted": "ধার নেওয়ার চুক্তি মুছে গেছে",
     "failedToAdd": "চুক্তি যোগ করতে ব্যর্থ",
     "failedToUpdate": "চুক্তি আপডেট করতে ব্যর্থ",
-    "failedToDelete": "চুক্তি মুছতে ব্যর্থ"
+    "failedToDelete": "চুক্তি মুছতে ব্যর্থ",
+    "totalRepayable": "ঋণ পরিশোধযোগ্য"
   },
   "transactions": {
     "title": "লেনদেন",

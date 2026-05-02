@@ -64,7 +64,9 @@ function BorrowingContractListComponent() {
           if (err.code) {
             toast.error(t(err.code, err.values));
           } else {
-            toast.error(t("borrowingContracts.failedToDelete"), { description: err.message });
+            toast.error(t("borrowingContracts.failedToDelete"), {
+              description: err.message,
+            });
           }
         });
     },
@@ -103,7 +105,9 @@ function BorrowingContractListComponent() {
           if (err.code) {
             toast.error(t(err.code, err.values));
           } else {
-            toast.error(t("borrowingContracts.failedToAdd"), { description: err.message });
+            toast.error(t("borrowingContracts.failedToAdd"), {
+              description: err.message,
+            });
           }
         })
         .finally(() => modalRef.current?.close());
@@ -135,6 +139,9 @@ function BorrowingContractListComponent() {
               <th>{t("borrowingContracts.guarantors")}</th>
               <th>{t("common.status")}</th>
               <th>{t("common.repaid")}</th>
+              <th className="text-right">
+                {t("borrowingContracts.totalRepayable")}
+              </th>
               <th>{t("common.actions")}</th>
             </tr>
           </thead>
@@ -159,6 +166,11 @@ function BorrowingContractListComponent() {
                   </span>
                 </td>
                 <td>{(contract.totalRepaid ?? 0).toLocaleString()}</td>
+                <td className="text-right font-semibold">
+                  {(
+                    contract.amount - (contract.totalRepaid ?? 0)
+                  ).toLocaleString()}
+                </td>
                 <td className="flex gap-1">
                   <button
                     className="btn btn-ghost btn-circle"

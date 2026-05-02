@@ -80,7 +80,8 @@
     "deleted": "Lending contract deleted",
     "failedToAdd": "Failed to add contract",
     "failedToUpdate": "Failed to update contract",
-    "failedToDelete": "Failed to delete contract"
+    "failedToDelete": "Failed to delete contract",
+    "totalRepayable": "Deposit refundable"
   },
   "borrowingContracts": {
     "title": "Borrowing Contracts",
@@ -101,7 +102,8 @@
     "deleted": "Borrowing contract deleted",
     "failedToAdd": "Failed to add contract",
     "failedToUpdate": "Failed to update contract",
-    "failedToDelete": "Failed to delete contract"
+    "failedToDelete": "Failed to delete contract",
+    "totalRepayable": "Loan repayable"
   },
   "transactions": {
     "title": "Transactions",

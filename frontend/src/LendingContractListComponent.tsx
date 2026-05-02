@@ -131,7 +131,9 @@ function LendingContractListComponent() {
               <th>{t("common.category")}</th>
               <th>{t("common.status")}</th>
               <th>{t("common.repaid")}</th>
-              <th className="text-right">{t("common.balance")}</th>
+              <th className="text-right">
+                {t("lendingContracts.totalRepayable")}
+              </th>
               <th>{t("common.actions")}</th>
             </tr>
           </thead>
