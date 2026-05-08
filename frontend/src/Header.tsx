@@ -138,11 +138,11 @@ function Header() {
           >
             <ul className="menu w-40">
               {THEMES.map((theme) => (
-                <li key={theme}>
+                <li key={theme} className="mt-1">
                   <input
                     type="radio"
                     name="theme-dropdown"
-                    className="theme-controller btn btn-sm btn-wide mt-1 justify-start"
+                    className="theme-controller btn btn-sm btn-wide hover:bg-primary hover:text-primary-content justify-start"
                     aria-label={theme}
                     value={theme}
                   />
