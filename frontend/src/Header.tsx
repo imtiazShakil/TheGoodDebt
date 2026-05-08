@@ -1,6 +1,41 @@
-import { HandCoins } from "@phosphor-icons/react";
+import { HandCoins, PaintBrush } from "@phosphor-icons/react";
 import { useTranslation } from "react-i18next";
 import { NavLink } from "react-router";
+
+const THEMES = [
+  "light",
+  "dark",
+  "cupcake",
+  "bumblebee",
+  "emerald",
+  "corporate",
+  "synthwave",
+  "retro",
+  "cyberpunk",
+  "valentine",
+  "halloween",
+  "garden",
+  "forest",
+  "aqua",
+  "lofi",
+  "pastel",
+  "fantasy",
+  "wireframe",
+  "black",
+  "luxury",
+  "dracula",
+  "cmyk",
+  "autumn",
+  "business",
+  "acid",
+  "lemonade",
+  "night",
+  "coffee",
+  "winter",
+  "dim",
+  "nord",
+  "sunset",
+];
 
 function Header() {
   const { t, i18n } = useTranslation();
@@ -92,78 +127,29 @@ function Header() {
             EN
           </button>
         </div>
-        <div className="dropdown">
-          <div tabIndex={0} role="button" className="btn m-1">
+        <div className="dropdown dropdown-end">
+          <div tabIndex={0} role="button" className="btn btn-sm m-2">
+            <PaintBrush size={18} weight="duotone" />
             {t("header.theme")}
-            <svg
-              width="12px"
-              height="12px"
-              className="inline-block h-2 w-2 fill-current opacity-60"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 2048 2048"
-            >
-              <path d="M1799 349l242 241-1017 1017L7 590l242-241 775 775 775-775z"></path>
-            </svg>
           </div>
-          <ul
+          <div
             tabIndex={0}
-            className="dropdown-content bg-base-300 text-primary rounded-box z-1 p-2 shadow-2xl"
+            className="dropdown-content bg-base-100 text-base-content rounded-box shadow-accent z-2 max-h-95 min-w-max overflow-y-auto p-1 shadow-2xl"
           >
-            <li>
-              <input
-                type="radio"
-                name="theme-dropdown"
-                className="theme-controller btn btn-sm btn-block w-full justify-start"
-                aria-label="Default"
-                value="default"
-              />
-            </li>
-            <li>
-              <input
-                type="radio"
-                name="theme-dropdown"
-                className="theme-controller btn btn-sm btn-block w-full justify-start"
-                aria-label="night"
-                value="night"
-              />
-            </li>
-            <li>
-              <input
-                type="radio"
-                name="theme-dropdown"
-                className="theme-controller btn btn-sm btn-block w-full justify-start"
-                aria-label="retro"
-                value="retro"
-              />
-            </li>
-            <li>
-              <input
-                type="radio"
-                name="theme-dropdown"
-                className="theme-controller btn btn-sm btn-block w-full justify-start"
-                aria-label="lemonade"
-                value="lemonade"
-              />
-            </li>
-            <li>
-              <input
-                type="radio"
-                name="theme-dropdown"
-                className="theme-controller btn btn-sm btn-block w-full justify-start"
-                aria-label="nord"
-                value="nord"
-              />
-            </li>
-            <li>
-              <input
-                type="radio"
-                name="theme-dropdown"
-                className="theme-controller btn btn-sm btn-block w-full justify-start"
-                aria-label="silk"
-                value="silk"
-              />
-            </li>
-          </ul>
+            <ul className="menu w-40">
+              {THEMES.map((theme) => (
+                <li key={theme}>
+                  <input
+                    type="radio"
+                    name="theme-dropdown"
+                    className="theme-controller btn btn-sm btn-wide mt-1 justify-start"
+                    aria-label={theme}
+                    value={theme}
+                  />
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       </div>
     </div>
