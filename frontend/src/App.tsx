@@ -1,5 +1,5 @@
 import { CheckFat, Info, Warning, XCircle } from "@phosphor-icons/react";
-import { BrowserRouter, Route, Routes } from "react-router";
+import { BrowserRouter, MemoryRouter, Route, Routes } from "react-router";
 import { Toaster } from "sonner";
 import BorrowingContractListComponent from "./BorrowingContractListComponent";
 import ContactListComponent from "./ContactListComponent";
@@ -7,6 +7,9 @@ import Header from "./Header";
 import LendingContractListComponent from "./LendingContractListComponent";
 import TransactionListComponent from "./TransactionListComponent";
 import VaultListComponent from "./VaultListComponent";
+
+// it is a boolean environment constant used in Vite to determine if your application is running in a production environment
+const Router = import.meta.env.PROD ? MemoryRouter : BrowserRouter;
 
 function App() {
   return (
@@ -35,7 +38,7 @@ function App() {
         offset={{ bottom: "48px" }}
       />
       <div className="flex h-screen flex-col">
-        <BrowserRouter>
+        <Router>
           <Header></Header>
           <main className="mx-2 flex min-h-0 flex-1 flex-col">
             <Routes>
@@ -58,7 +61,7 @@ function App() {
               The Good Debt &copy; 2026
             </div>
           </main>
-        </BrowserRouter>
+        </Router>
       </div>
     </>
   );

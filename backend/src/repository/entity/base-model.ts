@@ -7,15 +7,19 @@ export type BaseOptionalProps = "id" | "createdAt" | "updatedAt" | "version";
 export abstract class BaseModel<Optional extends string = never> {
   [OptionalProps]?: BaseOptionalProps | Optional;
 
-  @PrimaryKey()
+  @PrimaryKey({ type: "number" })
   id!: number;
 
-  @Property({ onCreate: () => new Date() })
+  @Property({ type: "datetime", onCreate: () => new Date() })
   createdAt: Date = new Date();
 
-  @Property({ onCreate: () => new Date(), onUpdate: () => new Date() })
+  @Property({
+    type: "datetime",
+    onCreate: () => new Date(),
+    onUpdate: () => new Date(),
+  })
   updatedAt: Date = new Date();
 
-  @Property({ version: true })
+  @Property({ type: "number", version: true })
   version: number = 1;
 }

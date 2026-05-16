@@ -9,19 +9,19 @@ export class BorrowingContract extends BaseModel<"contractStatus"> {
   @ManyToOne(() => ContactDetails)
   contact!: ContactDetails;
 
-  @Property()
+  @Property({ type: "number" })
   amount!: number;
 
-  @Property()
+  @Property({ type: "number" })
   durationDays!: number;
 
-  @Property()
+  @Property({ type: "datetime" })
   returnDate!: Date;
 
-  @Property()
+  @Property({ type: "string" })
   financeCategoryType!: FinanceCategoryType;
 
-  @Property({ nullable: true })
+  @Property({ type: "string", nullable: true })
   purposeOfLoan?: string;
 
   @ManyToOne(() => ContactDetails, { nullable: true })
@@ -30,21 +30,21 @@ export class BorrowingContract extends BaseModel<"contractStatus"> {
   @ManyToOne(() => ContactDetails, { nullable: true })
   guarantor2?: ContactDetails;
 
-  @Property({ nullable: true })
+  @Property({ type: "datetime", nullable: true })
   firstReminder?: Date | null;
 
-  @Property({ nullable: true })
+  @Property({ type: "datetime", nullable: true })
   secondReminder?: Date | null;
 
-  @Property({ nullable: true })
+  @Property({ type: "datetime", nullable: true })
   thirdReminder?: Date | null;
 
-  @Property({ nullable: true })
+  @Property({ type: "datetime", nullable: true })
   guarantorsReminder?: Date | null;
 
-  @Property()
+  @Property({ type: "string" })
   contractStatus: ContractStatus = ContractStatus.Active;
 
-  @Property({ nullable: true })
+  @Property({ type: "number", nullable: true })
   adjustmentWithTransactionId?: number;
 }

@@ -1,11 +1,17 @@
 {
   "name": "tgd-backend",
+  "productName": "TheGoodDebt",
   "version": "1.0.0",
-  "description": "The Good Debt backend based on electron",
-  "main": "main.js",
+  "description": "The Good Debt — interest-free loan tracker",
+  "main": "dist/main.js",
   "scripts": {
     "start": "tsc && electron ./dist/main.js",
-    "watch": "tsc -w"
+    "watch": "tsc -w",
+    "build:frontend": "npm --prefix ../frontend run build",
+    "build:backend": "tsc",
+    "build": "npm run build:frontend && npm run build:backend",
+    "dist": "npm run build && electron-builder",
+    "postinstall": "electron-builder install-app-deps"
   },
   "keywords": [
     "GoodDebt",
@@ -15,14 +21,37 @@
   ],
   "author": "Imtiaz Shakil Siddique",
   "license": "GPL-3.0",
+  "build": {
+    "appId": "com.imtiazshakil.thegooddebt",
+    "productName": "TheGoodDebt",
+    "directories": {
+      "output": "../release"
+    },
+    "files": [
+      "dist/**/*"
+    ],
+    "extraResources": [
+      {
+        "from": "../frontend/dist",
+        "to": "frontend"
+      }
+    ],
+    "win": {
+      "target": "portable"
+    },
+    "linux": {
+      "target": "AppImage",
+      "category": "Office"
+    }
+  },
   "devDependencies": {
     "electron": "^34.2.0",
+    "electron-builder": "^26.8.1",
     "prettier": "3.5.1",
     "typescript": "^5.7.3"
   },
   "dependencies": {
     "@mikro-orm/core": "^6.4.15",
-    "@mikro-orm/reflection": "^6.4.15",
     "@mikro-orm/sqlite": "^6.4.15"
   }
 }

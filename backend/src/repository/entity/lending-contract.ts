@@ -21,21 +21,21 @@ export class LendingContract extends BaseModel<"contractStatus"> {
   @ManyToOne(() => ContactDetails)
   contact!: ContactDetails;
 
-  @Property()
+  @Property({ type: "number" })
   amount!: number;
 
-  @Property()
+  @Property({ type: "number" })
   durationDays!: number;
 
-  @Property()
+  @Property({ type: "datetime" })
   returnDate!: Date; // Stored as 'YYYY-MM-DD'
 
-  @Property()
+  @Property({ type: "string" })
   financeCategoryType!: FinanceCategoryType;
 
-  @Property({ nullable: true })
+  @Property({ type: "string", nullable: true })
   reasonForLending?: string;
 
-  @Property()
+  @Property({ type: "string" })
   contractStatus: ContractStatus = ContractStatus.Active;
 }

@@ -4,9 +4,9 @@ import { BaseModel } from "./base-model";
 /** A named fund (e.g. "Masjid Zakat Fund") that holds per-category balances tracked via VaultBalanceHistory. */
 @Entity()
 export class Vault extends BaseModel {
-  @Property({ unique: true })
+  @Property({ type: "string", unique: true })
   name!: string;
 
-  @Property({ nullable: true })
+  @Property({ type: "string", nullable: true })
   description?: string;
 }

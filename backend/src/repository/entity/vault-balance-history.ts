@@ -12,18 +12,18 @@ export class VaultBalanceHistory extends BaseModel {
   @ManyToOne(() => Transaction, { nullable: true })
   transaction?: Transaction;
 
-  @Property()
+  @Property({ type: "number" })
   qardAlHasanBalance: number = 0;
 
-  @Property()
+  @Property({ type: "number" })
   zakatBalance: number = 0;
 
-  @Property()
+  @Property({ type: "number" })
   sadaqaBalance: number = 0;
 
-  @Property()
+  @Property({ type: "number" })
   waqfBalance: number = 0;
 
-  @Property()
+  @Property({ type: "number" })
   totalBalance: number = 0;
 }

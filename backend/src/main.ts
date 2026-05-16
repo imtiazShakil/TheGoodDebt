@@ -22,7 +22,13 @@ async function createWindow() {
     },
   });
 
-  mainWindow.loadURL("http://localhost:5173");
+  if (app.isPackaged) {
+    mainWindow.loadFile(
+      path.join(process.resourcesPath, "frontend", "index.html"),
+    );
+  } else {
+    mainWindow.loadURL("http://localhost:5173");
+  }
 
   mainWindow.on("closed", () => {
     mainWindow = null!;

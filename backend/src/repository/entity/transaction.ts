@@ -25,16 +25,16 @@ export enum ExpenseType {
 /** Immutable ledger entry. Each row carries a running system-wide balance across all vaults. */
 @Entity()
 export class Transaction extends BaseModel {
-  @Property()
+  @Property({ type: "string" })
   description!: string;
 
-  @Property()
+  @Property({ type: "number" })
   amount!: number;
 
-  @Property()
+  @Property({ type: "string" })
   transactionType!: TransactionType;
 
-  @Property({ nullable: true })
+  @Property({ type: "string", nullable: true })
   expenseType?: ExpenseType;
 
   @ManyToOne(() => Vault)
@@ -43,7 +43,7 @@ export class Transaction extends BaseModel {
   @ManyToOne(() => ContactDetails, { nullable: true })
   contact?: ContactDetails;
 
-  @Property()
+  @Property({ type: "string" })
   financeCategoryType!: FinanceCategoryType;
 
   @ManyToOne(() => LendingContract, { nullable: true })
@@ -52,6 +52,6 @@ export class Transaction extends BaseModel {
   @ManyToOne(() => BorrowingContract, { nullable: true })
   borrowingContract?: BorrowingContract;
 
-  @Property()
+  @Property({ type: "number" })
   balance!: number;
 }

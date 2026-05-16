@@ -1,17 +1,33 @@
-import { Options, SqliteDriver } from '@mikro-orm/sqlite';
-import { TsMorphMetadataProvider } from '@mikro-orm/reflection';
+import path from "path";
+import { Options, SqliteDriver } from "@mikro-orm/sqlite";
+
+import { BorrowingContract } from "./entity/borrowing-contract";
+import { ContactDetails } from "./entity/contact-details";
+import { LendingContract } from "./entity/lending-contract";
+import { Transaction } from "./entity/transaction";
+import { Vault } from "./entity/vault";
+import { VaultBalanceHistory } from "./entity/vault-balance-history";
+
+const getDbPath = (): string => {
+  const dbFile = "tgd.sqlite";
+  if (process.env.APPIMAGE)
+    return path.join(path.dirname(process.env.APPIMAGE), dbFile);
+  if (process.env.PORTABLE_EXECUTABLE_DIR)
+    return path.join(process.env.PORTABLE_EXECUTABLE_DIR, dbFile);
+  return dbFile;
+};
 
 const config: Options = {
-  // for simplicity, we use the SQLite database, as it's available pretty much everywhere
   driver: SqliteDriver,
-  dbName: 'tgd.sqlite',
-  // folder-based discovery setup, using common filename suffix
-  entities: ['dist/repository/entity/**/*.js'],
-  entitiesTs: ['src/repository/entity/**/*.ts'],
-  // we will use the ts-morph reflection, an alternative to the default reflect-metadata provider
-  // check the documentation for their differences: https://mikro-orm.io/docs/metadata-providers
-  metadataProvider: TsMorphMetadataProvider,
-  // enable debug mode to log SQL queries and discovery information
+  dbName: getDbPath(),
+  entities: [
+    BorrowingContract,
+    ContactDetails,
+    LendingContract,
+    Transaction,
+    Vault,
+    VaultBalanceHistory,
+  ],
   debug: true,
 };
 
