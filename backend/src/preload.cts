@@ -1,3 +1,7 @@
+// .cts (not .ts) forces TypeScript to emit CommonJS output regardless of the
+// package-level "type": "module". Electron's sandboxed preload runner does not
+// support ESM — renaming to .cts is the minimal fix that keeps the rest of the
+// backend as ESM without adding a separate tsconfig or disabling the sandbox.
 import { contextBridge, ipcRenderer } from "electron";
 
 const APP_ERR_PREFIX = "__APP_ERR__:";
