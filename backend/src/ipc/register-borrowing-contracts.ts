@@ -1,16 +1,16 @@
 import { IpcMain } from "electron";
-import { orm } from "../repository/db";
-import { BorrowingContract } from "../repository/entity/borrowing-contract";
-import { ContactDetails } from "../repository/entity/contact-details";
-import { ContractStatus } from "../repository/entity/lending-contract";
-import { Transaction, TransactionType } from "../repository/entity/transaction";
-import { VaultBalanceHistory } from "../repository/entity/vault-balance-history";
-import { AppError } from "./app-error";
+import { orm } from "../repository/db.js";
+import { BorrowingContract } from "../repository/entity/borrowing-contract.js";
+import { ContactDetails } from "../repository/entity/contact-details.js";
+import { ContractStatus } from "../repository/entity/lending-contract.js";
+import { Transaction, TransactionType } from "../repository/entity/transaction.js";
+import { VaultBalanceHistory } from "../repository/entity/vault-balance-history.js";
+import { AppError } from "./app-error.js";
 import {
   assertVaultCategoryBalance,
   computeRepaidTotals,
   createLedgerEntry,
-} from "./register-transactions";
+} from "./register-transactions.js";
 
 /**
  * Registers IPC handlers for BorrowingContract CRUD.
@@ -85,7 +85,7 @@ export function registerHandlers(ipcMain: IpcMain) {
     contract.secondReminder = data.secondReminder;
     contract.thirdReminder = data.thirdReminder;
     contract.guarantorsReminder = data.guarantorsReminder;
-    await em.persistAndFlush(contract);
+    await em.persist(contract).flush();
     await em.populate(contract, ["contact", "guarantor1", "guarantor2"]);
     return contract;
   });

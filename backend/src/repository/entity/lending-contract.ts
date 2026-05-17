@@ -1,6 +1,6 @@
-import { Entity, ManyToOne, Property } from "@mikro-orm/core";
-import { BaseModel } from "./base-model";
-import { ContactDetails } from "./contact-details";
+import { Entity, ManyToOne, Property } from "@mikro-orm/decorators/es";
+import { BaseModel } from "./base-model.js";
+import { ContactDetails } from "./contact-details.js";
 
 export enum FinanceCategoryType {
   QardAlHasan = "Qard al-Hasan",

@@ -1,7 +1,7 @@
-import { Entity, ManyToOne, Property } from "@mikro-orm/core";
-import { BaseModel } from "./base-model";
-import { ContactDetails } from "./contact-details";
-import { ContractStatus, FinanceCategoryType } from "./lending-contract";
+import { Entity, ManyToOne, Property } from "@mikro-orm/decorators/es";
+import { BaseModel } from "./base-model.js";
+import { ContactDetails } from "./contact-details.js";
+import { ContractStatus, FinanceCategoryType } from "./lending-contract.js";
 
 /** Records money going OUT from the fund — the organisation lending to a beneficiary (Qard al-Hasan etc.). */
 @Entity()

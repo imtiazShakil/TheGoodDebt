@@ -1,13 +1,13 @@
-import { createLedgerEntry } from "../ipc/register-transactions";
-import { orm } from "./db";
-import { BorrowingContract } from "./entity/borrowing-contract";
-import { ContactDetails } from "./entity/contact-details";
+import { createLedgerEntry } from "../ipc/register-transactions.js";
+import { orm } from "./db.js";
+import { BorrowingContract } from "./entity/borrowing-contract.js";
+import { ContactDetails } from "./entity/contact-details.js";
 import {
   FinanceCategoryType,
   LendingContract,
-} from "./entity/lending-contract";
-import { ExpenseType, TransactionType } from "./entity/transaction";
-import { Vault } from "./entity/vault";
+} from "./entity/lending-contract.js";
+import { ExpenseType, TransactionType } from "./entity/transaction.js";
+import { Vault } from "./entity/vault.js";
 
 /** Returns an ISO date string (YYYY-MM-DD) offset by the given number of days from today. */
 function addDaysISO(days: number): string {
@@ -63,7 +63,7 @@ export async function initializeDatabase() {
     phone: "01756789012",
     address: "Ward 5, Barishal Sadar, Barishal",
   });
-  await em.persistAndFlush([rafiqul, fatema, karim, nasrin, sohrab]);
+  await em.persist([rafiqul, fatema, karim, nasrin, sohrab]).flush();
   console.log("Contacts seeded");
 
   const main = em.create(Vault, {
@@ -74,7 +74,7 @@ export async function initializeDatabase() {
     name: "Zakat & Sadaqa Reserve",
     description: "Dedicated reserve for Zakat, Sadaqa and Waqf disbursements",
   });
-  await em.persistAndFlush([main, reserve]);
+  await em.persist([main, reserve]).flush();
   console.log("Vaults seeded");
 
   // Lending contracts — money comes IN to the fund

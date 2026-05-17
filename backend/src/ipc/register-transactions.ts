@@ -1,21 +1,21 @@
 import { EntityManager } from "@mikro-orm/core";
 import { IpcMain } from "electron";
-import { AppError } from "./app-error";
-import { orm } from "../repository/db";
-import { BorrowingContract } from "../repository/entity/borrowing-contract";
-import { ContactDetails } from "../repository/entity/contact-details";
+import { AppError } from "./app-error.js";
+import { orm } from "../repository/db.js";
+import { BorrowingContract } from "../repository/entity/borrowing-contract.js";
+import { ContactDetails } from "../repository/entity/contact-details.js";
 import {
   ContractStatus,
   FinanceCategoryType,
   LendingContract,
-} from "../repository/entity/lending-contract";
+} from "../repository/entity/lending-contract.js";
 import {
   ExpenseType,
   Transaction,
   TransactionType,
-} from "../repository/entity/transaction";
-import { Vault } from "../repository/entity/vault";
-import { VaultBalanceHistory } from "../repository/entity/vault-balance-history";
+} from "../repository/entity/transaction.js";
+import { Vault } from "../repository/entity/vault.js";
+import { VaultBalanceHistory } from "../repository/entity/vault-balance-history.js";
 
 const POPULATE = [
   "vault",
@@ -301,7 +301,7 @@ export function registerHandlers(ipcMain: IpcMain) {
     const em = orm.em.fork();
     const transaction = await em.findOneOrFail(Transaction, { id: data.id });
     transaction.description = data.description;
-    await em.persistAndFlush(transaction);
+    await em.persist(transaction).flush();
     await em.populate(transaction, POPULATE as unknown as never);
     return transaction;
   });

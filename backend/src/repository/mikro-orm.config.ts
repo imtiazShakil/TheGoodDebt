@@ -1,12 +1,12 @@
 import path from "path";
 import { Options, SqliteDriver } from "@mikro-orm/sqlite";
 
-import { BorrowingContract } from "./entity/borrowing-contract";
-import { ContactDetails } from "./entity/contact-details";
-import { LendingContract } from "./entity/lending-contract";
-import { Transaction } from "./entity/transaction";
-import { Vault } from "./entity/vault";
-import { VaultBalanceHistory } from "./entity/vault-balance-history";
+import { BorrowingContract } from "./entity/borrowing-contract.js";
+import { ContactDetails } from "./entity/contact-details.js";
+import { LendingContract } from "./entity/lending-contract.js";
+import { Transaction } from "./entity/transaction.js";
+import { Vault } from "./entity/vault.js";
+import { VaultBalanceHistory } from "./entity/vault-balance-history.js";
 
 const getDbPath = (): string => {
   const dbFile = "tgd.sqlite";

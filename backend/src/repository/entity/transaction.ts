@@ -1,9 +1,9 @@
-import { Entity, ManyToOne, Property } from "@mikro-orm/core";
-import { BaseModel } from "./base-model";
-import { ContactDetails } from "./contact-details";
-import { FinanceCategoryType, LendingContract } from "./lending-contract";
-import { BorrowingContract } from "./borrowing-contract";
-import { Vault } from "./vault";
+import { Entity, ManyToOne, Property } from "@mikro-orm/decorators/es";
+import { BaseModel } from "./base-model.js";
+import { ContactDetails } from "./contact-details.js";
+import { FinanceCategoryType, LendingContract } from "./lending-contract.js";
+import { BorrowingContract } from "./borrowing-contract.js";
+import { Vault } from "./vault.js";
 
 export enum TransactionType {
   Lend = "Lend",

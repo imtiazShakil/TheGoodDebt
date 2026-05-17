@@ -1,4 +1,5 @@
-import { Entity, OptionalProps, PrimaryKey, Property } from "@mikro-orm/core";
+import { Entity, PrimaryKey, Property } from "@mikro-orm/decorators/es";
+import { OptionalProps } from "@mikro-orm/core";
 
 export type BaseOptionalProps = "id" | "createdAt" | "updatedAt" | "version";
 

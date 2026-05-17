@@ -1,8 +1,8 @@
 import { IpcMain } from "electron";
-import { AppError } from "./app-error";
-import { orm } from "../repository/db";
-import { Vault } from "../repository/entity/vault";
-import { VaultBalanceHistory } from "../repository/entity/vault-balance-history";
+import { AppError } from "./app-error.js";
+import { orm } from "../repository/db.js";
+import { Vault } from "../repository/entity/vault.js";
+import { VaultBalanceHistory } from "../repository/entity/vault-balance-history.js";
 
 /** Registers IPC handlers for vault CRUD and per-vault balance history queries. */
 export function registerHandlers(ipcMain: IpcMain) {
@@ -32,7 +32,7 @@ export function registerHandlers(ipcMain: IpcMain) {
     data.id = undefined;
     const em = orm.em.fork();
     const vault = em.create(Vault, data);
-    await em.persistAndFlush(vault);
+    await em.persist(vault).flush();
     return vault;
   });
 
@@ -41,7 +41,7 @@ export function registerHandlers(ipcMain: IpcMain) {
     const vault = await em.findOneOrFail(Vault, { id: data.id });
     vault.name = data.name;
     vault.description = data.description;
-    await em.persistAndFlush(vault);
+    await em.persist(vault).flush();
     return vault;
   });
 
@@ -52,7 +52,7 @@ export function registerHandlers(ipcMain: IpcMain) {
     if (hasHistory > 0) {
       throw new AppError("errors.vault.deleteWithHistory");
     }
-    await em.removeAndFlush(vault);
+    await em.remove(vault).flush();
     return { id: data.id };
   });
 

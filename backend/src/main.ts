@@ -1,13 +1,14 @@
 import { app, BrowserWindow, ipcMain } from "electron";
 import path from "path";
+import { fileURLToPath } from "url";
 
-import { initializeDatabase } from "./repository/seed";
-import { closeORM, initORM } from "./repository/db";
-import { registerHandlers as registerContactHandlers } from "./ipc/register-contacts";
-import { registerHandlers as registerVaultHandlers } from "./ipc/register-vaults";
-import { registerHandlers as registerLendingHandlers } from "./ipc/register-lending-contracts";
-import { registerHandlers as registerBorrowingHandlers } from "./ipc/register-borrowing-contracts";
-import { registerHandlers as registerTransactionHandlers } from "./ipc/register-transactions";
+import { initializeDatabase } from "./repository/seed.js";
+import { closeORM, initORM } from "./repository/db.js";
+import { registerHandlers as registerContactHandlers } from "./ipc/register-contacts.js";
+import { registerHandlers as registerVaultHandlers } from "./ipc/register-vaults.js";
+import { registerHandlers as registerLendingHandlers } from "./ipc/register-lending-contracts.js";
+import { registerHandlers as registerBorrowingHandlers } from "./ipc/register-borrowing-contracts.js";
+import { registerHandlers as registerTransactionHandlers } from "./ipc/register-transactions.js";
 
 let mainWindow: BrowserWindow;
 
@@ -18,7 +19,7 @@ async function createWindow() {
     height: 900,
     autoHideMenuBar: true,
     webPreferences: {
-      preload: path.join(__dirname, "preload.js"),
+      preload: path.join(path.dirname(fileURLToPath(import.meta.url)), "preload.cjs"),
     },
   });
 

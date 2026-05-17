@@ -1,7 +1,7 @@
-import { Entity, ManyToOne, Property } from "@mikro-orm/core";
-import { BaseModel } from "./base-model";
-import { Transaction } from "./transaction";
-import { Vault } from "./vault";
+import { Entity, ManyToOne, Property } from "@mikro-orm/decorators/es";
+import { BaseModel } from "./base-model.js";
+import { Transaction } from "./transaction.js";
+import { Vault } from "./vault.js";
 
 /** Per-category balance snapshot recorded for a vault after each transaction. Used to derive current balances without replaying the ledger. */
 @Entity()

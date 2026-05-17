@@ -1,5 +1,5 @@
-import { Entity, Property } from "@mikro-orm/core";
-import { BaseModel } from "./base-model";
+import { Entity, Property } from "@mikro-orm/decorators/es";
+import { BaseModel } from "./base-model.js";
 
 /** A person who can act as a lender (donor), borrower (beneficiary), or guarantor on a contract. */
 @Entity()

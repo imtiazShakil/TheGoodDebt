@@ -21,6 +21,7 @@
   ],
   "author": "Imtiaz Shakil Siddique",
   "license": "GPL-3.0",
+  "type": "module",
   "build": {
     "appId": "com.imtiazshakil.thegooddebt",
     "productName": "TheGoodDebt",
@@ -45,13 +46,14 @@
     }
   },
   "devDependencies": {
-    "electron": "^34.2.0",
+    "electron": "^35.0.0",
     "electron-builder": "^26.8.1",
     "prettier": "3.5.1",
-    "typescript": "^5.7.3"
+    "typescript": "^5.8.0"
   },
   "dependencies": {
-    "@mikro-orm/core": "^6.4.15",
-    "@mikro-orm/sqlite": "^6.4.15"
+    "@mikro-orm/core": "^7.0.16",
+    "@mikro-orm/decorators": "^7.0.16",
+    "@mikro-orm/sqlite": "^7.0.16"
   }
 }

@@ -1,14 +1,14 @@
 import { IpcMain } from "electron";
-import { AppError } from "./app-error";
-import { orm } from "../repository/db";
-import { ContactDetails } from "../repository/entity/contact-details";
+import { AppError } from "./app-error.js";
+import { orm } from "../repository/db.js";
+import { ContactDetails } from "../repository/entity/contact-details.js";
 import {
   ContractStatus,
   LendingContract,
-} from "../repository/entity/lending-contract";
-import { Transaction, TransactionType } from "../repository/entity/transaction";
-import { VaultBalanceHistory } from "../repository/entity/vault-balance-history";
-import { computeRepaidTotals, createLedgerEntry } from "./register-transactions";
+} from "../repository/entity/lending-contract.js";
+import { Transaction, TransactionType } from "../repository/entity/transaction.js";
+import { VaultBalanceHistory } from "../repository/entity/vault-balance-history.js";
+import { computeRepaidTotals, createLedgerEntry } from "./register-transactions.js";
 
 /**
  * Registers IPC handlers for LendingContract CRUD.
@@ -66,7 +66,7 @@ export function registerHandlers(ipcMain: IpcMain) {
     contract.durationDays = data.durationDays;
     contract.returnDate = data.returnDate;
     contract.reasonForLending = data.reasonForLending;
-    await em.persistAndFlush(contract);
+    await em.persist(contract).flush();
     await em.populate(contract, ["contact"]);
     return contract;
   });

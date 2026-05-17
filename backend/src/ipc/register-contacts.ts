@@ -1,6 +1,6 @@
 import { IpcMain } from "electron";
-import { orm } from "../repository/db";
-import { ContactDetails } from "../repository/entity/contact-details";
+import { orm } from "../repository/db.js";
+import { ContactDetails } from "../repository/entity/contact-details.js";
 
 /** Registers IPC handlers for CRUD operations on ContactDetails. */
 export function registerHandlers(ipcMain: IpcMain) {
@@ -13,7 +13,7 @@ export function registerHandlers(ipcMain: IpcMain) {
     data.id = undefined;
     const em = orm.em.fork();
     const contact = em.create(ContactDetails, data);
-    await em.persistAndFlush(contact);
+    await em.persist(contact).flush();
     return contact;
   });
 
@@ -25,7 +25,7 @@ export function registerHandlers(ipcMain: IpcMain) {
     contact.nidInfo = data.nidInfo;
     contact.address = data.address;
     contact.phone = data.phone;
-    await em.persistAndFlush(contact);
+    await em.persist(contact).flush();
     return contact;
   });
 
