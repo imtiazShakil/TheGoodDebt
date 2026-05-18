@@ -39,7 +39,17 @@
     "selectVault": "— সিন্দুক নির্বাচন করুন —",
     "close": "✕",
     "optional": "ঐচ্ছিক",
-    "print": "প্রিন্ট"
+    "print": "প্রিন্ট",
+    "download": "ডাউনলোড",
+    "attachedDocument": "সংযুক্ত নথি"
+  },
+  "documents": {
+    "pickHint": "PDF, ছবি বা .zip (সর্বোচ্চ ৫ মেগাবাইট)",
+    "currentlyAttached": "বর্তমানে সংযুক্ত: {{fileName}}",
+    "downloaded": "{{fileName}} ডাউনলোড হয়েছে",
+    "tooLarge": "{{fileName}} ৫ মেগাবাইট অতিক্রম করেছে",
+    "unsupportedType": "{{fileName}} একটি PDF, ছবি বা zip নয়",
+    "failedToDownload": "সংযুক্ত নথি ডাউনলোড করতে ব্যর্থ"
   },
   "contacts": {
     "title": "যোগাযোগ",
@@ -191,6 +201,10 @@
     },
     "contract": {
       "deleteNotLatest": "মুছে ফেলা সম্ভব নয় — এই চুক্তির পরে একটি নতুন লেনদেন রয়েছে"
+    },
+    "document": {
+      "tooLarge": "সংযুক্ত ফাইল ৫ মেগাবাইট অতিক্রম করেছে",
+      "unsupportedType": "অসমর্থিত সংযুক্তির ধরন"
     }
   }
 }

@@ -1,14 +1,21 @@
 import { IpcMain } from "electron";
 import { AppError } from "./app-error.js";
+import { applyAttachment, AttachedFileInput } from "./attachment-helpers.js";
 import { orm } from "../repository/db.js";
 import { ContactDetails } from "../repository/entity/contact-details.js";
 import {
   ContractStatus,
   LendingContract,
 } from "../repository/entity/lending-contract.js";
-import { Transaction, TransactionType } from "../repository/entity/transaction.js";
+import {
+  Transaction,
+  TransactionType,
+} from "../repository/entity/transaction.js";
 import { VaultBalanceHistory } from "../repository/entity/vault-balance-history.js";
-import { computeRepaidTotals, createLedgerEntry } from "./register-transactions.js";
+import {
+  computeRepaidTotals,
+  createLedgerEntry,
+} from "./register-transactions.js";
 
 /**
  * Registers IPC handlers for LendingContract CRUD.
@@ -37,11 +44,13 @@ export function registerHandlers(ipcMain: IpcMain) {
     rest.id = undefined;
 
     return await orm.em.fork().transactional(async (em) => {
+      const { attachedFile, ...contractData } = rest;
       const contract = em.create(LendingContract, {
-        ...rest,
+        ...contractData,
         contact: em.getReference(ContactDetails, data.contact.id),
         contractStatus: ContractStatus.Active,
       });
+      if (attachedFile) applyAttachment(contract, attachedFile);
       em.persist(contract);
       await em.flush();
 
@@ -66,10 +75,27 @@ export function registerHandlers(ipcMain: IpcMain) {
     contract.durationDays = data.durationDays;
     contract.returnDate = data.returnDate;
     contract.reasonForLending = data.reasonForLending;
+    if (data.attachedFile) applyAttachment(contract, data.attachedFile);
     await em.persist(contract).flush();
     await em.populate(contract, ["contact"]);
     return contract;
   });
+
+  ipcMain.handle(
+    "GET lending-contract-file",
+    async (_event, { contractId }): Promise<AttachedFileInput | null> => {
+      const em = orm.em.fork();
+      // Explicit `fields` opts the lazy fileBlob column into this one projection.
+      const c = await em.findOne(
+        LendingContract,
+        { id: contractId },
+        { fields: ["id", "fileName", "fileBlob"] },
+      );
+      if (!c?.fileName || !c?.fileBlob) return null;
+
+      return { fileName: c.fileName, bytes: c.fileBlob };
+    },
+  );
 
   ipcMain.handle("DELETE lending-contracts", async (_event, data) => {
     return await orm.em.fork().transactional(async (em) => {

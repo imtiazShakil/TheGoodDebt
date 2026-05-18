@@ -39,7 +39,17 @@
     "selectVault": "— Select vault —",
     "close": "✕",
     "optional": "Optional",
-    "print": "Print"
+    "print": "Print",
+    "download": "Download",
+    "attachedDocument": "Attached document"
+  },
+  "documents": {
+    "pickHint": "PDF, image, or .zip (max 5 MB)",
+    "currentlyAttached": "Currently attached: {{fileName}}",
+    "downloaded": "Downloaded {{fileName}}",
+    "tooLarge": "{{fileName}} exceeds 5 MB",
+    "unsupportedType": "{{fileName}} is not a PDF, image, or zip",
+    "failedToDownload": "Failed to download attached document"
   },
   "contacts": {
     "title": "Contacts",
@@ -191,6 +201,10 @@
     },
     "contract": {
       "deleteNotLatest": "Cannot delete — a newer transaction exists after this contract"
+    },
+    "document": {
+      "tooLarge": "Attachment exceeds 5 MB",
+      "unsupportedType": "Unsupported attachment type"
     }
   }
 }

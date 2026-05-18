@@ -47,4 +47,13 @@ export class BorrowingContract extends BaseModel<"contractStatus"> {
 
   @Property({ type: "number", nullable: true })
   adjustmentWithTransactionId?: number;
+
+  @Property({ type: "string", nullable: true })
+  fileName?: string;
+
+  // lazy: true — never loaded by default queries; only when explicitly requested
+  // in `fields`. Keeps list/find queries cheap; blob is fetched only by the
+  // dedicated download handler.
+  @Property({ type: "blob", nullable: true, lazy: true })
+  fileBlob?: Buffer;
 }

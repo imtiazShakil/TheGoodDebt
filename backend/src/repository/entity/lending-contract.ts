@@ -38,4 +38,13 @@ export class LendingContract extends BaseModel<"contractStatus"> {
 
   @Property({ type: "string" })
   contractStatus: ContractStatus = ContractStatus.Active;
+
+  @Property({ type: "string", nullable: true })
+  fileName?: string;
+
+  // lazy: true — never loaded by default queries; only when explicitly requested
+  // in `fields`. Keeps list/find queries cheap; blob is fetched only by the
+  // dedicated download handler.
+  @Property({ type: "blob", nullable: true, lazy: true })
+  fileBlob?: Buffer;
 }

@@ -35,6 +35,12 @@ export interface LendingContract extends BaseEntity {
   reasonForLending?: string;
   contractStatus: "Active" | "Completed" | "Defaulted";
   totalRepaid?: number;
+  fileName?: string;
+}
+
+export interface AttachedFile {
+  fileName: string;
+  bytes: Uint8Array;
 }
 
 export type FinanceCategoryType = LendingContract["financeCategoryType"];
@@ -56,6 +62,7 @@ export interface BorrowingContract extends BaseEntity {
   contractStatus: "Active" | "Completed" | "Defaulted";
   adjustmentWithTransactionId?: number;
   totalRepaid?: number;
+  fileName?: string;
 }
 
 

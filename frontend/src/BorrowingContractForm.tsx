@@ -3,17 +3,23 @@ import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { getVaults, searchContacts } from "./api";
 import {
+  AttachedFile,
   BorrowingContract,
   ContactDetails,
   ContractStatus,
   FinanceCategoryType,
   Vault,
 } from "./entity.interface";
+import FileAttachmentField from "./FileAttachmentField";
 import PrintableAgreement from "./PrintableAgreement";
 
 interface BorrowingContractFormProps {
   contract?: BorrowingContract | null;
-  onSubmit: (data: BorrowingContract, vaultId?: number) => void;
+  onSubmit: (
+    data: BorrowingContract,
+    vaultId?: number,
+    attachedFile?: AttachedFile,
+  ) => void;
   onCancel: () => void;
 }
 
@@ -187,6 +193,7 @@ const BorrowingContractForm = ({
     useState("");
   const [vaults, setVaults] = useState<Vault[]>([]);
   const [vaultId, setVaultId] = useState<number | "">("");
+  const [stagedFile, setStagedFile] = useState<File | null>(null);
 
   const isCreate = !contract;
 
@@ -232,6 +239,7 @@ const BorrowingContractForm = ({
           ? String(contract.adjustmentWithTransactionId)
           : "",
       );
+      setStagedFile(null);
     } else {
       resetForm();
     }
@@ -242,7 +250,7 @@ const BorrowingContractForm = ({
     setReturnDate(calcReturnDate(days, contract?.createdAt));
   }, [durationDays, contract?.createdAt]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedContact) return;
     if (isCreate && vaultId === "") return;
@@ -268,7 +276,13 @@ const BorrowingContractForm = ({
         ? parseInt(adjustmentWithTransactionId, 10)
         : undefined,
     };
-    onSubmit(data, isCreate ? (vaultId as number) : undefined);
+    const attachedFile: AttachedFile | undefined = stagedFile
+      ? {
+          fileName: stagedFile.name,
+          bytes: new Uint8Array(await stagedFile.arrayBuffer()),
+        }
+      : undefined;
+    onSubmit(data, isCreate ? (vaultId as number) : undefined, attachedFile);
     resetForm();
   };
 
@@ -288,10 +302,11 @@ const BorrowingContractForm = ({
     setContractStatus("Active");
     setAdjustmentWithTransactionId("");
     setVaultId("");
+    setStagedFile(null);
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={(e) => void handleSubmit(e)}>
       <div className="space-y-4">
         {isCreate && (
           <>
@@ -495,6 +510,12 @@ const BorrowingContractForm = ({
           </div>
         )}
 
+        <FileAttachmentField
+          existingFileName={contract?.fileName}
+          stagedFile={stagedFile}
+          onStage={setStagedFile}
+        />
+
         <div className="flex justify-end gap-2">
           {isCreate && (
             <button
@@ -506,11 +527,7 @@ const BorrowingContractForm = ({
               {t("common.print")}
             </button>
           )}
-          <button
-            type="button"
-            className="btn btn-neutral btn-outline"
-            onClick={onCancel}
-          >
+          <button type="button" className="btn btn-outline" onClick={onCancel}>
             {t("common.cancel")}
           </button>
           <button type="submit" className="btn btn-primary btn-outline">

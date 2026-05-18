@@ -1,0 +1,11 @@
+import { AttachedFile } from "./entity.interface";
+
+export function downloadFile({ fileName, bytes }: AttachedFile) {
+  const blob = new Blob([bytes as BlobPart], { type: "application/octet-stream" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = fileName;
+  a.click();
+  URL.revokeObjectURL(url);
+}

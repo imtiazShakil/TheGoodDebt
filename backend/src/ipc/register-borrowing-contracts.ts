@@ -3,9 +3,13 @@ import { orm } from "../repository/db.js";
 import { BorrowingContract } from "../repository/entity/borrowing-contract.js";
 import { ContactDetails } from "../repository/entity/contact-details.js";
 import { ContractStatus } from "../repository/entity/lending-contract.js";
-import { Transaction, TransactionType } from "../repository/entity/transaction.js";
+import {
+  Transaction,
+  TransactionType,
+} from "../repository/entity/transaction.js";
 import { VaultBalanceHistory } from "../repository/entity/vault-balance-history.js";
 import { AppError } from "./app-error.js";
+import { applyAttachment, AttachedFileInput } from "./attachment-helpers.js";
 import {
   assertVaultCategoryBalance,
   computeRepaidTotals,
@@ -46,8 +50,9 @@ export function registerHandlers(ipcMain: IpcMain) {
         data.amount,
       );
 
+      const { attachedFile, ...contractData } = rest;
       const contract = em.create(BorrowingContract, {
-        ...rest,
+        ...contractData,
         contact: em.getReference(ContactDetails, data.contact.id),
         guarantor1: data.guarantor1?.id
           ? em.getReference(ContactDetails, data.guarantor1.id)
@@ -57,6 +62,7 @@ export function registerHandlers(ipcMain: IpcMain) {
           : null,
         contractStatus: ContractStatus.Active,
       });
+      if (attachedFile) applyAttachment(contract, attachedFile);
       em.persist(contract);
       await em.flush();
 
@@ -85,10 +91,27 @@ export function registerHandlers(ipcMain: IpcMain) {
     contract.secondReminder = data.secondReminder;
     contract.thirdReminder = data.thirdReminder;
     contract.guarantorsReminder = data.guarantorsReminder;
+    if (data.attachedFile) applyAttachment(contract, data.attachedFile);
     await em.persist(contract).flush();
     await em.populate(contract, ["contact", "guarantor1", "guarantor2"]);
     return contract;
   });
+
+  ipcMain.handle(
+    "GET borrowing-contract-file",
+    async (_event, { contractId }): Promise<AttachedFileInput | null> => {
+      const em = orm.em.fork();
+      // Explicit `fields` opts the lazy fileBlob column into this one projection.
+      const c = await em.findOne(
+        BorrowingContract,
+        { id: contractId },
+        { fields: ["id", "fileName", "fileBlob"] },
+      );
+      if (!c?.fileName || !c?.fileBlob) return null;
+
+      return { fileName: c.fileName, bytes: c.fileBlob };
+    },
+  );
 
   ipcMain.handle("DELETE borrowing-contracts", async (_event, data) => {
     return await orm.em.fork().transactional(async (em) => {

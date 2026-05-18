@@ -1,4 +1,5 @@
 import {
+  AttachedFile,
   BorrowingContract,
   ContactDetails,
   LendingContract,
@@ -78,21 +79,27 @@ export function getLendingContracts(): Promise<LendingContract[]> {
 export function addLendingContract(
   contract: LendingContract,
   vaultId: number,
+  attachedFile?: AttachedFile,
 ): Promise<LendingContract | null> {
   if (!window.electronAPI) return Promise.resolve(null);
 
   return window.electronAPI.postRequest("POST lending-contracts", {
     ...contract,
     vaultId,
+    attachedFile,
   });
 }
 
 export function editLendingContract(
   contract: LendingContract,
+  attachedFile?: AttachedFile,
 ): Promise<LendingContract | null> {
   if (!window.electronAPI) return Promise.resolve(null);
 
-  return window.electronAPI.putRequest("PUT lending-contracts", contract);
+  return window.electronAPI.putRequest("PUT lending-contracts", {
+    ...contract,
+    attachedFile,
+  });
 }
 
 export function deleteLendingContract(
@@ -101,6 +108,16 @@ export function deleteLendingContract(
   if (!window.electronAPI) return Promise.resolve(null);
 
   return window.electronAPI.deleteRequest("DELETE lending-contracts", { id });
+}
+
+export function getLendingContractFile(
+  contractId: number,
+): Promise<AttachedFile | null> {
+  if (!window.electronAPI) return Promise.resolve(null);
+
+  return window.electronAPI.postRequest("GET lending-contract-file", {
+    contractId,
+  });
 }
 
 export function getBorrowingContracts(): Promise<BorrowingContract[]> {
@@ -112,21 +129,27 @@ export function getBorrowingContracts(): Promise<BorrowingContract[]> {
 export function addBorrowingContract(
   contract: BorrowingContract,
   vaultId: number,
+  attachedFile?: AttachedFile,
 ): Promise<BorrowingContract | null> {
   if (!window.electronAPI) return Promise.resolve(null);
 
   return window.electronAPI.postRequest("POST borrowing-contracts", {
     ...contract,
     vaultId,
+    attachedFile,
   });
 }
 
 export function editBorrowingContract(
   contract: BorrowingContract,
+  attachedFile?: AttachedFile,
 ): Promise<BorrowingContract | null> {
   if (!window.electronAPI) return Promise.resolve(null);
 
-  return window.electronAPI.putRequest("PUT borrowing-contracts", contract);
+  return window.electronAPI.putRequest("PUT borrowing-contracts", {
+    ...contract,
+    attachedFile,
+  });
 }
 
 export function deleteBorrowingContract(
@@ -135,6 +158,16 @@ export function deleteBorrowingContract(
   if (!window.electronAPI) return Promise.resolve(null);
 
   return window.electronAPI.deleteRequest("DELETE borrowing-contracts", { id });
+}
+
+export function getBorrowingContractFile(
+  contractId: number,
+): Promise<AttachedFile | null> {
+  if (!window.electronAPI) return Promise.resolve(null);
+
+  return window.electronAPI.postRequest("GET borrowing-contract-file", {
+    contractId,
+  });
 }
 
 export function getTransactions(): Promise<Transaction[]> {

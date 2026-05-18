@@ -1,4 +1,9 @@
-import { HandCoins, PencilSimple, Trash } from "@phosphor-icons/react";
+import {
+  FileArrowDown,
+  HandCoins,
+  PencilSimple,
+  Trash,
+} from "@phosphor-icons/react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
@@ -6,9 +11,11 @@ import {
   addLendingContract,
   deleteLendingContract,
   editLendingContract,
+  getLendingContractFile,
   getLendingContracts,
 } from "./api";
-import { IpcError, LendingContract } from "./entity.interface";
+import { downloadFile } from "./downloadFile";
+import { AttachedFile, IpcError, LendingContract } from "./entity.interface";
 import LendingContractForm from "./LendingContractForm";
 
 const STATUS_BADGE: Record<string, string> = {
@@ -66,9 +73,13 @@ function LendingContractListComponent() {
     [t],
   );
 
-  const handleFormSubmit = (data: LendingContract, vaultId?: number) => {
+  const handleFormSubmit = (
+    data: LendingContract,
+    vaultId?: number,
+    attachedFile?: AttachedFile,
+  ) => {
     if (data.id) {
-      editLendingContract(data)
+      editLendingContract(data, attachedFile)
         .then((contract) => {
           if (!contract) return;
           setContracts((prev) =>
@@ -87,7 +98,7 @@ function LendingContractListComponent() {
         .finally(() => modalRef.current?.close());
     } else {
       if (vaultId === undefined) return;
-      addLendingContract(data, vaultId)
+      addLendingContract(data, vaultId, attachedFile)
         .then((contract) => {
           if (!contract) return;
           setContracts((prev) => [...prev, contract]);
@@ -105,6 +116,21 @@ function LendingContractListComponent() {
         })
         .finally(() => modalRef.current?.close());
     }
+  };
+
+  const handleDownload = (contract: LendingContract) => {
+    getLendingContractFile(contract.id)
+      .then((file) => {
+        if (!file) return;
+        downloadFile(file);
+        toast.success(t("documents.downloaded", { fileName: file.fileName }));
+      })
+      .catch((err: IpcError) => {
+        console.error("Error downloading lending contract file", err);
+        toast.error(t("documents.failedToDownload"), {
+          description: err.message,
+        });
+      });
   };
 
   return (
@@ -163,6 +189,14 @@ function LendingContractListComponent() {
                   ).toLocaleString()}
                 </td>
                 <td className="flex gap-1">
+                  <button
+                    className={`btn btn-ghost btn-circle ${contract.fileName ? "text-accent" : ""}`}
+                    disabled={!contract.fileName}
+                    onClick={() => handleDownload(contract)}
+                    title={contract.fileName}
+                  >
+                    <FileArrowDown size={24} />
+                  </button>
                   <button
                     className="btn btn-ghost btn-circle"
                     onClick={() => handleEdit(contract)}

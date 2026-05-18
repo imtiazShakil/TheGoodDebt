@@ -3,17 +3,23 @@ import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { getVaults, searchContacts } from "./api";
 import {
+  AttachedFile,
   ContactDetails,
   ContractStatus,
   FinanceCategoryType,
   LendingContract,
   Vault,
 } from "./entity.interface";
+import FileAttachmentField from "./FileAttachmentField";
 import PrintableAgreement from "./PrintableAgreement";
 
 interface LendingContractFormProps {
   contract?: LendingContract | null;
-  onSubmit: (data: LendingContract, vaultId?: number) => void;
+  onSubmit: (
+    data: LendingContract,
+    vaultId?: number,
+    attachedFile?: AttachedFile,
+  ) => void;
   onCancel: () => void;
 }
 
@@ -53,6 +59,7 @@ const LendingContractForm = ({
     useState<ContractStatus>("Active");
   const [vaults, setVaults] = useState<Vault[]>([]);
   const [vaultId, setVaultId] = useState<number | "">("");
+  const [stagedFile, setStagedFile] = useState<File | null>(null);
 
   const searchTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -74,6 +81,7 @@ const LendingContractForm = ({
       setFinanceCategoryType(contract.financeCategoryType);
       setReasonForLending(contract.reasonForLending ?? "");
       setContractStatus(contract.contractStatus);
+      setStagedFile(null);
     } else {
       resetForm();
     }
@@ -115,7 +123,7 @@ const LendingContractForm = ({
     setTimeout(() => setShowDropdown(false), 150);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedContactId) return;
     if (isCreate && vaultId === "") return;
@@ -130,7 +138,13 @@ const LendingContractForm = ({
       reasonForLending,
       contractStatus,
     };
-    onSubmit(data, isCreate ? (vaultId as number) : undefined);
+    const attachedFile: AttachedFile | undefined = stagedFile
+      ? {
+          fileName: stagedFile.name,
+          bytes: new Uint8Array(await stagedFile.arrayBuffer()),
+        }
+      : undefined;
+    onSubmit(data, isCreate ? (vaultId as number) : undefined, attachedFile);
     resetForm();
   };
 
@@ -146,10 +160,11 @@ const LendingContractForm = ({
     setReasonForLending("");
     setContractStatus("Active");
     setVaultId("");
+    setStagedFile(null);
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={(e) => void handleSubmit(e)}>
       <div className="space-y-4">
         {isCreate && (
           <>
@@ -316,6 +331,12 @@ const LendingContractForm = ({
           />
         </div>
 
+        <FileAttachmentField
+          existingFileName={contract?.fileName}
+          stagedFile={stagedFile}
+          onStage={setStagedFile}
+        />
+
         <div className="flex justify-end gap-2">
           {isCreate && (
             <button
@@ -327,11 +348,7 @@ const LendingContractForm = ({
               {t("common.print")}
             </button>
           )}
-          <button
-            type="button"
-            className="btn btn-neutral btn-outline"
-            onClick={onCancel}
-          >
+          <button type="button" className="btn btn-outline" onClick={onCancel}>
             {t("common.cancel")}
           </button>
           <button type="submit" className="btn btn-primary btn-outline">
