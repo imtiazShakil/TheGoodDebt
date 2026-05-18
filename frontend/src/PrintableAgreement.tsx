@@ -19,10 +19,6 @@ interface PrintableAgreementProps {
   signatures: AgreementParty[];
 }
 
-function fmtDate(d: Date) {
-  return d.toISOString().split("T")[0];
-}
-
 const PrintableAgreement = ({
   documentTitle,
   date,
@@ -31,6 +27,9 @@ const PrintableAgreement = ({
 }: PrintableAgreementProps) => {
   const { t } = useTranslation();
 
+  // Portaled to document.body so the global print CSS rule
+  // `body > *:not(.printable-agreement) { display: none }` can isolate it
+  // from the rest of the app (including the open <dialog> modal).
   return createPortal(
     <div className="printable-agreement hidden bg-white text-black print:block">
       <header className="mb-6 border-b border-black pb-4 text-center">
@@ -42,7 +41,7 @@ const PrintableAgreement = ({
         <h2 className="text-xl font-semibold">{documentTitle}</h2>
         <div className="text-sm">
           <span className="font-semibold">{t("agreement.date")}: </span>
-          {fmtDate(date)}
+          {date.toLocaleDateString()}
         </div>
       </div>
 
@@ -53,9 +52,7 @@ const PrintableAgreement = ({
               <td className="w-1/3 border-e border-dashed py-2 align-top font-semibold">
                 {term.label}
               </td>
-              <td className="p-2">
-                {term.value && term.value.length > 0 ? term.value : ""}
-              </td>
+              <td className="p-2">{term.value ?? ""}</td>
             </tr>
           ))}
         </tbody>
@@ -77,7 +74,7 @@ const PrintableAgreement = ({
       </div>
 
       <footer className="mt-16 border-t border-black pt-3 text-center text-xs">
-        {t("agreement.footer")} © {new Date().getFullYear()}
+        {t("agreement.footer")} © {date.getFullYear()}
       </footer>
     </div>,
     document.body,

@@ -347,7 +347,9 @@ const LendingContractForm = ({
           terms={[
             {
               label: t("agreement.amount"),
-              value: amount ? parseFloat(amount).toLocaleString() : undefined,
+              value: Number.isFinite(parseFloat(amount))
+                ? parseFloat(amount).toLocaleString()
+                : undefined,
             },
             {
               label: t("agreement.category"),
@@ -368,7 +370,7 @@ const LendingContractForm = ({
           ]}
           signatures={[
             {
-              label: t("agreement.signature.borrower"),
+              label: t("agreement.signature.lender"),
               name: contactQuery || undefined,
             },
             { label: t("agreement.signature.admin") },
