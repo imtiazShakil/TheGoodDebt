@@ -1,3 +1,4 @@
+import { Printer } from "@phosphor-icons/react";
 import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { getVaults, searchContacts } from "./api";
@@ -8,6 +9,7 @@ import {
   LendingContract,
   Vault,
 } from "./entity.interface";
+import PrintableAgreement from "./PrintableAgreement";
 
 interface LendingContractFormProps {
   contract?: LendingContract | null;
@@ -315,6 +317,16 @@ const LendingContractForm = ({
         </div>
 
         <div className="flex justify-end gap-2">
+          {isCreate && (
+            <button
+              type="button"
+              className="btn btn-secondary btn-outline"
+              onClick={() => window.print()}
+            >
+              <Printer size={20} />
+              {t("common.print")}
+            </button>
+          )}
           <button
             type="button"
             className="btn btn-neutral btn-outline"
@@ -327,6 +339,42 @@ const LendingContractForm = ({
           </button>
         </div>
       </div>
+
+      {isCreate && (
+        <PrintableAgreement
+          documentTitle={t("agreement.lendingTitle")}
+          date={new Date()}
+          terms={[
+            {
+              label: t("agreement.amount"),
+              value: amount ? parseFloat(amount).toLocaleString() : undefined,
+            },
+            {
+              label: t("agreement.category"),
+              value: t(`financeCategory.${financeCategoryType}`),
+            },
+            {
+              label: t("agreement.duration"),
+              value: durationDays || undefined,
+            },
+            {
+              label: t("agreement.returnDate"),
+              value: returnDate || undefined,
+            },
+            {
+              label: t("agreement.reason"),
+              value: reasonForLending || undefined,
+            },
+          ]}
+          signatures={[
+            {
+              label: t("agreement.signature.borrower"),
+              name: contactQuery || undefined,
+            },
+            { label: t("agreement.signature.admin") },
+          ]}
+        />
+      )}
     </form>
   );
 };

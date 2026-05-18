@@ -1,3 +1,4 @@
+import { Printer } from "@phosphor-icons/react";
 import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { getVaults, searchContacts } from "./api";
@@ -8,6 +9,7 @@ import {
   FinanceCategoryType,
   Vault,
 } from "./entity.interface";
+import PrintableAgreement from "./PrintableAgreement";
 
 interface BorrowingContractFormProps {
   contract?: BorrowingContract | null;
@@ -494,6 +496,16 @@ const BorrowingContractForm = ({
         )}
 
         <div className="flex justify-end gap-2">
+          {isCreate && (
+            <button
+              type="button"
+              className="btn btn-secondary btn-outline"
+              onClick={() => window.print()}
+            >
+              <Printer size={20} />
+              {t("common.print")}
+            </button>
+          )}
           <button
             type="button"
             className="btn btn-neutral btn-outline"
@@ -506,6 +518,53 @@ const BorrowingContractForm = ({
           </button>
         </div>
       </div>
+
+      {isCreate && (
+        <PrintableAgreement
+          documentTitle={t("agreement.borrowingTitle")}
+          date={new Date()}
+          terms={[
+            {
+              label: t("agreement.amount"),
+              value: amount ? parseFloat(amount).toLocaleString() : undefined,
+            },
+            {
+              label: t("agreement.category"),
+              value: t(`financeCategory.${financeCategoryType}`),
+            },
+            {
+              label: t("agreement.duration"),
+              value: durationDays || undefined,
+            },
+            {
+              label: t("agreement.returnDate"),
+              value: returnDate || undefined,
+            },
+            {
+              label: t("agreement.purpose"),
+              value: purposeOfLoan || undefined,
+            },
+          ]}
+          signatures={[
+            {
+              label: t("agreement.signature.lender"),
+              name: selectedContact?.name,
+              phone: selectedContact?.phone,
+            },
+            { label: t("agreement.signature.admin") },
+            {
+              label: t("agreement.signature.guarantor1"),
+              name: selectedGuarantor1?.name,
+              phone: selectedGuarantor1?.phone,
+            },
+            {
+              label: t("agreement.signature.guarantor2"),
+              name: selectedGuarantor2?.name,
+              phone: selectedGuarantor2?.phone,
+            },
+          ]}
+        />
+      )}
     </form>
   );
 };

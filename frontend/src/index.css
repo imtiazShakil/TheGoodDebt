@@ -2,3 +2,12 @@
 @plugin "daisyui" {
   themes: all;
 }
+
+@media print {
+  body > *:not(.printable-agreement) {
+    display: none !important;
+  }
+  @page {
+    margin: 14mm;
+  }
+}
