@@ -344,6 +344,7 @@ const LendingContractForm = ({
         <PrintableAgreement
           documentTitle={t("agreement.lendingTitle")}
           date={new Date()}
+          termsText={t("agreement.lendingTerms")}
           terms={[
             {
               label: t("agreement.amount"),

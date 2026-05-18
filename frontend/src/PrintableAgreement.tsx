@@ -16,6 +16,7 @@ interface PrintableAgreementProps {
   documentTitle: string;
   date: Date;
   terms: AgreementTerm[];
+  termsText: string;
   signatures: AgreementParty[];
 }
 
@@ -23,6 +24,7 @@ const PrintableAgreement = ({
   documentTitle,
   date,
   terms,
+  termsText,
   signatures,
 }: PrintableAgreementProps) => {
   const { t } = useTranslation();
@@ -58,9 +60,7 @@ const PrintableAgreement = ({
         </tbody>
       </table>
 
-      <p className="mb-10 text-justify text-sm leading-relaxed">
-        {t("agreement.terms")}
-      </p>
+      <p className="mb-10 text-justify text-sm leading-relaxed">{termsText}</p>
 
       <div className="mt-12 grid grid-cols-2 gap-x-12 gap-y-12">
         {signatures.map((party) => (
