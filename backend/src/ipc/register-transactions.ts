@@ -98,6 +98,35 @@ export async function assertVaultCategoryBalance(
   }
 }
 
+/**
+ * Removes the auto-created Lend/Borrow Transaction (and its VaultBalanceHistory)
+ * for a contract that's about to be deleted. Enforces the append-only ledger
+ * rule: the auto-tx must still be the most recent ledger entry, otherwise
+ * deleting it would invalidate every running balance recorded after it.
+ */
+export async function removeContractAutoTransaction(
+  em: EntityManager,
+  contractField: "lendingContract" | "borrowingContract",
+  contractId: number,
+): Promise<void> {
+  const autoTx = await em.findOne(Transaction, { [contractField]: contractId });
+  if (!autoTx) return;
+
+  const [last] = await em.find(
+    Transaction,
+    {},
+    { limit: 1, orderBy: { id: "DESC" } },
+  );
+  if (!last || last.id !== autoTx.id) {
+    throw new AppError("errors.contract.deleteNotLatest");
+  }
+  const vbh = await em.findOne(VaultBalanceHistory, {
+    transaction: autoTx.id,
+  });
+  if (vbh) em.remove(vbh);
+  em.remove(autoTx);
+}
+
 /** Input shape for createLedgerEntry. */
 export interface LedgerEntryInput {
   vaultId: number;

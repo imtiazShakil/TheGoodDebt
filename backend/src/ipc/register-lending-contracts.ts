@@ -1,5 +1,4 @@
 import { IpcMain } from "electron";
-import { AppError } from "./app-error.js";
 import { applyAttachment } from "./attachment-helpers.js";
 import { orm } from "../repository/db.js";
 import { ContactDetails } from "../repository/entity/contact-details.js";
@@ -7,11 +6,7 @@ import {
   ContractStatus,
   LendingContract,
 } from "../repository/entity/lending-contract.js";
-import {
-  Transaction,
-  TransactionType,
-} from "../repository/entity/transaction.js";
-import { VaultBalanceHistory } from "../repository/entity/vault-balance-history.js";
+import { TransactionType } from "../repository/entity/transaction.js";
 import {
   AttachedFileDto,
   DeleteResultDto,
@@ -25,6 +20,7 @@ import { toLendingContractDto } from "./entityDtoMapper.js";
 import {
   computeRepaidTotals,
   createLedgerEntry,
+  removeContractAutoTransaction,
 } from "./register-transactions.js";
 
 /**
@@ -146,26 +142,7 @@ export function registerHandlers(ipcMain: IpcMain) {
         const contract = await em.findOneOrFail(LendingContract, {
           id: data.id,
         });
-
-        const autoTx = await em.findOne(Transaction, {
-          lendingContract: data.id,
-        });
-        if (autoTx) {
-          const [last] = await em.find(
-            Transaction,
-            {},
-            { limit: 1, orderBy: { id: "DESC" } },
-          );
-          if (!last || last.id !== autoTx.id) {
-            throw new AppError("errors.contract.deleteNotLatest");
-          }
-          const vbh = await em.findOne(VaultBalanceHistory, {
-            transaction: autoTx.id,
-          });
-          if (vbh) em.remove(vbh);
-          em.remove(autoTx);
-        }
-
+        await removeContractAutoTransaction(em, "lendingContract", data.id);
         em.remove(contract);
         await em.flush();
         return { id: data.id };

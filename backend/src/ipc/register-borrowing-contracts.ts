@@ -3,12 +3,7 @@ import { orm } from "../repository/db.js";
 import { BorrowingContract } from "../repository/entity/borrowing-contract.js";
 import { ContactDetails } from "../repository/entity/contact-details.js";
 import { ContractStatus } from "../repository/entity/lending-contract.js";
-import {
-  Transaction,
-  TransactionType,
-} from "../repository/entity/transaction.js";
-import { VaultBalanceHistory } from "../repository/entity/vault-balance-history.js";
-import { AppError } from "./app-error.js";
+import { TransactionType } from "../repository/entity/transaction.js";
 import { applyAttachment } from "./attachment-helpers.js";
 import {
   AttachedFileDto,
@@ -24,6 +19,7 @@ import {
   assertVaultCategoryBalance,
   computeRepaidTotals,
   createLedgerEntry,
+  removeContractAutoTransaction,
 } from "./register-transactions.js";
 
 /**
@@ -167,26 +163,7 @@ export function registerHandlers(ipcMain: IpcMain) {
         const contract = await em.findOneOrFail(BorrowingContract, {
           id: data.id,
         });
-
-        const autoTx = await em.findOne(Transaction, {
-          borrowingContract: data.id,
-        });
-        if (autoTx) {
-          const [last] = await em.find(
-            Transaction,
-            {},
-            { limit: 1, orderBy: { id: "DESC" } },
-          );
-          if (!last || last.id !== autoTx.id) {
-            throw new AppError("errors.contract.deleteNotLatest");
-          }
-          const vbh = await em.findOne(VaultBalanceHistory, {
-            transaction: autoTx.id,
-          });
-          if (vbh) em.remove(vbh);
-          em.remove(autoTx);
-        }
-
+        await removeContractAutoTransaction(em, "borrowingContract", data.id);
         em.remove(contract);
         await em.flush();
         return { id: data.id };
