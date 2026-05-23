@@ -46,14 +46,17 @@
     }
   },
   "devDependencies": {
+    "@mikro-orm/cli": "^7.0.16",
     "electron": "^35.0.0",
     "electron-builder": "^26.8.1",
     "prettier": "3.5.1",
+    "tsx": "^4.22.3",
     "typescript": "^5.8.0"
   },
   "dependencies": {
     "@mikro-orm/core": "^7.0.16",
     "@mikro-orm/decorators": "^7.0.16",
+    "@mikro-orm/migrations": "^7.0.16",
     "@mikro-orm/sqlite": "^7.0.16"
   }
 }

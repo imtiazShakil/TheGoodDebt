@@ -29,7 +29,7 @@ The name reflects the Islamic concept that a good debt is an interest-free loan 
 | ---------------------- | ---------------------------------------------------- |
 | Desktop shell          | Electron                                             |
 | Frontend               | React 19, TypeScript, Vite, Tailwind CSS v4, DaisyUI |
-| Backend (main process) | TypeScript, MikroORM v6, SQLite                      |
+| Backend (main process) | TypeScript, MikroORM v7, SQLite                      |
 | i18n                   | i18next (English and Bengali)                        |
 | Icons                  | Phosphor Icons                                       |
 | Notifications          | Sonner                                               |
@@ -60,6 +60,27 @@ npm run dev      # Vite dev server at http://localhost:5173
 ```
 
 Open both in separate terminals. Electron loads the Vite dev server URL in development.
+
+### Database migrations
+
+Schema is versioned with MikroORM migrations under `backend/src/migrations/`. The app applies any pending migrations automatically on startup (`orm.migrator.up()` in `db.ts`); you only invoke the CLI when generating or inspecting migrations.
+
+`better-sqlite3` is a native module that must be compiled against whichever runtime loads it. The `postinstall` step compiles it for Electron's ABI so the app can run, but plain `node` (which the CLI uses) needs the system-Node ABI. Switch builds before/after using the CLI. Run all commands from `backend/`.
+
+| Action | Command |
+|--------|---------|
+| Switch native build to **system Node** (before CLI use) | `npm rebuild better-sqlite3` |
+| Generate a migration from entity diffs | `npx mikro-orm migration:create` |
+| Generate the initial migration (empty DB only) | `npx mikro-orm migration:create --initial` |
+| Drop everything and rebuild | `npx mikro-orm migration:fresh` |
+| Switch native build back to **Electron** (before `npm start`) | `npm run postinstall` |
+
+Workflow when changing the schema:
+1. `npm rebuild better-sqlite3` — switch the native build to system Node.
+2. Edit an entity under `backend/src/repository/entity/`.
+3. `npx mikro-orm migration:create` — review the generated SQL in `backend/src/migrations/`.
+4. `npm run postinstall` — switch the native build back to Electron before running the app.
+5. Commit the entity change and the migration file together. Never edit a migration once it's committed — write a new one to fix it.
 
 ### Production build
 

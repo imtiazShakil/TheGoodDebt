@@ -1,12 +1,13 @@
 import path from "path";
 import { Options, SqliteDriver } from "@mikro-orm/sqlite";
+import { Migrator } from "@mikro-orm/migrations";
 
-import { BorrowingContract } from "./entity/borrowing-contract.js";
-import { ContactDetails } from "./entity/contact-details.js";
-import { LendingContract } from "./entity/lending-contract.js";
-import { Transaction } from "./entity/transaction.js";
-import { Vault } from "./entity/vault.js";
-import { VaultBalanceHistory } from "./entity/vault-balance-history.js";
+import { BorrowingContract } from "./repository/entity/borrowing-contract.js";
+import { ContactDetails } from "./repository/entity/contact-details.js";
+import { LendingContract } from "./repository/entity/lending-contract.js";
+import { Transaction } from "./repository/entity/transaction.js";
+import { Vault } from "./repository/entity/vault.js";
+import { VaultBalanceHistory } from "./repository/entity/vault-balance-history.js";
 
 const getDbPath = (): string => {
   const dbFile = "tgd.sqlite";
@@ -28,6 +29,11 @@ const config: Options = {
     Vault,
     VaultBalanceHistory,
   ],
+  extensions: [Migrator],
+  migrations: {
+    path: "./dist/migrations",
+    pathTs: "./src/migrations",
+  },
   debug: true,
 };
 
