@@ -1,8 +1,8 @@
 import { Migrator } from "@mikro-orm/migrations";
 import { Options, SqliteDriver } from "@mikro-orm/sqlite";
 import path from "path";
-import { fileURLToPath } from "url";
 
+import { Migration20260523143326 } from "./migrations/Migration20260523143326.js";
 import { BorrowingContract } from "./repository/entity/borrowing-contract.js";
 import { ContactDetails } from "./repository/entity/contact-details.js";
 import { LendingContract } from "./repository/entity/lending-contract.js";
@@ -32,12 +32,9 @@ const config: Options = {
   ],
   extensions: [Migrator],
   migrations: {
-    // Anchored to this file's own directory (not cwd) so the same expression
-    // works everywhere the config is loaded from:
-    //   - CLI (tsx loads the .ts) → src/migrations/   (TS sources)
-    //   - npm start (loads the .js in dist/) → dist/migrations/   (compiled)
-    //   - packaged AppImage → resources/app/dist/migrations/   (compiled)
-    path: path.join(path.dirname(fileURLToPath(import.meta.url)), "migrations"),
+    // Static list avoids filesystem globbing, which is broken inside an
+    // Electron asar archive (fs.globSync returns Dirents without parentPath).
+    migrationsList: [Migration20260523143326],
   },
   debug: true,
 };
