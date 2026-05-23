@@ -1,13 +1,14 @@
-import path from "path";
-import { Options, SqliteDriver } from "@mikro-orm/sqlite";
 import { Migrator } from "@mikro-orm/migrations";
+import { Options, SqliteDriver } from "@mikro-orm/sqlite";
+import path from "path";
+import { fileURLToPath } from "url";
 
 import { BorrowingContract } from "./repository/entity/borrowing-contract.js";
 import { ContactDetails } from "./repository/entity/contact-details.js";
 import { LendingContract } from "./repository/entity/lending-contract.js";
 import { Transaction } from "./repository/entity/transaction.js";
-import { Vault } from "./repository/entity/vault.js";
 import { VaultBalanceHistory } from "./repository/entity/vault-balance-history.js";
+import { Vault } from "./repository/entity/vault.js";
 
 const getDbPath = (): string => {
   const dbFile = "tgd.sqlite";
@@ -31,8 +32,12 @@ const config: Options = {
   ],
   extensions: [Migrator],
   migrations: {
-    path: "./dist/migrations",
-    pathTs: "./src/migrations",
+    // Anchored to this file's own directory (not cwd) so the same expression
+    // works everywhere the config is loaded from:
+    //   - CLI (tsx loads the .ts) → src/migrations/   (TS sources)
+    //   - npm start (loads the .js in dist/) → dist/migrations/   (compiled)
+    //   - packaged AppImage → resources/app/dist/migrations/   (compiled)
+    path: path.join(path.dirname(fileURLToPath(import.meta.url)), "migrations"),
   },
   debug: true,
 };
