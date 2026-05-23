@@ -1,6 +1,6 @@
 import { IpcMain } from "electron";
 import { AppError } from "./app-error.js";
-import { applyAttachment, AttachedFileInput } from "./attachment-helpers.js";
+import { applyAttachment } from "./attachment-helpers.js";
 import { orm } from "../repository/db.js";
 import { ContactDetails } from "../repository/entity/contact-details.js";
 import {
@@ -13,6 +13,16 @@ import {
 } from "../repository/entity/transaction.js";
 import { VaultBalanceHistory } from "../repository/entity/vault-balance-history.js";
 import {
+  AttachedFileDto,
+  DeleteResultDto,
+  LendingContractCreateInput,
+  LendingContractDeleteInput,
+  LendingContractDto,
+  LendingContractFileInput,
+  LendingContractUpdateInput,
+} from "./contract.js";
+import { toLendingContractDto } from "./entityDtoMapper.js";
+import {
   computeRepaidTotals,
   createLedgerEntry,
 } from "./register-transactions.js";
@@ -23,72 +33,101 @@ import {
  * Deleting is only allowed if the auto-created transaction is still the latest in the ledger.
  */
 export function registerHandlers(ipcMain: IpcMain) {
-  ipcMain.handle("GET lending-contracts", async () => {
-    const em = orm.em.fork();
-    const contracts = await em.findAll(LendingContract, {
-      populate: ["contact"],
-    });
-    const ids = contracts.map((c) => c.id);
-    const repaidMap = await computeRepaidTotals(
-      em,
-      ids,
-      "lendingContract",
-      TransactionType.LendRepay,
-    );
-    return contracts.map((c) => ({ ...c, totalRepaid: repaidMap[c.id] ?? 0 }));
-  });
-
-  ipcMain.handle("POST lending-contracts", async (_event, data) => {
-    if (!data.vaultId) throw new Error("vaultId is required");
-    const { vaultId, ...rest } = data;
-    rest.id = undefined;
-
-    return await orm.em.fork().transactional(async (em) => {
-      const { attachedFile, ...contractData } = rest;
-      const contract = em.create(LendingContract, {
-        ...contractData,
-        contact: em.getReference(ContactDetails, data.contact.id),
-        contractStatus: ContractStatus.Active,
+  ipcMain.handle(
+    "GET lending-contracts",
+    async (): Promise<LendingContractDto[]> => {
+      const em = orm.em.fork();
+      const contracts = await em.findAll(LendingContract, {
+        populate: ["contact"],
       });
-      if (attachedFile) applyAttachment(contract, attachedFile);
-      em.persist(contract);
-      await em.flush();
+      const ids = contracts.map((c) => c.id);
+      const repaidMap = await computeRepaidTotals(
+        em,
+        ids,
+        "lendingContract",
+        TransactionType.LendRepay,
+      );
+      return contracts.map((c) =>
+        toLendingContractDto(c, repaidMap[c.id] ?? 0),
+      );
+    },
+  );
 
-      await createLedgerEntry(em, {
-        vaultId,
-        amount: contract.amount,
-        transactionType: TransactionType.Lend,
-        financeCategoryType: contract.financeCategoryType,
-        description: contract.reasonForLending ?? "",
-        contactId: data.contact.id,
-        lendingContractId: contract.id,
+  ipcMain.handle(
+    "POST lending-contracts",
+    async (
+      _event,
+      data: LendingContractCreateInput,
+    ): Promise<LendingContractDto> => {
+      return await orm.em.fork().transactional(async (em) => {
+        // Construct the entity from the typed input rather than spreading
+        // `data` — the frontend passes the full LendingContract object
+        // (including its empty `id` and the nested ContactDetails), and we
+        // only want the fields the input contract declares to reach em.create.
+        const contract = em.create(LendingContract, {
+          contact: em.getReference(ContactDetails, data.contact.id),
+          amount: data.amount,
+          durationDays: data.durationDays,
+          returnDate: data.returnDate,
+          financeCategoryType: data.financeCategoryType,
+          reasonForLending: data.reasonForLending,
+          contractStatus: ContractStatus.Active,
+        } as unknown as LendingContract);
+        if (data.attachedFile) applyAttachment(contract, data.attachedFile);
+        em.persist(contract);
+        await em.flush();
+
+        await createLedgerEntry(em, {
+          vaultId: data.vaultId,
+          amount: contract.amount,
+          transactionType: TransactionType.Lend,
+          financeCategoryType: contract.financeCategoryType,
+          description: contract.reasonForLending ?? "",
+          contactId: data.contact.id,
+          lendingContractId: contract.id,
+        });
+
+        await em.populate(contract, ["contact"]);
+        return toLendingContractDto(contract, 0);
       });
+    },
+  );
 
+  ipcMain.handle(
+    "PUT lending-contracts",
+    async (
+      _event,
+      data: LendingContractUpdateInput,
+    ): Promise<LendingContractDto> => {
+      const em = orm.em.fork();
+      const contract = await em.findOneOrFail(LendingContract, { id: data.id });
+      contract.durationDays = data.durationDays;
+      contract.returnDate = data.returnDate;
+      contract.reasonForLending = data.reasonForLending;
+      if (data.attachedFile) applyAttachment(contract, data.attachedFile);
+      await em.persist(contract).flush();
       await em.populate(contract, ["contact"]);
-      return contract;
-    });
-  });
-
-  ipcMain.handle("PUT lending-contracts", async (_event, data) => {
-    const em = orm.em.fork();
-    const contract = await em.findOneOrFail(LendingContract, { id: data.id });
-    contract.durationDays = data.durationDays;
-    contract.returnDate = data.returnDate;
-    contract.reasonForLending = data.reasonForLending;
-    if (data.attachedFile) applyAttachment(contract, data.attachedFile);
-    await em.persist(contract).flush();
-    await em.populate(contract, ["contact"]);
-    return contract;
-  });
+      const repaidMap = await computeRepaidTotals(
+        em,
+        [contract.id],
+        "lendingContract",
+        TransactionType.LendRepay,
+      );
+      return toLendingContractDto(contract, repaidMap[contract.id] ?? 0);
+    },
+  );
 
   ipcMain.handle(
     "GET lending-contract-file",
-    async (_event, { contractId }): Promise<AttachedFileInput | null> => {
+    async (
+      _event,
+      data: LendingContractFileInput,
+    ): Promise<AttachedFileDto | null> => {
       const em = orm.em.fork();
       // Explicit `fields` opts the lazy fileBlob column into this one projection.
       const c = await em.findOne(
         LendingContract,
-        { id: contractId },
+        { id: data.contractId },
         { fields: ["id", "fileName", "fileBlob"] },
       );
       if (!c?.fileName || !c?.fileBlob) return null;
@@ -97,34 +136,40 @@ export function registerHandlers(ipcMain: IpcMain) {
     },
   );
 
-  ipcMain.handle("DELETE lending-contracts", async (_event, data) => {
-    return await orm.em.fork().transactional(async (em) => {
-      const contract = await em.findOneOrFail(LendingContract, {
-        id: data.id,
-      });
-
-      const autoTx = await em.findOne(Transaction, {
-        lendingContract: data.id,
-      });
-      if (autoTx) {
-        const [last] = await em.find(
-          Transaction,
-          {},
-          { limit: 1, orderBy: { id: "DESC" } },
-        );
-        if (!last || last.id !== autoTx.id) {
-          throw new AppError("errors.contract.deleteNotLatest");
-        }
-        const vbh = await em.findOne(VaultBalanceHistory, {
-          transaction: autoTx.id,
+  ipcMain.handle(
+    "DELETE lending-contracts",
+    async (
+      _event,
+      data: LendingContractDeleteInput,
+    ): Promise<DeleteResultDto> => {
+      return await orm.em.fork().transactional(async (em) => {
+        const contract = await em.findOneOrFail(LendingContract, {
+          id: data.id,
         });
-        if (vbh) em.remove(vbh);
-        em.remove(autoTx);
-      }
 
-      em.remove(contract);
-      await em.flush();
-      return { id: data.id };
-    });
-  });
+        const autoTx = await em.findOne(Transaction, {
+          lendingContract: data.id,
+        });
+        if (autoTx) {
+          const [last] = await em.find(
+            Transaction,
+            {},
+            { limit: 1, orderBy: { id: "DESC" } },
+          );
+          if (!last || last.id !== autoTx.id) {
+            throw new AppError("errors.contract.deleteNotLatest");
+          }
+          const vbh = await em.findOne(VaultBalanceHistory, {
+            transaction: autoTx.id,
+          });
+          if (vbh) em.remove(vbh);
+          em.remove(autoTx);
+        }
+
+        em.remove(contract);
+        await em.flush();
+        return { id: data.id };
+      });
+    },
+  );
 }

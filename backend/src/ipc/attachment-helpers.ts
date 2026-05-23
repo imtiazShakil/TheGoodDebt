@@ -20,7 +20,9 @@ export function applyAttachment(
   if (attached.bytes.byteLength > MAX_ATTACHMENT_BYTES) {
     throw new AppError("errors.document.tooLarge");
   }
-  const ext = attached.fileName.slice(attached.fileName.lastIndexOf(".")).toLowerCase();
+  const ext = attached.fileName
+    .slice(attached.fileName.lastIndexOf("."))
+    .toLowerCase();
   if (!ALLOWED_EXTENSIONS.includes(ext)) {
     throw new AppError("errors.document.unsupportedType");
   }

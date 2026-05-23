@@ -124,7 +124,8 @@ export async function initializeDatabase() {
     durationDays: 730,
     returnDate: addDaysISO(730),
     financeCategoryType: FinanceCategoryType.Waqf,
-    reasonForLending: "Waqf endowment from Abdul Karim Chowdhury for masjid development",
+    reasonForLending:
+      "Waqf endowment from Abdul Karim Chowdhury for masjid development",
   });
   em.persist(lc3);
   await em.flush();
@@ -144,7 +145,8 @@ export async function initializeDatabase() {
     durationDays: 365,
     returnDate: addDaysISO(365),
     financeCategoryType: FinanceCategoryType.Sadaqa,
-    reasonForLending: "Sadaqa donation from Nasrin Sultana for community support",
+    reasonForLending:
+      "Sadaqa donation from Nasrin Sultana for community support",
   });
   em.persist(lc4);
   await em.flush();

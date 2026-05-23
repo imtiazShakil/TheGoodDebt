@@ -19,7 +19,10 @@ async function createWindow() {
     height: 900,
     autoHideMenuBar: true,
     webPreferences: {
-      preload: path.join(path.dirname(fileURLToPath(import.meta.url)), "preload.cjs"),
+      preload: path.join(
+        path.dirname(fileURLToPath(import.meta.url)),
+        "preload.cjs",
+      ),
     },
   });
 

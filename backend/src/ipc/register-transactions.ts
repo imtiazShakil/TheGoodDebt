@@ -16,6 +16,14 @@ import {
 } from "../repository/entity/transaction.js";
 import { Vault } from "../repository/entity/vault.js";
 import { VaultBalanceHistory } from "../repository/entity/vault-balance-history.js";
+import {
+  DeleteResultDto,
+  TransactionCreateInput,
+  TransactionDeleteInput,
+  TransactionDto,
+  TransactionUpdateInput,
+} from "./contract.js";
+import { toTransactionDto } from "./entityDtoMapper.js";
 
 const POPULATE = [
   "vault",
@@ -179,13 +187,11 @@ export async function createLedgerEntry(
 /**
  * Guards the POST transactions handler. Rejects Lend/Borrow (system-only types created via contracts)
  * and enforces that each type carries exactly the right contract/expenseType fields.
+ *
+ * Kept as a runtime check even after typing — TypeScript can't express the union-exclusivity
+ * rules (e.g. LendRepay must carry lendingContract and never borrowingContract).
  */
-function validatePayload(data: {
-  transactionType: TransactionType;
-  lendingContract?: { id?: number };
-  borrowingContract?: { id?: number };
-  expenseType?: ExpenseType;
-}) {
+function validatePayload(data: TransactionCreateInput) {
   const type = data.transactionType;
   const hasLending = !!data.lendingContract?.id;
   const hasBorrowing = !!data.borrowingContract?.id;
@@ -218,139 +224,152 @@ function validatePayload(data: {
  * Deletion is restricted to the most recent transaction (append-only ledger constraint).
  */
 export function registerHandlers(ipcMain: IpcMain) {
-  ipcMain.handle("GET transactions", async () => {
+  ipcMain.handle("GET transactions", async (): Promise<TransactionDto[]> => {
     const em = orm.em.fork();
-    return await em.findAll(Transaction, {
+    const transactions = await em.findAll(Transaction, {
       populate: POPULATE as unknown as never,
       orderBy: { id: "DESC" },
     });
+    return transactions.map(toTransactionDto);
   });
 
-  ipcMain.handle("POST transactions", async (_event, data) => {
-    validatePayload(data);
+  ipcMain.handle(
+    "POST transactions",
+    async (_event, data: TransactionCreateInput): Promise<TransactionDto> => {
+      validatePayload(data);
 
-    return await orm.em.fork().transactional(async (em) => {
-      let contactId: number | undefined;
-      if (data.lendingContract?.id) {
-        const lc = await em.findOneOrFail(LendingContract, {
-          id: data.lendingContract.id,
-        });
-        contactId = lc.contact.id;
-        await assertVaultCategoryBalance(
-          em,
-          data.vault.id,
-          lc.financeCategoryType,
-          data.amount,
-        );
-        const repaidMap = await computeRepaidTotals(
-          em,
-          [lc.id],
-          "lendingContract",
-          TransactionType.LendRepay,
-        );
-        const remaining = lc.amount - (repaidMap[lc.id] ?? 0);
-        if (data.amount > remaining) {
-          throw new AppError("errors.transaction.repayExceedsBalance", {
-            amount: data.amount,
-            remaining,
+      const transaction = await orm.em.fork().transactional(async (em) => {
+        let contactId: number | undefined;
+        if (data.lendingContract?.id) {
+          const lc = await em.findOneOrFail(LendingContract, {
+            id: data.lendingContract.id,
           });
-        }
-        if (data.amount === remaining) {
-          lc.contractStatus = ContractStatus.Completed;
-        }
-      } else if (data.borrowingContract?.id) {
-        const bc = await em.findOneOrFail(BorrowingContract, {
-          id: data.borrowingContract.id,
-        });
-        contactId = bc.contact.id;
-        const repaidMap = await computeRepaidTotals(
-          em,
-          [bc.id],
-          "borrowingContract",
-          TransactionType.BorrowRepay,
-        );
-        const remaining = bc.amount - (repaidMap[bc.id] ?? 0);
-        if (data.amount > remaining) {
-          throw new AppError("errors.transaction.repayExceedsBalance", {
-            amount: data.amount,
-            remaining,
+          contactId = lc.contact.id;
+          await assertVaultCategoryBalance(
+            em,
+            data.vault.id,
+            lc.financeCategoryType,
+            data.amount,
+          );
+          const repaidMap = await computeRepaidTotals(
+            em,
+            [lc.id],
+            "lendingContract",
+            TransactionType.LendRepay,
+          );
+          const remaining = lc.amount - (repaidMap[lc.id] ?? 0);
+          if (data.amount > remaining) {
+            throw new AppError("errors.transaction.repayExceedsBalance", {
+              amount: data.amount,
+              remaining,
+            });
+          }
+          if (data.amount === remaining) {
+            lc.contractStatus = ContractStatus.Completed;
+          }
+        } else if (data.borrowingContract?.id) {
+          const bc = await em.findOneOrFail(BorrowingContract, {
+            id: data.borrowingContract.id,
           });
+          contactId = bc.contact.id;
+          const repaidMap = await computeRepaidTotals(
+            em,
+            [bc.id],
+            "borrowingContract",
+            TransactionType.BorrowRepay,
+          );
+          const remaining = bc.amount - (repaidMap[bc.id] ?? 0);
+          if (data.amount > remaining) {
+            throw new AppError("errors.transaction.repayExceedsBalance", {
+              amount: data.amount,
+              remaining,
+            });
+          }
+          if (data.amount === remaining) {
+            bc.contractStatus = ContractStatus.Completed;
+          }
+        } else if (data.contact?.id) {
+          contactId = data.contact.id;
         }
-        if (data.amount === remaining) {
-          bc.contractStatus = ContractStatus.Completed;
-        }
-      } else if (data.contact?.id) {
-        contactId = data.contact.id;
-      }
 
-      return await createLedgerEntry(em, {
-        vaultId: data.vault.id,
-        amount: data.amount,
-        transactionType: data.transactionType,
-        financeCategoryType: data.financeCategoryType,
-        description: data.description,
-        expenseType: data.expenseType ?? undefined,
-        contactId,
-        lendingContractId: data.lendingContract?.id,
-        borrowingContractId: data.borrowingContract?.id,
+        return await createLedgerEntry(em, {
+          vaultId: data.vault.id,
+          amount: data.amount,
+          transactionType: data.transactionType,
+          financeCategoryType: data.financeCategoryType,
+          description: data.description,
+          expenseType: data.expenseType ?? undefined,
+          contactId,
+          lendingContractId: data.lendingContract?.id,
+          borrowingContractId: data.borrowingContract?.id,
+        });
       });
-    });
-  });
+      return toTransactionDto(transaction);
+    },
+  );
 
-  ipcMain.handle("PUT transactions", async (_event, data) => {
-    const em = orm.em.fork();
-    const transaction = await em.findOneOrFail(Transaction, { id: data.id });
-    transaction.description = data.description;
-    await em.persist(transaction).flush();
-    await em.populate(transaction, POPULATE as unknown as never);
-    return transaction;
-  });
+  ipcMain.handle(
+    "PUT transactions",
+    async (_event, data: TransactionUpdateInput): Promise<TransactionDto> => {
+      const em = orm.em.fork();
+      const transaction = await em.findOneOrFail(Transaction, { id: data.id });
+      transaction.description = data.description;
+      await em.persist(transaction).flush();
+      await em.populate(transaction, POPULATE as unknown as never);
+      return toTransactionDto(transaction);
+    },
+  );
 
-  ipcMain.handle("DELETE transactions", async (_event, data) => {
-    return await orm.em.fork().transactional(async (em) => {
-      const lastTransactions = await em.find(
-        Transaction,
-        {},
-        {
-          limit: 1,
-          orderBy: { id: "DESC" },
-          populate: ["lendingContract", "borrowingContract"],
-        },
-      );
-      const last = lastTransactions ? lastTransactions[0] : null;
-      if (!last || last.id !== data.id) {
-        throw new AppError("errors.transaction.deleteNotLatest");
-      }
-
-      const vbh = await em.findOne(VaultBalanceHistory, {
-        transaction: data.id,
-      });
-      if (vbh) em.remove(vbh);
-
-      if (
-        last.transactionType === TransactionType.LendRepay &&
-        last.lendingContract
-      ) {
-        if (last.lendingContract.contractStatus === ContractStatus.Completed) {
-          last.lendingContract.contractStatus = ContractStatus.Active;
+  ipcMain.handle(
+    "DELETE transactions",
+    async (_event, data: TransactionDeleteInput): Promise<DeleteResultDto> => {
+      return await orm.em.fork().transactional(async (em) => {
+        const lastTransactions = await em.find(
+          Transaction,
+          {},
+          {
+            limit: 1,
+            orderBy: { id: "DESC" },
+            populate: ["lendingContract", "borrowingContract"],
+          },
+        );
+        const last = lastTransactions ? lastTransactions[0] : null;
+        if (!last || last.id !== data.id) {
+          throw new AppError("errors.transaction.deleteNotLatest");
         }
-      } else if (
-        last.transactionType === TransactionType.BorrowRepay &&
-        last.borrowingContract
-      ) {
+
+        const vbh = await em.findOne(VaultBalanceHistory, {
+          transaction: data.id,
+        });
+        if (vbh) em.remove(vbh);
+
         if (
-          last.borrowingContract.contractStatus === ContractStatus.Completed
+          last.transactionType === TransactionType.LendRepay &&
+          last.lendingContract
         ) {
-          last.borrowingContract.contractStatus = ContractStatus.Active;
+          if (
+            last.lendingContract.contractStatus === ContractStatus.Completed
+          ) {
+            last.lendingContract.contractStatus = ContractStatus.Active;
+          }
+        } else if (
+          last.transactionType === TransactionType.BorrowRepay &&
+          last.borrowingContract
+        ) {
+          if (
+            last.borrowingContract.contractStatus === ContractStatus.Completed
+          ) {
+            last.borrowingContract.contractStatus = ContractStatus.Active;
+          }
+        } else {
+          if (last.lendingContract) em.remove(last.lendingContract);
+          if (last.borrowingContract) em.remove(last.borrowingContract);
         }
-      } else {
-        if (last.lendingContract) em.remove(last.lendingContract);
-        if (last.borrowingContract) em.remove(last.borrowingContract);
-      }
 
-      em.remove(last);
-      await em.flush();
-      return { id: data.id };
-    });
-  });
+        em.remove(last);
+        await em.flush();
+        return { id: data.id };
+      });
+    },
+  );
 }

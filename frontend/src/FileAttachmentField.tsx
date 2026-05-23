@@ -1,5 +1,4 @@
 import { X } from "@phosphor-icons/react";
-import { useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
@@ -20,7 +19,6 @@ function FileAttachmentField({
   onStage,
 }: FileAttachmentFieldProps) {
   const { t } = useTranslation();
-  const inputRef = useRef<HTMLInputElement>(null);
 
   const handlePick = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -56,7 +54,6 @@ function FileAttachmentField({
           </p>
         )}
         <input
-          ref={inputRef}
           type="file"
           id="attachedDocument"
           accept={ACCEPT_ATTR}
