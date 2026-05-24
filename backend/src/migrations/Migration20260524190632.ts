@@ -1,8 +1,10 @@
 import { Migration } from '@mikro-orm/migrations';
 
-export class Migration20260523143326 extends Migration {
+export class Migration20260524190632 extends Migration {
 
   override up(): void | Promise<void> {
+    this.addSql(`create table \`audit_log\` (\`id\` integer not null primary key autoincrement, \`created_at\` datetime not null, \`updated_at\` datetime not null, \`version\` integer not null default 1, \`entity_name\` text not null, \`entity_id\` integer not null, \`operation\` text not null, \`changes\` json not null);`);
+
     this.addSql(`create table \`contact_details\` (\`id\` integer not null primary key autoincrement, \`created_at\` datetime not null, \`updated_at\` datetime not null, \`version\` integer not null default 1, \`name\` text not null, \`father_name\` text not null, \`nid_info\` text not null, \`phone\` text not null, \`address\` text not null);`);
     this.addSql(`create unique index \`contact_details_name_unique\` on \`contact_details\` (\`name\`);`);
     this.addSql(`create unique index \`contact_details_nid_info_unique\` on \`contact_details\` (\`nid_info\`);`);

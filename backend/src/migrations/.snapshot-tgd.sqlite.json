@@ -2,27 +2,11 @@
   "namespaces": [],
   "tables": [
     {
-      "name": "borrowing_contract",
+      "name": "audit_log",
       "columns": {
-        "adjustment_with_transaction_id": {
-          "name": "adjustment_with_transaction_id",
-          "type": "integer",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "unique": false,
-          "length": null,
-          "precision": null,
-          "scale": null,
-          "default": null,
-          "comment": null,
-          "enumItems": [],
-          "mappedType": "integer"
-        },
-        "amount": {
-          "name": "amount",
-          "type": "integer",
+        "changes": {
+          "name": "changes",
+          "type": "json",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
@@ -33,40 +17,9 @@
           "scale": null,
           "default": null,
           "comment": null,
+          "collation": null,
           "enumItems": [],
-          "mappedType": "integer"
-        },
-        "contact_id": {
-          "name": "contact_id",
-          "type": "integer",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "unique": false,
-          "length": null,
-          "precision": null,
-          "scale": null,
-          "default": null,
-          "comment": null,
-          "enumItems": [],
-          "mappedType": "integer"
-        },
-        "contract_status": {
-          "name": "contract_status",
-          "type": "text",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "unique": false,
-          "length": null,
-          "precision": null,
-          "scale": null,
-          "default": "'Active'",
-          "comment": null,
-          "enumItems": [],
-          "mappedType": "text"
+          "mappedType": "json"
         },
         "created_at": {
           "name": "created_at",
@@ -81,11 +34,12 @@
           "scale": null,
           "default": null,
           "comment": null,
+          "collation": null,
           "enumItems": [],
           "mappedType": "datetime"
         },
-        "duration_days": {
-          "name": "duration_days",
+        "entity_id": {
+          "name": "entity_id",
           "type": "integer",
           "unsigned": false,
           "autoincrement": false,
@@ -97,43 +51,12 @@
           "scale": null,
           "default": null,
           "comment": null,
+          "collation": null,
           "enumItems": [],
           "mappedType": "integer"
         },
-        "file_blob": {
-          "name": "file_blob",
-          "type": "blob",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "unique": false,
-          "length": null,
-          "precision": null,
-          "scale": null,
-          "default": null,
-          "comment": null,
-          "enumItems": [],
-          "mappedType": "blob"
-        },
-        "file_name": {
-          "name": "file_name",
-          "type": "text",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "unique": false,
-          "length": null,
-          "precision": null,
-          "scale": null,
-          "default": null,
-          "comment": null,
-          "enumItems": [],
-          "mappedType": "text"
-        },
-        "finance_category_type": {
-          "name": "finance_category_type",
+        "entity_name": {
+          "name": "entity_name",
           "type": "text",
           "unsigned": false,
           "autoincrement": false,
@@ -145,72 +68,9 @@
           "scale": null,
           "default": null,
           "comment": null,
+          "collation": null,
           "enumItems": [],
           "mappedType": "text"
-        },
-        "first_reminder": {
-          "name": "first_reminder",
-          "type": "datetime",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "unique": false,
-          "length": null,
-          "precision": null,
-          "scale": null,
-          "default": null,
-          "comment": null,
-          "enumItems": [],
-          "mappedType": "datetime"
-        },
-        "guarantor1_id": {
-          "name": "guarantor1_id",
-          "type": "integer",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "unique": false,
-          "length": null,
-          "precision": null,
-          "scale": null,
-          "default": null,
-          "comment": null,
-          "enumItems": [],
-          "mappedType": "integer"
-        },
-        "guarantor2_id": {
-          "name": "guarantor2_id",
-          "type": "integer",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "unique": false,
-          "length": null,
-          "precision": null,
-          "scale": null,
-          "default": null,
-          "comment": null,
-          "enumItems": [],
-          "mappedType": "integer"
-        },
-        "guarantors_reminder": {
-          "name": "guarantors_reminder",
-          "type": "datetime",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "unique": false,
-          "length": null,
-          "precision": null,
-          "scale": null,
-          "default": null,
-          "comment": null,
-          "enumItems": [],
-          "mappedType": "datetime"
         },
         "id": {
           "name": "id",
@@ -225,28 +85,13 @@
           "scale": null,
           "default": null,
           "comment": null,
+          "collation": null,
           "enumItems": [],
           "mappedType": "integer"
         },
-        "purpose_of_loan": {
-          "name": "purpose_of_loan",
+        "operation": {
+          "name": "operation",
           "type": "text",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "unique": false,
-          "length": null,
-          "precision": null,
-          "scale": null,
-          "default": null,
-          "comment": null,
-          "enumItems": [],
-          "mappedType": "text"
-        },
-        "return_date": {
-          "name": "return_date",
-          "type": "datetime",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
@@ -257,40 +102,9 @@
           "scale": null,
           "default": null,
           "comment": null,
+          "collation": null,
           "enumItems": [],
-          "mappedType": "datetime"
-        },
-        "second_reminder": {
-          "name": "second_reminder",
-          "type": "datetime",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "unique": false,
-          "length": null,
-          "precision": null,
-          "scale": null,
-          "default": null,
-          "comment": null,
-          "enumItems": [],
-          "mappedType": "datetime"
-        },
-        "third_reminder": {
-          "name": "third_reminder",
-          "type": "datetime",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "unique": false,
-          "length": null,
-          "precision": null,
-          "scale": null,
-          "default": null,
-          "comment": null,
-          "enumItems": [],
-          "mappedType": "datetime"
+          "mappedType": "text"
         },
         "updated_at": {
           "name": "updated_at",
@@ -305,6 +119,7 @@
           "scale": null,
           "default": null,
           "comment": null,
+          "collation": null,
           "enumItems": [],
           "mappedType": "datetime"
         },
@@ -321,6 +136,368 @@
           "scale": null,
           "default": "1",
           "comment": null,
+          "collation": null,
+          "enumItems": [],
+          "mappedType": "integer"
+        }
+      },
+      "indexes": [
+        {
+          "columnNames": [
+            "id"
+          ],
+          "composite": false,
+          "constraint": true,
+          "keyName": "primary",
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "triggers": [],
+      "foreignKeys": {},
+      "comment": null
+    },
+    {
+      "name": "borrowing_contract",
+      "columns": {
+        "adjustment_with_transaction_id": {
+          "name": "adjustment_with_transaction_id",
+          "type": "integer",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "unique": false,
+          "length": null,
+          "precision": null,
+          "scale": null,
+          "default": null,
+          "comment": null,
+          "collation": null,
+          "enumItems": [],
+          "mappedType": "integer"
+        },
+        "amount": {
+          "name": "amount",
+          "type": "integer",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "unique": false,
+          "length": null,
+          "precision": null,
+          "scale": null,
+          "default": null,
+          "comment": null,
+          "collation": null,
+          "enumItems": [],
+          "mappedType": "integer"
+        },
+        "contact_id": {
+          "name": "contact_id",
+          "type": "integer",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "unique": false,
+          "length": null,
+          "precision": null,
+          "scale": null,
+          "default": null,
+          "comment": null,
+          "collation": null,
+          "enumItems": [],
+          "mappedType": "integer"
+        },
+        "contract_status": {
+          "name": "contract_status",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "unique": false,
+          "length": null,
+          "precision": null,
+          "scale": null,
+          "default": "'Active'",
+          "comment": null,
+          "collation": null,
+          "enumItems": [],
+          "mappedType": "text"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "datetime",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "unique": false,
+          "length": null,
+          "precision": null,
+          "scale": null,
+          "default": null,
+          "comment": null,
+          "collation": null,
+          "enumItems": [],
+          "mappedType": "datetime"
+        },
+        "duration_days": {
+          "name": "duration_days",
+          "type": "integer",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "unique": false,
+          "length": null,
+          "precision": null,
+          "scale": null,
+          "default": null,
+          "comment": null,
+          "collation": null,
+          "enumItems": [],
+          "mappedType": "integer"
+        },
+        "file_blob": {
+          "name": "file_blob",
+          "type": "blob",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "unique": false,
+          "length": null,
+          "precision": null,
+          "scale": null,
+          "default": null,
+          "comment": null,
+          "collation": null,
+          "enumItems": [],
+          "mappedType": "blob"
+        },
+        "file_name": {
+          "name": "file_name",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "unique": false,
+          "length": null,
+          "precision": null,
+          "scale": null,
+          "default": null,
+          "comment": null,
+          "collation": null,
+          "enumItems": [],
+          "mappedType": "text"
+        },
+        "finance_category_type": {
+          "name": "finance_category_type",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "unique": false,
+          "length": null,
+          "precision": null,
+          "scale": null,
+          "default": null,
+          "comment": null,
+          "collation": null,
+          "enumItems": [],
+          "mappedType": "text"
+        },
+        "first_reminder": {
+          "name": "first_reminder",
+          "type": "datetime",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "unique": false,
+          "length": null,
+          "precision": null,
+          "scale": null,
+          "default": null,
+          "comment": null,
+          "collation": null,
+          "enumItems": [],
+          "mappedType": "datetime"
+        },
+        "guarantor1_id": {
+          "name": "guarantor1_id",
+          "type": "integer",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "unique": false,
+          "length": null,
+          "precision": null,
+          "scale": null,
+          "default": null,
+          "comment": null,
+          "collation": null,
+          "enumItems": [],
+          "mappedType": "integer"
+        },
+        "guarantor2_id": {
+          "name": "guarantor2_id",
+          "type": "integer",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "unique": false,
+          "length": null,
+          "precision": null,
+          "scale": null,
+          "default": null,
+          "comment": null,
+          "collation": null,
+          "enumItems": [],
+          "mappedType": "integer"
+        },
+        "guarantors_reminder": {
+          "name": "guarantors_reminder",
+          "type": "datetime",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "unique": false,
+          "length": null,
+          "precision": null,
+          "scale": null,
+          "default": null,
+          "comment": null,
+          "collation": null,
+          "enumItems": [],
+          "mappedType": "datetime"
+        },
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "unsigned": false,
+          "autoincrement": true,
+          "primary": true,
+          "nullable": false,
+          "unique": false,
+          "length": null,
+          "precision": null,
+          "scale": null,
+          "default": null,
+          "comment": null,
+          "collation": null,
+          "enumItems": [],
+          "mappedType": "integer"
+        },
+        "purpose_of_loan": {
+          "name": "purpose_of_loan",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "unique": false,
+          "length": null,
+          "precision": null,
+          "scale": null,
+          "default": null,
+          "comment": null,
+          "collation": null,
+          "enumItems": [],
+          "mappedType": "text"
+        },
+        "return_date": {
+          "name": "return_date",
+          "type": "datetime",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "unique": false,
+          "length": null,
+          "precision": null,
+          "scale": null,
+          "default": null,
+          "comment": null,
+          "collation": null,
+          "enumItems": [],
+          "mappedType": "datetime"
+        },
+        "second_reminder": {
+          "name": "second_reminder",
+          "type": "datetime",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "unique": false,
+          "length": null,
+          "precision": null,
+          "scale": null,
+          "default": null,
+          "comment": null,
+          "collation": null,
+          "enumItems": [],
+          "mappedType": "datetime"
+        },
+        "third_reminder": {
+          "name": "third_reminder",
+          "type": "datetime",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "unique": false,
+          "length": null,
+          "precision": null,
+          "scale": null,
+          "default": null,
+          "comment": null,
+          "collation": null,
+          "enumItems": [],
+          "mappedType": "datetime"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "datetime",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "unique": false,
+          "length": null,
+          "precision": null,
+          "scale": null,
+          "default": null,
+          "comment": null,
+          "collation": null,
+          "enumItems": [],
+          "mappedType": "datetime"
+        },
+        "version": {
+          "name": "version",
+          "type": "integer",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "unique": false,
+          "length": null,
+          "precision": null,
+          "scale": null,
+          "default": "1",
+          "comment": null,
+          "collation": null,
           "enumItems": [],
           "mappedType": "integer"
         }
@@ -368,6 +545,7 @@
         }
       ],
       "checks": [],
+      "triggers": [],
       "foreignKeys": {
         "borrowing_contract_contact_id_foreign": {
           "columnNames": [
@@ -423,6 +601,7 @@
           "scale": null,
           "default": null,
           "comment": null,
+          "collation": null,
           "enumItems": [],
           "mappedType": "text"
         },
@@ -439,6 +618,7 @@
           "scale": null,
           "default": null,
           "comment": null,
+          "collation": null,
           "enumItems": [],
           "mappedType": "datetime"
         },
@@ -455,6 +635,7 @@
           "scale": null,
           "default": null,
           "comment": null,
+          "collation": null,
           "enumItems": [],
           "mappedType": "text"
         },
@@ -471,6 +652,7 @@
           "scale": null,
           "default": null,
           "comment": null,
+          "collation": null,
           "enumItems": [],
           "mappedType": "integer"
         },
@@ -487,6 +669,7 @@
           "scale": null,
           "default": null,
           "comment": null,
+          "collation": null,
           "enumItems": [],
           "mappedType": "text"
         },
@@ -503,6 +686,7 @@
           "scale": null,
           "default": null,
           "comment": null,
+          "collation": null,
           "enumItems": [],
           "mappedType": "text"
         },
@@ -519,6 +703,7 @@
           "scale": null,
           "default": null,
           "comment": null,
+          "collation": null,
           "enumItems": [],
           "mappedType": "text"
         },
@@ -535,6 +720,7 @@
           "scale": null,
           "default": null,
           "comment": null,
+          "collation": null,
           "enumItems": [],
           "mappedType": "datetime"
         },
@@ -551,6 +737,7 @@
           "scale": null,
           "default": "1",
           "comment": null,
+          "collation": null,
           "enumItems": [],
           "mappedType": "integer"
         }
@@ -598,6 +785,7 @@
         }
       ],
       "checks": [],
+      "triggers": [],
       "foreignKeys": {},
       "comment": null
     },
@@ -617,6 +805,7 @@
           "scale": null,
           "default": null,
           "comment": null,
+          "collation": null,
           "enumItems": [],
           "mappedType": "integer"
         },
@@ -633,6 +822,7 @@
           "scale": null,
           "default": null,
           "comment": null,
+          "collation": null,
           "enumItems": [],
           "mappedType": "integer"
         },
@@ -649,6 +839,7 @@
           "scale": null,
           "default": "'Active'",
           "comment": null,
+          "collation": null,
           "enumItems": [],
           "mappedType": "text"
         },
@@ -665,6 +856,7 @@
           "scale": null,
           "default": null,
           "comment": null,
+          "collation": null,
           "enumItems": [],
           "mappedType": "datetime"
         },
@@ -681,6 +873,7 @@
           "scale": null,
           "default": null,
           "comment": null,
+          "collation": null,
           "enumItems": [],
           "mappedType": "integer"
         },
@@ -697,6 +890,7 @@
           "scale": null,
           "default": null,
           "comment": null,
+          "collation": null,
           "enumItems": [],
           "mappedType": "blob"
         },
@@ -713,6 +907,7 @@
           "scale": null,
           "default": null,
           "comment": null,
+          "collation": null,
           "enumItems": [],
           "mappedType": "text"
         },
@@ -729,6 +924,7 @@
           "scale": null,
           "default": null,
           "comment": null,
+          "collation": null,
           "enumItems": [],
           "mappedType": "text"
         },
@@ -745,6 +941,7 @@
           "scale": null,
           "default": null,
           "comment": null,
+          "collation": null,
           "enumItems": [],
           "mappedType": "integer"
         },
@@ -761,6 +958,7 @@
           "scale": null,
           "default": null,
           "comment": null,
+          "collation": null,
           "enumItems": [],
           "mappedType": "text"
         },
@@ -777,6 +975,7 @@
           "scale": null,
           "default": null,
           "comment": null,
+          "collation": null,
           "enumItems": [],
           "mappedType": "datetime"
         },
@@ -793,6 +992,7 @@
           "scale": null,
           "default": null,
           "comment": null,
+          "collation": null,
           "enumItems": [],
           "mappedType": "datetime"
         },
@@ -809,6 +1009,7 @@
           "scale": null,
           "default": "1",
           "comment": null,
+          "collation": null,
           "enumItems": [],
           "mappedType": "integer"
         }
@@ -836,6 +1037,7 @@
         }
       ],
       "checks": [],
+      "triggers": [],
       "foreignKeys": {
         "lending_contract_contact_id_foreign": {
           "columnNames": [
@@ -867,6 +1069,7 @@
           "scale": null,
           "default": null,
           "comment": null,
+          "collation": null,
           "enumItems": [],
           "mappedType": "integer"
         },
@@ -883,6 +1086,7 @@
           "scale": null,
           "default": null,
           "comment": null,
+          "collation": null,
           "enumItems": [],
           "mappedType": "integer"
         },
@@ -899,6 +1103,7 @@
           "scale": null,
           "default": null,
           "comment": null,
+          "collation": null,
           "enumItems": [],
           "mappedType": "integer"
         },
@@ -915,6 +1120,7 @@
           "scale": null,
           "default": null,
           "comment": null,
+          "collation": null,
           "enumItems": [],
           "mappedType": "integer"
         },
@@ -931,6 +1137,7 @@
           "scale": null,
           "default": null,
           "comment": null,
+          "collation": null,
           "enumItems": [],
           "mappedType": "datetime"
         },
@@ -947,6 +1154,7 @@
           "scale": null,
           "default": null,
           "comment": null,
+          "collation": null,
           "enumItems": [],
           "mappedType": "text"
         },
@@ -963,6 +1171,7 @@
           "scale": null,
           "default": null,
           "comment": null,
+          "collation": null,
           "enumItems": [],
           "mappedType": "text"
         },
@@ -979,6 +1188,7 @@
           "scale": null,
           "default": null,
           "comment": null,
+          "collation": null,
           "enumItems": [],
           "mappedType": "text"
         },
@@ -995,6 +1205,7 @@
           "scale": null,
           "default": null,
           "comment": null,
+          "collation": null,
           "enumItems": [],
           "mappedType": "integer"
         },
@@ -1011,6 +1222,7 @@
           "scale": null,
           "default": null,
           "comment": null,
+          "collation": null,
           "enumItems": [],
           "mappedType": "integer"
         },
@@ -1027,6 +1239,7 @@
           "scale": null,
           "default": null,
           "comment": null,
+          "collation": null,
           "enumItems": [],
           "mappedType": "text"
         },
@@ -1043,6 +1256,7 @@
           "scale": null,
           "default": null,
           "comment": null,
+          "collation": null,
           "enumItems": [],
           "mappedType": "datetime"
         },
@@ -1059,6 +1273,7 @@
           "scale": null,
           "default": null,
           "comment": null,
+          "collation": null,
           "enumItems": [],
           "mappedType": "integer"
         },
@@ -1075,6 +1290,7 @@
           "scale": null,
           "default": "1",
           "comment": null,
+          "collation": null,
           "enumItems": [],
           "mappedType": "integer"
         }
@@ -1132,6 +1348,7 @@
         }
       ],
       "checks": [],
+      "triggers": [],
       "foreignKeys": {
         "transaction_borrowing_contract_id_foreign": {
           "columnNames": [
@@ -1199,6 +1416,7 @@
           "scale": null,
           "default": null,
           "comment": null,
+          "collation": null,
           "enumItems": [],
           "mappedType": "datetime"
         },
@@ -1215,6 +1433,7 @@
           "scale": null,
           "default": null,
           "comment": null,
+          "collation": null,
           "enumItems": [],
           "mappedType": "text"
         },
@@ -1231,6 +1450,7 @@
           "scale": null,
           "default": null,
           "comment": null,
+          "collation": null,
           "enumItems": [],
           "mappedType": "integer"
         },
@@ -1247,6 +1467,7 @@
           "scale": null,
           "default": null,
           "comment": null,
+          "collation": null,
           "enumItems": [],
           "mappedType": "text"
         },
@@ -1263,6 +1484,7 @@
           "scale": null,
           "default": null,
           "comment": null,
+          "collation": null,
           "enumItems": [],
           "mappedType": "datetime"
         },
@@ -1279,6 +1501,7 @@
           "scale": null,
           "default": "1",
           "comment": null,
+          "collation": null,
           "enumItems": [],
           "mappedType": "integer"
         }
@@ -1306,6 +1529,7 @@
         }
       ],
       "checks": [],
+      "triggers": [],
       "foreignKeys": {},
       "comment": null
     },
@@ -1325,6 +1549,7 @@
           "scale": null,
           "default": null,
           "comment": null,
+          "collation": null,
           "enumItems": [],
           "mappedType": "datetime"
         },
@@ -1341,6 +1566,7 @@
           "scale": null,
           "default": null,
           "comment": null,
+          "collation": null,
           "enumItems": [],
           "mappedType": "integer"
         },
@@ -1357,6 +1583,7 @@
           "scale": null,
           "default": "0",
           "comment": null,
+          "collation": null,
           "enumItems": [],
           "mappedType": "integer"
         },
@@ -1373,6 +1600,7 @@
           "scale": null,
           "default": "0",
           "comment": null,
+          "collation": null,
           "enumItems": [],
           "mappedType": "integer"
         },
@@ -1389,6 +1617,7 @@
           "scale": null,
           "default": "0",
           "comment": null,
+          "collation": null,
           "enumItems": [],
           "mappedType": "integer"
         },
@@ -1405,6 +1634,7 @@
           "scale": null,
           "default": null,
           "comment": null,
+          "collation": null,
           "enumItems": [],
           "mappedType": "integer"
         },
@@ -1421,6 +1651,7 @@
           "scale": null,
           "default": null,
           "comment": null,
+          "collation": null,
           "enumItems": [],
           "mappedType": "datetime"
         },
@@ -1437,6 +1668,7 @@
           "scale": null,
           "default": null,
           "comment": null,
+          "collation": null,
           "enumItems": [],
           "mappedType": "integer"
         },
@@ -1453,6 +1685,7 @@
           "scale": null,
           "default": "1",
           "comment": null,
+          "collation": null,
           "enumItems": [],
           "mappedType": "integer"
         },
@@ -1469,6 +1702,7 @@
           "scale": null,
           "default": "0",
           "comment": null,
+          "collation": null,
           "enumItems": [],
           "mappedType": "integer"
         },
@@ -1485,6 +1719,7 @@
           "scale": null,
           "default": "0",
           "comment": null,
+          "collation": null,
           "enumItems": [],
           "mappedType": "integer"
         }
@@ -1522,6 +1757,7 @@
         }
       ],
       "checks": [],
+      "triggers": [],
       "foreignKeys": {
         "vault_balance_history_transaction_id_foreign": {
           "columnNames": [
