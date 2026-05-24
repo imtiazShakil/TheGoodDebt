@@ -22,6 +22,9 @@
   "author": "Imtiaz Shakil Siddique",
   "license": "GPL-3.0",
   "type": "module",
+  "engines": {
+    "node": ">=22.x <24.x"
+  },
   "build": {
     "appId": "com.imtiazshakil.thegooddebt",
     "productName": "TheGoodDebt",

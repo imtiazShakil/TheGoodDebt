@@ -40,7 +40,7 @@ The frontend runs as a Vite dev server (or built bundle) inside an Electron Brow
 
 ### Prerequisites
 
-- Node.js 20+
+- Node.js 22+
 - npm
 
 ### Backend

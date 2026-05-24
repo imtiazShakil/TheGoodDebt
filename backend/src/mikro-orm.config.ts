@@ -1,5 +1,6 @@
 import { Migrator } from "@mikro-orm/migrations";
 import { Options, SqliteDriver } from "@mikro-orm/sqlite";
+import { app } from "electron";
 import path from "path";
 
 import { Migration20260523143326 } from "./migrations/Migration20260523143326.js";
@@ -33,9 +34,10 @@ const config: Options = {
   extensions: [Migrator],
   migrations: {
     // Static list avoids filesystem globbing, which is broken inside an
-    // Electron asar archive (fs.globSync returns Dirents without parentPath).
+    // Electron asar archive (fs.globSync returns undefined and throws error).
     migrationsList: [Migration20260523143326],
-    pathTs: "./src/migrations",
+    pathTs: "./src/migrations", // required for mikro-orm cli to find the TS source files when generating new migrations
+    snapshot: app.isPackaged ? false : true, // snapshotting shouldn't be used in production, as we use it in dev to generate migration
   },
   debug: true,
 };
