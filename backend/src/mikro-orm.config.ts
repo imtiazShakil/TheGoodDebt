@@ -35,6 +35,7 @@ const config: Options = {
     // Static list avoids filesystem globbing, which is broken inside an
     // Electron asar archive (fs.globSync returns Dirents without parentPath).
     migrationsList: [Migration20260523143326],
+    pathTs: "./src/migrations",
   },
   debug: true,
 };

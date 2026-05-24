@@ -46,17 +46,17 @@
     }
   },
   "devDependencies": {
-    "@mikro-orm/cli": "^7.0.16",
-    "electron": "^35.0.0",
+    "@mikro-orm/cli": "^7.1.1",
+    "electron": "^39.8.10",
     "electron-builder": "^26.8.1",
     "prettier": "3.5.1",
     "tsx": "^4.22.3",
-    "typescript": "^5.8.0"
+    "typescript": "^6.0.3"
   },
   "dependencies": {
-    "@mikro-orm/core": "^7.0.16",
-    "@mikro-orm/decorators": "^7.0.16",
-    "@mikro-orm/migrations": "^7.0.16",
-    "@mikro-orm/sqlite": "^7.0.16"
+    "@mikro-orm/core": "^7.1.1",
+    "@mikro-orm/decorators": "^7.1.1",
+    "@mikro-orm/migrations": "^7.1.1",
+    "@mikro-orm/sqlite": "^7.1.1"
   }
 }
