@@ -1,0 +1,52 @@
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            ext: AppImage
+          - os: windows-latest
+            ext: exe
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: |
+            backend/package-lock.json
+            frontend/package-lock.json
+
+      # Electron downloads large binaries (~80MB Electron, ~130MB winCodeSign).
+      # Both Linux and Windows cache paths listed; the action skips missing ones.
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/electron
+            ~/.cache/electron-builder
+            ~/AppData/Local/electron/Cache
+            ~/AppData/Local/electron-builder/Cache
+          key: ${{ runner.os }}-electron-${{ hashFiles('backend/package-lock.json') }}
+
+      - run: npm ci
+        working-directory: backend
+
+      # `npm --prefix ../frontend run build` runs the build script but does NOT
+      # install — frontend deps must be installed explicitly here.
+      - run: npm ci
+        working-directory: frontend
+
+      - run: npm run dist
+        working-directory: backend
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: thegooddebt-${{ runner.os }}
+          path: release/*.${{ matrix.ext }}
+          if-no-files-found: error
