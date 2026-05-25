@@ -7,8 +7,22 @@ import {
 
 import { AuditLog, AuditOperation } from "./entity/audit-log.js";
 
-/** Auto-bumped on every flush; carry no audit signal. */
-const NOISE_FIELDS = new Set(["updatedAt", "version"]);
+/**
+ * Fields that carry no audit signal on their own:
+ *  - `updatedAt`, `version`: auto-bumped on every flush.
+ *  - `createdAt`: never legitimately changes, but MikroORM's Date comparator
+ *    occasionally flags it as dirty on entities loaded via findOneOrFail when
+ *    the value round-trips through SQLite — false positive.
+ * Used to decide whether an UPDATE has any meaningful change. The values
+ * themselves are still recorded in the audit row when a real change exists.
+ */
+const NOISE_FIELDS = new Set(["createdAt", "updatedAt", "version"]);
+
+/**
+ * Fields whose values we don't want to store in the audit log,
+ * either for privacy or for size (e.g. fileBlob)
+ */
+const DONT_TRACK_FIELDS = new Set(["fileBlob"]);
 
 interface PendingAudit {
   entityName: string;
@@ -70,13 +84,18 @@ export class AuditSubscriber implements EventSubscriber {
 
       let changes: Record<string, unknown> = {};
       if (operation === AuditOperation.Update) {
+        let hasRealChange = false;
         for (const [k, v] of Object.entries(cs.payload)) {
-          if (!NOISE_FIELDS.has(k)) changes[k] = v;
+          if (DONT_TRACK_FIELDS.has(k)) changes[k] = "..";
+          else changes[k] = v;
+
+          if (!NOISE_FIELDS.has(k)) hasRealChange = true;
         }
-        if (Object.keys(changes).length === 0) continue;
+        if (!hasRealChange) continue;
       } else if (operation === AuditOperation.Create) {
         for (const [k, v] of Object.entries(cs.payload)) {
-          if (k !== "version") changes[k] = v;
+          if (DONT_TRACK_FIELDS.has(k)) changes[k] = "..";
+          else changes[k] = v;
         }
       }
 
