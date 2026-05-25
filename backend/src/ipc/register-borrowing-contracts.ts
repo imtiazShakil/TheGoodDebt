@@ -83,7 +83,7 @@ export function registerHandlers(ipcMain: IpcMain) {
           thirdReminder: data.thirdReminder,
           guarantorsReminder: data.guarantorsReminder,
           contractStatus: ContractStatus.Active,
-        } as unknown as BorrowingContract);
+        });
         if (data.attachedFile) applyAttachment(contract, data.attachedFile);
         em.persist(contract);
         await em.flush();

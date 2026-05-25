@@ -49,7 +49,7 @@ export function registerHandlers(ipcMain: IpcMain) {
       const vault = em.create(Vault, {
         name: data.name,
         description: data.description,
-      } as unknown as Vault);
+      });
       await em.persist(vault).flush();
       return toVaultDto(vault);
     },

@@ -68,7 +68,7 @@ export function registerHandlers(ipcMain: IpcMain) {
           financeCategoryType: data.financeCategoryType,
           reasonForLending: data.reasonForLending,
           contractStatus: ContractStatus.Active,
-        } as unknown as LendingContract);
+        });
         if (data.attachedFile) applyAttachment(contract, data.attachedFile);
         em.persist(contract);
         await em.flush();

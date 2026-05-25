@@ -129,7 +129,7 @@ export class AuditSubscriber implements EventSubscriber {
         entityId,
         operation: p.operation,
         changes: p.changes,
-      } as unknown as AuditLog);
+      });
     }
   }
 }

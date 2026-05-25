@@ -30,7 +30,7 @@ export function registerHandlers(ipcMain: IpcMain) {
         nidInfo: data.nidInfo,
         phone: data.phone,
         address: data.address,
-      } as unknown as ContactDetails);
+      });
       await em.persist(contact).flush();
       return toContactDto(contact);
     },

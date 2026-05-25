@@ -209,7 +209,7 @@ export async function createLedgerEntry(
   em.persist(vbh);
 
   await em.flush();
-  await em.populate(transaction, POPULATE as unknown as never);
+  await em.populate(transaction, POPULATE);
   return transaction;
 }
 
@@ -256,7 +256,7 @@ export function registerHandlers(ipcMain: IpcMain) {
   ipcMain.handle("GET transactions", async (): Promise<TransactionDto[]> => {
     const em = orm.em.fork();
     const transactions = await em.findAll(Transaction, {
-      populate: POPULATE as unknown as never,
+      populate: POPULATE,
       orderBy: { id: "DESC" },
     });
     return transactions.map(toTransactionDto);
@@ -344,7 +344,7 @@ export function registerHandlers(ipcMain: IpcMain) {
       const transaction = await em.findOneOrFail(Transaction, { id: data.id });
       transaction.description = data.description;
       await em.persist(transaction).flush();
-      await em.populate(transaction, POPULATE as unknown as never);
+      await em.populate(transaction, POPULATE);
       return toTransactionDto(transaction);
     },
   );
