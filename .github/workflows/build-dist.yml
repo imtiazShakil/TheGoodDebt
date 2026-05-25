@@ -13,9 +13,9 @@ jobs:
           - os: windows-latest
             ext: exe
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
           node-version: '22'
           cache: 'npm'
@@ -25,7 +25,7 @@ jobs:
 
       # Electron downloads large binaries (~80MB Electron, ~130MB winCodeSign).
       # Both Linux and Windows cache paths listed; the action skips missing ones.
-      - uses: actions/cache@v4
+      - uses: actions/cache@v5
         with:
           path: |
             ~/.cache/electron
@@ -45,7 +45,7 @@ jobs:
       - run: npm run dist
         working-directory: backend
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: thegooddebt-${{ runner.os }}
           path: release/*.${{ matrix.ext }}
