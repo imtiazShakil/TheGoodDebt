@@ -1,6 +1,5 @@
 import { Migrator } from "@mikro-orm/migrations";
 import { Options, SqliteDriver } from "@mikro-orm/sqlite";
-import { app } from "electron";
 import path from "path";
 
 import { Migration20260524190632 } from "./migrations/Migration20260524190632.js";
@@ -12,6 +11,13 @@ import { LendingContract } from "./repository/entity/lending-contract.js";
 import { Transaction } from "./repository/entity/transaction.js";
 import { VaultBalanceHistory } from "./repository/entity/vault-balance-history.js";
 import { Vault } from "./repository/entity/vault.js";
+
+// Avoid a static `import { app } from "electron"` because the mikro-orm CLI
+// loads this config in plain Node, where electron's `app` export is absent.
+// https://www.electronjs.org/docs/latest/api/process#processversionschrome-readonly
+const isPackaged = process.versions.electron
+  ? (await import("electron")).app.isPackaged
+  : false;
 
 const getDbPath = (): string => {
   const dbFile = "tgd.sqlite";
@@ -41,7 +47,7 @@ const config: Options = {
     // Electron asar archive (fs.globSync returns undefined and throws error).
     migrationsList: [Migration20260524190632],
     pathTs: "./src/migrations", // required for mikro-orm cli to find the TS source files when generating new migrations
-    snapshot: app.isPackaged ? false : true, // snapshotting shouldn't be used in production, as we use it in dev to generate migration
+    snapshot: isPackaged ? false : true, // snapshotting shouldn't be used in production, as we use it in dev to generate migration
   },
   debug: true,
 };

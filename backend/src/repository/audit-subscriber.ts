@@ -21,9 +21,9 @@ const toAuditOperation = (type: ChangeSetType): AuditOperation | null => {
   switch (type) {
     case ChangeSetType.CREATE:
       return AuditOperation.Create;
-    // UPDATE_EARLY / DELETE_EARLY are MikroORM's ordering variants of UPDATE / DELETE
-    // (used when a row must be processed before others, e.g. unique-constraint juggling).
-    // They are not duplicates of the regular types — same entity, just earlier in the flush.
+    // UPDATE_EARLY / DELETE_EARLY are MikroORM's ordering variants of UPDATE /
+    // DELETE (used when a row must be processed before others). Same entity,
+    // just earlier in the flush — not duplicates of the regular types.
     case ChangeSetType.UPDATE:
     case ChangeSetType.UPDATE_EARLY:
       return AuditOperation.Update;
@@ -36,19 +36,26 @@ const toAuditOperation = (type: ChangeSetType): AuditOperation | null => {
 };
 
 /**
- * Writes an AuditLog row for every create / update / delete in the EM.
+ * Writes an AuditLog row for every entity create / update / delete.
  *
- * We capture changeset data in `onFlush` but defer writing the audit rows to
- * `afterFlush` via a forked EM. Reason: for CREATE rows the entity's
- * auto-increment id isn't assigned until the INSERT runs (mid-flush), and
- * MikroORM forbids re-flushing the same UoW from inside its own flush. A fork
- * gives us a clean UoW to write into. Trade-off: audit rows are written in a
- * separate transaction immediately after — not strictly atomic with the
- * original change, but adequate for a single-user desktop app.
+ * Two-phase approach:
+ *  - onFlush captures changeset metadata into a per-EM buffer (entity ref,
+ *    operation, changed fields).
+ *  - afterFlush drains the buffer via `em.insert(AuditLog, ...)` — a native
+ *    INSERT that bypasses the UoW. By that point the parent INSERT/UPDATE/
+ *    DELETE has already run, so auto-increment ids are populated. `em.insert`
+ *    respects the EM's transactionContext, so when called inside an outer
+ *    `em.transactional(...)` the audit row joins that transaction and
+ *    commits/rolls back atomically with the original change.
+ *
+ * Why not the docs' `em.create() + uow.computeChangeSet()` pattern? It works
+ * for UPDATE/DELETE but for CREATE the auto-increment id isn't known during
+ * onFlush. The MikroORM docs explicitly warn against `em.flush()` (throws) and
+ * `em.persist()` (undefined behavior) inside hooks. `em.insert` is the only
+ * native path that sidesteps those constraints.
  */
 export class AuditSubscriber implements EventSubscriber {
-  // WeakMap keyed by the flushing EM so concurrent flushes on different forks
-  // never share a buffer. WeakMap because we don't manage EM lifetimes.
+  // WeakMap keyed by EM so concurrent flushes on different forks don't share state.
   private readonly buffers = new WeakMap<EntityManager, PendingAudit[]>();
 
   onFlush(args: FlushEventArgs): void {
@@ -91,20 +98,19 @@ export class AuditSubscriber implements EventSubscriber {
     if (!buffer || buffer.length === 0) return;
     this.buffers.delete(args.em);
 
-    // Forked EM so we don't recurse into the same in-progress flush.
-    const fork = args.em.fork();
     for (const p of buffer) {
       const entityId = p.entityRef.id;
       if (entityId === undefined) continue;
-      fork.persist(
-        fork.create(AuditLog, {
-          entityName: p.entityName,
-          entityId,
-          operation: p.operation,
-          changes: p.changes,
-        } as unknown as AuditLog),
-      );
+      const now = new Date();
+      await args.em.insert(AuditLog, {
+        createdAt: now,
+        updatedAt: now,
+        version: 1,
+        entityName: p.entityName,
+        entityId,
+        operation: p.operation,
+        changes: p.changes,
+      } as unknown as AuditLog);
     }
-    await fork.flush();
   }
 }
