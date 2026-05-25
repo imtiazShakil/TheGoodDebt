@@ -163,7 +163,7 @@ function TransactionListComponent() {
                   </td>
                   <td>
                     <span
-                      className={`badge badge-sm ${TYPE_BADGE[tx.transactionType] ?? ""}`}
+                      className={`whitespace-nowrap badge badge-sm ${TYPE_BADGE[tx.transactionType] ?? ""}`}
                     >
                       {t(`transactionType.${tx.transactionType}`)}
                     </span>

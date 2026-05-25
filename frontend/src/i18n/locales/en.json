@@ -7,7 +7,8 @@
     "transactions": "Transactions"
   },
   "header": {
-    "theme": "Theme"
+    "theme": "Theme",
+    "title": "The Good Debt"
   },
   "common": {
     "add": "Add",

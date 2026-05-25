@@ -82,7 +82,7 @@ function Header() {
         </div>
         <a className="btn btn-ghost gap-2">
           <HandCoins size={28} weight="duotone" />
-          <span className="text-base font-bold">The Good Debt</span>
+          <span className="text-base font-bold">{t("header.title")}</span>
         </a>
       </div>
 

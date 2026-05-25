@@ -7,7 +7,8 @@
     "transactions": "লেনদেন"
   },
   "header": {
-    "theme": "থিম"
+    "theme": "থিম",
+    "title": "কর্জে হাসানা"
   },
   "common": {
     "add": "যোগ করুন",
